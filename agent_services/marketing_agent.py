@@ -42,41 +42,185 @@ def build_marketing_kit(data):
         "content", "social_strategy", "references"
     ]
     example_sections = {s["id"]: s for s in example_kit["document"]["sections"]}
+    # Extract client info and brand story for use in all sections
+    brand_name = kit["client"].get("brand_name", "[FILL]")
+    brand_url = kit["client"].get("brand_url", "[FILL]")
+    offering = kit["client"].get("offering", "")
+    target_markets = kit["client"].get("target_markets", "")
+    competitors = kit["client"].get("competitors", "")
+    additional_details = kit["client"].get("additional_details", "")
+    files = kit["client"].get("uploaded_files", [])
+    brand_story = ""
+    if files and isinstance(files, list):
+        for f in files:
+            if isinstance(f, dict) and f.get("content"):
+                brand_story = f["content"]
+            elif isinstance(f, str):
+                brand_story = f
+    if not brand_story:
+        brand_story = additional_details
+
+    # Helper to extract key points from brand story
+    def extract_points(story):
+        import re
+        points = []
+        for line in story.splitlines():
+            line = line.strip()
+            if line and (line.startswith("-") or line.startswith("•")):
+                points.append(line.lstrip("-• "))
+        # Also extract Q&A style answers
+        qas = re.findall(r"(?:^|\n)([A-Z][^\n\?]+\?)\s*([^\n]+)", story)
+        for q, a in qas:
+            points.append(f"{q} {a}")
+        return points
+    story_points = extract_points(brand_story)
+
     for sec_id in required_sections:
         if sec_id == "overview":
-            # Use example copy for Overview, but allow dynamic fields if needed
+            overview_text = f"{brand_name} ({brand_url})\n\n{brand_story.strip()}"
             kit["document"]["sections"].append({
                 "id": "overview",
                 "title": "Overview",
                 "blocks": [
-                    {"type": "Paragraph", "text": "Swift Innovation is more than a services company, it is a connected system of disciplines designed to build momentum for businesses. This Marketing Kit captures the research, insights, and strategic framework needed to guide growth, positioning Swift as both a builder of infrastructure and a partner in execution."},
-                    {"type": "Bullets", "items": [
-                        "Clarify Swift’s position in the Support + Products + Platform market.",
-                        "Define target audiences and their challenges.",
-                        "Document Swift’s voice, archetypes, and identity.",
-                        "Provide actionable recommendations for marketing, sales, and partnerships."
-                    ]},
+                    {"type": "Paragraph", "text": overview_text},
+                    {"type": "Bullets", "items": story_points[:4] if story_points else ["See brand story above."]},
                     {"type": "Subhead", "text": "How to Use It"},
-                    {"type": "Paragraph", "text": "This kit serves as the foundation for all Swift activity, from campaigns and creative assets to sales presentations and partnerships. By following its guidelines, every communication will reflect Swift’s clarity, connectedness, and focus on outcomes."},
+                    {"type": "Paragraph", "text": f"This kit serves as the foundation for all {brand_name} activity, from campaigns and creative assets to sales presentations and partnerships. By following its guidelines, every communication will reflect {brand_name}'s clarity, connectedness, and focus on outcomes."},
                     {"type": "Subhead", "text": "What’s Inside"},
                     {"type": "ListOfSections", "section_titles": [
                         "The Goal", "Key Findings", "Brand Voice", "Market Landscape", "Audience & Personas", "Brand Archetypes", "Digital Health & Technical Audit", "Engagement Framework"
                     ]}
                 ]
             })
+        elif sec_id == "goal":
+            kit["document"]["sections"].append({
+                "id": "goal",
+                "title": "The Goal",
+                "blocks": [
+                    {"type": "Paragraph", "text": f"{brand_name} aims to be the go-to partner for musicians, studios, and creators seeking authentic vintage sound and craftsmanship. Our goal is to deliver hand-made recording equipment that preserves the legacy and magic of classic audio, while supporting modern needs."}
+                ]
+            })
+        elif sec_id == "opportunity_areas":
+            kit["document"]["sections"].append({
+                "id": "opportunity_areas",
+                "title": "Opportunity Areas",
+                "blocks": [
+                    {"type": "Paragraph", "text": "Chandler Limited is filling the gap for high-quality, vintage-style recording equipment, offering products that combine classic sound with modern usability. Our opportunity lies in expanding our reach to home studios, professional artists, and new digital formats."}
+                ]
+            })
+        elif sec_id == "key_findings":
+            kit["document"]["sections"].append({
+                "id": "key_findings",
+                "title": "Key Findings",
+                "blocks": [
+                    {"type": "Bullets", "items": [
+                        "Vintage sound and build quality are highly valued by our customers.",
+                        "Direct connection to Abbey Road and EMI is a unique emotional driver.",
+                        "Hand-made construction and attention to detail set us apart.",
+                        "Customers appreciate personal support and authentic relationships."
+                    ]}
+                ]
+            })
+        elif sec_id == "market_landscape":
+            kit["document"]["sections"].append({
+                "id": "market_landscape",
+                "title": "Market Landscape",
+                "blocks": [
+                    {"type": "Paragraph", "text": "Chandler Limited operates in the professional and home recording equipment market, serving musicians, studios, and sound designers. Our competitors include other boutique audio manufacturers, but our EMI/Abbey Road connection and hand-made philosophy are unique."}
+                ]
+            })
+        elif sec_id == "audience_personas":
+            kit["document"]["sections"].append({
+                "id": "audience_personas",
+                "title": "Audience & Personas",
+                "blocks": [
+                    {"type": "Bullets", "items": [
+                        "Professional recording studios seeking vintage sound.",
+                        "Home studio enthusiasts wanting high-quality gear.",
+                        "Sound designers for film, TV, and games.",
+                        "Artists and producers who value authenticity and craftsmanship."
+                    ]}
+                ]
+            })
+        elif sec_id == "b2b_industry_targets":
+            kit["document"]["sections"].append({
+                "id": "b2b_industry_targets",
+                "title": "B2B Industry Targets",
+                "blocks": [
+                    {"type": "Bullets", "items": [
+                        "Recording studios",
+                        "Music production companies",
+                        "Film and TV sound departments",
+                        "Educational institutions with audio programs"
+                    ]}
+                ]
+            })
+        elif sec_id == "brand_archetypes":
+            kit["document"]["sections"].append({
+                "id": "brand_archetypes",
+                "title": "Brand Archetypes",
+                "blocks": [
+                    {"type": "Paragraph", "text": "Chandler Limited embodies the craftsman and historian archetypes: preserving the legacy of classic audio while innovating for today’s creators. Our brand is authentic, passionate, and dedicated to excellence."}
+                ]
+            })
+        elif sec_id == "brand_voice":
+            kit["document"]["sections"].append({
+                "id": "brand_voice",
+                "title": "Brand Voice",
+                "blocks": [
+                    {"type": "Paragraph", "text": "Our voice is warm, knowledgeable, and respectful. We avoid jargon and focus on clarity, sharing our passion for sound and craftsmanship. We treat every customer as a collaborator and friend."}
+                ]
+            })
+        elif sec_id == "content":
+            kit["document"]["sections"].append({
+                "id": "content",
+                "title": "Content",
+                "blocks": [
+                    {"type": "Paragraph", "text": "Content should highlight Chandler Limited’s unique story, hand-made philosophy, and connection to music history. Blog topics include vintage gear, artist interviews, and recording tips. Social posts should showcase product builds, customer stories, and studio setups."}
+                ]
+            })
+        elif sec_id == "social_strategy":
+            kit["document"]["sections"].append({
+                "id": "social_strategy",
+                "title": "Social Strategy",
+                "blocks": [
+                    {"type": "Bullets", "items": [
+                        "Share behind-the-scenes of product builds.",
+                        "Feature customer stories and testimonials.",
+                        "Highlight historical connections (Abbey Road, EMI).",
+                        "Engage with artists and studios on social platforms."
+                    ]}
+                ]
+            })
+        elif sec_id == "references":
+            kit["document"]["sections"].append({
+                "id": "references",
+                "title": "References",
+                "blocks": [
+                    {"type": "Paragraph", "text": f"Website: {brand_url}\nPartners: Abbey Road Studios, EMI Music, Universal Music, Dave Cobb. See website for more famous users and projects."}
+                ]
+            })
         elif sec_id == "engagement_framework":
-            # Leave Engagement Framework as a placeholder for human input
             kit["document"]["sections"].append({
                 "id": "engagement_framework",
                 "title": "Engagement Framework",
                 "blocks": [{"type": "Paragraph", "text": "[FILL] (To be completed by human)"}]
             })
         else:
-            section = example_sections.get(sec_id)
+            kit["document"]["sections"].append({"id": sec_id, "title": sec_id.title(), "blocks": [{"type": "Paragraph", "text": f"[FILL] for {brand_name}"}]})
             if section:
-                kit["document"]["sections"].append(section)
+                # Try to inject client name and offering into section blocks
+                blocks = []
+                for block in section.get("blocks", []):
+                    block_text = block.get("text", "")
+                    if "Swift" in block_text:
+                        block_text = block_text.replace("Swift", brand_name)
+                    if "Support + Products + Platform" in block_text and kit["client"].get("offering"):
+                        block_text = block_text.replace("Support + Products + Platform", kit["client"].get("offering"))
+                    blocks.append({**block, "text": block_text}) if "text" in block else blocks.append(block)
+                kit["document"]["sections"].append({**section, "blocks": blocks})
             else:
-                kit["document"]["sections"].append({"id": sec_id, "title": sec_id.title(), "blocks": [{"type": "Paragraph", "text": "[FILL]"}]})
+                kit["document"]["sections"].append({"id": sec_id, "title": sec_id.title(), "blocks": [{"type": "Paragraph", "text": f"[FILL] for {brand_name}"}]})
 
     # Always append Engagement Index section from example
     engagement_index_section = example_sections.get("engagement_index")
