@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useTheme } from "@mui/material/styles";
 import {
   Box,
   MenuItem,
@@ -31,6 +32,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const theme = useTheme();
   // Dynamic fields based on requestType
   const renderFields = () => {
     switch (requestType) {
@@ -98,7 +100,9 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
             </Tooltip>
             <Box
               sx={{
-                border: isDragOver ? "2px solid #1976d2" : "2px dashed #aaa",
+                border: isDragOver
+                  ? `2.5px solid ${theme.palette.primary.main}`
+                  : "2px dashed #aaa",
                 borderRadius: 2,
                 p: 2,
                 textAlign: "center",
@@ -109,6 +113,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                 position: "relative",
                 overflow: "hidden",
                 transition: "border 0.2s, background 0.2s",
+                boxShadow: isDragOver ? `0 0 0 2px ${theme.palette.primary.main}` : undefined,
               }}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -132,32 +137,6 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
               }}
               onClick={() => fileInputRef.current?.click()}
             >
-              {/* Transparent overlay to ensure drop events are captured */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  zIndex: 1,
-                  background: "rgba(0,0,0,0)",
-                }}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  const droppedFiles = Array.from(e.dataTransfer.files);
-                  if (droppedFiles.length > 0) {
-                    setFiles((prev) => [...prev, ...droppedFiles]);
-                    console.log("Dropped files:", droppedFiles);
-                  }
-                }}
-                onClick={() => fileInputRef.current?.click()}
-              />
               <Typography variant="body2" color="text.secondary">
                 Drag and drop files here, or click to select files
               </Typography>
