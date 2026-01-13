@@ -48,10 +48,25 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
                 {msg.content.document?.cover?.doc_title || "Marketing Kit"}
               </Typography>
               <Typography variant="body2" sx={{ mb: 1 }}>
-                Sections:{" "}
                 {Array.isArray(msg.content.document?.sections)
                   ? msg.content.document.sections
                       .map((s: any) => s.title)
+                      .filter((title: string) => ![
+                        "Overview",
+                        "The Goal",
+                        "Opportunity Areas",
+                        "Key Findings",
+                        "Market Landscape",
+                        "Audience & User Personas",
+                        "B2B Industry Targets",
+                        "Brand Archetypes",
+                        "Brand Voice",
+                        "Content",
+                        "Social Strategy",
+                        "Engagement Framework",
+                        "References",
+                        "Engagement Index"
+                      ].includes(title))
                       .join(", ")
                   : "N/A"}
               </Typography>
@@ -79,7 +94,7 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
                 }}
                 sx={{ mt: 1 }}
               >
-                Download this kit
+                Download
               </Link>
             </>
           ) : (
