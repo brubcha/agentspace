@@ -20,7 +20,7 @@ const requestOptions = [
 const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
   onSubmit,
 }) => {
-  const [requestType, setRequestType] = useState("marketing_kit");
+  const [requestType, setRequestType] = useState("");
   const [clientName, setClientName] = useState("");
   const [website, setWebsite] = useState("");
   const [offering, setOffering] = useState("");
@@ -223,7 +223,13 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
           onChange={(e) => setRequestType(e.target.value)}
           fullWidth
           margin="normal"
+          required
+          error={!requestType}
+          helperText={!requestType ? "Please select a request type" : ""}
         >
+          <MenuItem value="" disabled>
+            -- Select Request Type --
+          </MenuItem>
           {requestOptions.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
