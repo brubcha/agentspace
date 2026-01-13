@@ -32,6 +32,7 @@ def build_marketing_kit(data):
         },
         "output_format": spec.get("authoring_contract", {}).get("output_formats_supported", ["markdown"])[0],
         "template_version": spec.get("template_version", "1.5"),
+        "style_tokens": spec.get("style_tokens", {}),
     }
 
     # Fill each required section with AI-generated or default/example content
