@@ -48,6 +48,21 @@ def marketing_kit():
         if 'files' in data:
             kit['client']['uploaded_files'] = data['files']
 
+        # Always set Engagement Index section from example, do not modify
+        example_kit = load_example_kit()
+        if 'document' in kit and 'sections' in kit['document']:
+            # Remove any generated engagement_index section
+            kit['document']['sections'] = [
+                s for s in kit['document']['sections'] if s.get('id') != 'engagement_index'
+            ]
+            # Find engagement_index section in example and append it
+            engagement_index_section = next(
+                (s for s in example_kit['document']['sections'] if s.get('id') == 'engagement_index'),
+                None
+            )
+            if engagement_index_section:
+                kit['document']['sections'].append(engagement_index_section)
+
         print(f"[DEBUG] Responding with kit: {json.dumps(kit, indent=2)[:1000]}... (truncated)")
         return jsonify(kit)
     except Exception as e:
