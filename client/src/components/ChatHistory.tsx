@@ -25,26 +25,27 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
       history.map((msg, idx) => (
         <Paper
           key={idx}
-          sx={{
+          sx={theme => ({
             p: 2,
             mb: 1,
             background: msg.role === "user" ? "#e3f2fd" : "#f3e5f5",
-          }}
+            color: theme.palette.mode === 'dark' ? '#000' : 'inherit',
+          })}
         >
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={theme => ({ color: theme.palette.mode === 'dark' ? '#000' : 'text.secondary' })}>
             {msg.role === "user" ? "You" : "Agent"} @ {msg.timestamp}
           </Typography>
           {msg.role === "agent" && isKitData(msg.content) ? (
             <>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              <Typography variant="subtitle1" sx={theme => ({ fontWeight: 600, color: theme.palette.mode === 'dark' ? '#000' : 'inherit' })}>
                 {msg.content.client?.brand_name ||
                   msg.content.meta?.brand ||
                   "Marketing Kit"}
               </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
+              <Typography variant="body2" sx={theme => ({ mb: 1, color: theme.palette.mode === 'dark' ? '#000' : 'inherit' })}>
                 {msg.content.document?.cover?.doc_title || "Marketing Kit"}
               </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
+              <Typography variant="body2" sx={theme => ({ mb: 1, color: theme.palette.mode === 'dark' ? '#000' : 'inherit' })}>
                 {Array.isArray(msg.content.document?.sections)
                   ? msg.content.document.sections
                       .map((s: any) => s.title)
@@ -95,7 +96,7 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
               </Link>
             </>
           ) : (
-            <Typography variant="body1">
+            <Typography variant="body1" sx={theme => ({ color: theme.palette.mode === 'dark' ? '#000' : 'inherit' })}>
               {typeof msg.content === "string"
                 ? msg.content
                 : JSON.stringify(msg.content)}
