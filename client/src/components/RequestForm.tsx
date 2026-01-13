@@ -137,7 +137,10 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
               }}
               onClick={() => fileInputRef.current?.click()}
             >
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={theme => ({ color: theme.palette.mode === 'dark' ? '#000' : 'text.secondary' })}
+              >
                 Drag and drop files here, or click to select files
               </Typography>
               <input
@@ -164,7 +167,11 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
               {files.length > 0 && (
                 <Box sx={{ mt: 1 }}>
                   {files.map((file, idx) => (
-                    <Typography key={idx} variant="caption">
+                    <Typography
+                      key={idx}
+                      variant="caption"
+                      sx={theme => ({ color: theme.palette.primary.main })}
+                    >
                       {file.name}
                     </Typography>
                   ))}
