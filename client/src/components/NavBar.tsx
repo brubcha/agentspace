@@ -20,11 +20,10 @@ const NavBar: React.FC<NavBarProps> = ({ darkMode, onToggleDarkMode }) => {
         {/* Logo placeholder */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <img
-            src="/logo192.png"
-            alt="Logo"
-            style={{ height: 32, verticalAlign: "middle", marginRight: 8 }}
+            src="/team-resources-logo.svg"
+            alt="Team Resources Logo"
+            style={{ height: 40, verticalAlign: "middle", marginRight: 8 }}
           />
-          AgentSpace
         </Typography>
         <Tooltip
           title={darkMode ? "Switch to light mode" : "Switch to dark mode"}

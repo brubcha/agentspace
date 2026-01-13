@@ -6,7 +6,7 @@ import WelcomeMessage from "./components/WelcomeMessage";
 import RequestForm from "./components/RequestForm";
 
 import ChatHistory from "./components/ChatHistory";
-import DownloadDocButton from "./components/DownloadDocButton";
+
 
 interface ChatMessage {
   role: "user" | "agent";
@@ -115,9 +115,6 @@ function App() {
         )}
         <RequestForm onSubmit={handleRequest} />
         <ChatHistory history={chatHistory} />
-        <Box textAlign="center">
-          <DownloadDocButton kitData={kitData} />
-        </Box>
       </Container>
     </ThemeProvider>
   );
