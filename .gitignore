@@ -1,0 +1,29 @@
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+
+# Node
+node_modules/
+.env
+.DS_Store
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# VSCode
+.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
