@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { ThemeProvider, CssBaseline, Container, Box } from "@mui/material";
+import { ThemeProvider, CssBaseline, Container, Box, Typography } from "@mui/material";
 import { lightTheme, darkTheme } from "./theme";
 import NavBar from "./components/NavBar";
 import WelcomeMessage from "./components/WelcomeMessage";
@@ -106,16 +106,27 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar darkMode={darkMode} onToggleDarkMode={handleToggleDarkMode} />
-      <Container maxWidth="md">
-        <WelcomeMessage />
-        {error && (
-          <Box sx={{ color: "red", mb: 2 }}>
-            <strong>Error:</strong> {error}
-          </Box>
-        )}
-        <RequestForm onSubmit={handleRequest} />
-        <ChatHistory history={chatHistory} />
-      </Container>
+      <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)' }}>
+        {/* Left panel: Chat History */}
+        <Box sx={{ width: 320, minWidth: 220, maxWidth: 400, borderRight: 1, borderColor: 'divider', bgcolor: 'background.paper', overflowY: 'auto', pt: 2 }}>
+          <Typography variant="h6" sx={{ px: 2, mb: 1 }}>
+            Chat History
+          </Typography>
+          <ChatHistory history={chatHistory} />
+        </Box>
+        {/* Main panel: Form, Welcome, Errors */}
+        <Box sx={{ flex: 1, p: 3, overflowY: 'auto' }}>
+          <Container maxWidth="md">
+            <WelcomeMessage />
+            {error && (
+              <Box sx={{ color: "red", mb: 2 }}>
+                <strong>Error:</strong> {error}
+              </Box>
+            )}
+            <RequestForm onSubmit={handleRequest} />
+          </Container>
+        </Box>
+      </Box>
     </ThemeProvider>
   );
 }

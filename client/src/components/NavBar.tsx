@@ -15,28 +15,32 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ darkMode, onToggleDarkMode }) => {
   return (
-    <AppBar position="static">
-      <Toolbar>
-        {/* Logo placeholder */}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <img
-            src="/team-resources-logo.svg"
-            alt="Team Resources Logo"
-            style={{ height: 40, verticalAlign: "middle", marginRight: 8 }}
-          />
-        </Typography>
-        <Tooltip
-          title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          <IconButton color="inherit" onClick={onToggleDarkMode}>
-            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Login (future)">
-          <Button color="inherit">Login</Button>
-        </Tooltip>
-      </Toolbar>
-    </AppBar>
+    <>
+      <AppBar position="static" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Toolbar>
+          {/* Logo placeholder */}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <img
+              src="/team-resources-logo.svg"
+              alt="Team Resources Logo"
+              style={{ height: 40, verticalAlign: "middle", marginRight: 8 }}
+            />
+          </Typography>
+          <Tooltip
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <IconButton color="inherit" onClick={onToggleDarkMode}>
+              {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Login (future)">
+            <Button color="inherit">Login</Button>
+          </Tooltip>
+        </Toolbar>
+      </AppBar>
+      {/* Full-width divider below nav */}
+      <div style={{ width: '100vw', height: 1, background: 'rgba(0,0,0,0.12)' }} />
+    </>
   );
 };
 
