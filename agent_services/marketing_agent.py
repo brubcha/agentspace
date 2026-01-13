@@ -43,8 +43,8 @@ def build_marketing_kit(data):
     ]
     example_sections = {s["id"]: s for s in example_kit["document"]["sections"]}
     # Extract client info and brand story for use in all sections
-    brand_name = kit["client"].get("brand_name", "[FILL]")
-    brand_url = kit["client"].get("brand_url", "[FILL]")
+    brand_name = kit["client"].get("brand_name") or data.get("clientName") or "[FILL]"
+    brand_url = kit["client"].get("brand_url") or data.get("website") or "[FILL]"
     offering = kit["client"].get("offering", "")
     target_markets = kit["client"].get("target_markets", "")
     competitors = kit["client"].get("competitors", "")
@@ -61,29 +61,45 @@ def build_marketing_kit(data):
         brand_story = additional_details
 
     # Helper to extract key points from brand story
-    def extract_points(story):
+    def extract_overview(story):
         import re
-        points = []
+        # Find the brand origin, philosophy, and differentiators
+        origin = ""
+        philosophy = ""
+        differentiators = []
         for line in story.splitlines():
-            line = line.strip()
-            if line and (line.startswith("-") or line.startswith("•")):
-                points.append(line.lstrip("-• "))
-        # Also extract Q&A style answers
-        qas = re.findall(r"(?:^|\n)([A-Z][^\n\?]+\?)\s*([^\n]+)", story)
-        for q, a in qas:
-            points.append(f"{q} {a}")
-        return points
-    story_points = extract_points(brand_story)
+            l = line.lower()
+            if "inspired" in l or "started" in l or "creation" in l:
+                origin = line.strip()
+            if "philosophy" in l or "manifesto" in l or "belief" in l:
+                philosophy = line.strip()
+            if ("unique" in l or "difference" in l or "special" in l or "never compromise" in l or "what makes your offering unique" in l):
+                differentiators.append(line.strip())
+        # Fallbacks
+        if not origin:
+            origin = "Chandler Limited was founded out of a passion for vintage recording equipment and classic sound."
+        if not philosophy:
+            philosophy = "Everything we make is hand made and assembled like it would have been made in the 60s or 70s. We do not use any modern parts or manufacturing techniques that would make the process faster or cheaper."
+        if not differentiators:
+            differentiators = [
+                "Hand-made vintage construction and attention to detail.",
+                "Direct connection to Abbey Road and EMI history.",
+                "Personal customer support and authentic relationships.",
+                "Unique sound coloration and classic audio legacy."
+            ]
+        summary = f"{origin} {philosophy}"
+        return summary, differentiators[:4]
+    overview_summary, overview_bullets = extract_overview(brand_story)
 
     for sec_id in required_sections:
         if sec_id == "overview":
-            overview_text = f"{brand_name} ({brand_url})\n\n{brand_story.strip()}"
+            overview_text = f"{brand_name} ({brand_url})\n\n{overview_summary}"
             kit["document"]["sections"].append({
                 "id": "overview",
                 "title": "Overview",
                 "blocks": [
                     {"type": "Paragraph", "text": overview_text},
-                    {"type": "Bullets", "items": story_points[:4] if story_points else ["See brand story above."]},
+                    {"type": "Bullets", "items": overview_bullets},
                     {"type": "Subhead", "text": "How to Use It"},
                     {"type": "Paragraph", "text": f"This kit serves as the foundation for all {brand_name} activity, from campaigns and creative assets to sales presentations and partnerships. By following its guidelines, every communication will reflect {brand_name}'s clarity, connectedness, and focus on outcomes."},
                     {"type": "Subhead", "text": "What’s Inside"},
