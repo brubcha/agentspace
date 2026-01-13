@@ -154,7 +154,7 @@ function App() {
             sx={{
               position: 'fixed',
               top: 88,
-              left: chatOpen ? (chatOpen ? 320 : 0) : 0,
+              left: chatOpen ? 320 - 16 : -16,
               zIndex: 1301,
               width: 32,
               height: 32,
