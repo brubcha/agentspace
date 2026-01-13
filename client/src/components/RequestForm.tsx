@@ -56,6 +56,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                 onChange={(e) => setWebsite(e.target.value)}
                 fullWidth
                 margin="normal"
+                required
               />
             </Tooltip>
             <Tooltip title="Describe the offering (product/service).">

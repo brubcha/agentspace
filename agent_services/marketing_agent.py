@@ -61,51 +61,57 @@ def build_marketing_kit(data):
         brand_story = additional_details
 
     # Helper to extract key points from brand story
-    def extract_overview(story):
-        import re
-        # Find the brand origin, philosophy, and differentiators
-        origin = ""
-        philosophy = ""
-        differentiators = []
+    import re
+    def extract_section(story, keywords, fallback=None, max_items=4):
+        results = []
         for line in story.splitlines():
             l = line.lower()
-            if "inspired" in l or "started" in l or "creation" in l:
-                origin = line.strip()
-            if "philosophy" in l or "manifesto" in l or "belief" in l:
-                philosophy = line.strip()
-            if ("unique" in l or "difference" in l or "special" in l or "never compromise" in l or "what makes your offering unique" in l):
-                differentiators.append(line.strip())
-        # Fallbacks
-        if not origin:
-            origin = "Chandler Limited was founded out of a passion for vintage recording equipment and classic sound."
-        if not philosophy:
-            philosophy = "Everything we make is hand made and assembled like it would have been made in the 60s or 70s. We do not use any modern parts or manufacturing techniques that would make the process faster or cheaper."
-        if not differentiators:
-            differentiators = [
-                "Hand-made vintage construction and attention to detail.",
-                "Direct connection to Abbey Road and EMI history.",
-                "Personal customer support and authentic relationships.",
-                "Unique sound coloration and classic audio legacy."
-            ]
-        summary = f"{origin} {philosophy}"
-        return summary, differentiators[:4]
-    overview_summary, overview_bullets = extract_overview(brand_story)
+            if any(k in l for k in keywords):
+                results.append(line.strip())
+        if not results and fallback:
+            results = [fallback]
+        return results[:max_items]
 
+    # Overview
+    origin = extract_section(brand_story, ["inspired", "started", "creation", "turning point"], f"{brand_name} was founded out of a passion for vintage recording equipment and classic sound.", 1)
+    philosophy = extract_section(brand_story, ["philosophy", "manifesto", "belief", "vision", "culture"], "Everything we make is hand made and assembled like it would have been made in the 60s or 70s.", 1)
+    differentiators = extract_section(brand_story, ["unique", "difference", "special", "never compromise", "authorized", "first company"], "Hand-made vintage construction and attention to detail.", 4)
+    overview_summary = f"{origin[0]} {philosophy[0]}"
     for sec_id in required_sections:
         if sec_id == "overview":
-            overview_text = f"{brand_name} ({brand_url})\n\n{overview_summary}"
             kit["document"]["sections"].append({
                 "id": "overview",
                 "title": "Overview",
                 "blocks": [
-                    {"type": "Paragraph", "text": overview_text},
-                    {"type": "Bullets", "items": overview_bullets},
+                    {"type": "Paragraph", "text": f"{brand_name} is more than a services company—it's a connected system of disciplines designed to build momentum for businesses. This Marketing Kit captures the research, insights, and strategic framework needed to guide growth, positioning {brand_name} as both a builder of infrastructure and a partner in execution."},
+                    {"type": "Bullets", "items": [
+                        f"Clarify {brand_name}'s position in the Support + Products + Platform market.",
+                        "Define target audiences and their challenges.",
+                        "Document {brand_name}'s voice, archetypes, and identity.",
+                        "Provide actionable recommendations for marketing, sales, and partnerships."
+                    ]},
                     {"type": "Subhead", "text": "How to Use It"},
                     {"type": "Paragraph", "text": f"This kit serves as the foundation for all {brand_name} activity, from campaigns and creative assets to sales presentations and partnerships. By following its guidelines, every communication will reflect {brand_name}'s clarity, connectedness, and focus on outcomes."},
+                    {"type": "Bullets", "items": [
+                        "Use as a reference for campaign planning, creative briefs, and sales enablement.",
+                        "Align all communications to the strategic framework outlined here.",
+                        "Share with internal teams and partners to ensure unified messaging and execution."
+                    ]},
                     {"type": "Subhead", "text": "What’s Inside"},
                     {"type": "ListOfSections", "section_titles": [
-                        "The Goal", "Key Findings", "Brand Voice", "Market Landscape", "Audience & Personas", "Brand Archetypes", "Digital Health & Technical Audit", "Engagement Framework"
-                    ]}
+                        "Overview",
+                        "The Goal",
+                        "Opportunity Areas",
+                        "Key Findings",
+                        "Market Landscape",
+                        "Audience & User Personas",
+                        "B2B Industry Targets",
+                        "Brand Archetypes",
+                        "Brand Voice",
+                        "Content",
+                        "Social Strategy"
+                    ]},
+                    {"type": "Callout", "text": f"Every section is tailored to {brand_name}'s unique market position and growth ambitions."}
                 ]
             })
         elif sec_id == "goal":
@@ -113,7 +119,15 @@ def build_marketing_kit(data):
                 "id": "goal",
                 "title": "The Goal",
                 "blocks": [
-                    {"type": "Paragraph", "text": f"{brand_name} aims to be the go-to partner for musicians, studios, and creators seeking authentic vintage sound and craftsmanship. Our goal is to deliver hand-made recording equipment that preserves the legacy and magic of classic audio, while supporting modern needs."}
+                    {"type": "Paragraph", "text": f"To establish {brand_name} as the go-to partner for companies seeking to align strategy, speed, and execution under one roof. The initial focus is on dominating the mid-market B2B space (manufacturing, technology, services), then scaling into vertical-specific ecosystems through Agency Direct and White Label channels."},
+                    {"type": "Bullets", "items": [
+                        "Dominate the mid-market B2B space in manufacturing, technology, and services.",
+                        "Scale into vertical-specific ecosystems via Agency Direct and White Label channels.",
+                        "Align strategy, speed, and execution for every client engagement.",
+                        "Deliver measurable outcomes and build long-term partnerships.",
+                        f"Leverage {brand_name}'s unique strengths to differentiate in a crowded market."
+                    ]},
+                    {"type": "Callout", "text": "Actionable Next Step: Identify top 3 verticals for immediate campaign focus and assign cross-functional teams to each."}
                 ]
             })
         elif sec_id == "opportunity_areas":
@@ -121,7 +135,22 @@ def build_marketing_kit(data):
                 "id": "opportunity_areas",
                 "title": "Opportunity Areas",
                 "blocks": [
-                    {"type": "Paragraph", "text": "Chandler Limited is filling the gap for high-quality, vintage-style recording equipment, offering products that combine classic sound with modern usability. Our opportunity lies in expanding our reach to home studios, professional artists, and new digital formats."}
+                    {"type": "Subhead", "text": "Workflow Efficiency"},
+                    {"type": "Paragraph", "text": f"Silos slow everything down—marketing runs campaigns without dev support, sales works leads without aligned operations, leadership loses clarity. {brand_name} solves this by embedding cross-disciplinary teams into client workflows. Design, marketing, development, and strategy operate as one unit, creating seamless handoffs, faster delivery, and a culture of aligned execution that compounds growth."},
+                    {"type": "Callout", "text": "Action: Map current client workflows and identify 2–3 areas for cross-disciplinary team integration."},
+                    {"type": "Subhead", "text": "Digital Tools"},
+                    {"type": "Paragraph", "text": f"Disconnected platforms create wasted time and unclear results. {brand_name} equips every client with a unified foundation of CRMs, analytics, and automation—the same operational backbone we use ourselves. This structure provides real-time visibility, automates repeatable tasks, and creates scalable infrastructure that supports growth without chaos."},
+                    {"type": "Callout", "text": "Action: Audit current tech stack and recommend unified CRM/analytics solutions."},
+                    {"type": "Subhead", "text": "Market Trends"},
+                    {"type": "Paragraph", "text": "Business is shifting fast: 60% of the workforce will be independent by 2027, 66% of companies outsource, and 73% already hire globally. {brand_name} was built for this future. By embracing independence, distributed expertise, and embedded partnerships, we position clients not just to adapt but to gain an advantage from the new world of work."},
+                    {"type": "Callout", "text": "Action: Use these trends in outbound messaging and thought leadership content."},
+                    {"type": "Subhead", "text": "Revenue Streams"},
+                    {"type": "Bullets", "items": [
+                        "Support Retainers → Ongoing, embedded cross-functional teams.",
+                        "Productized Deliverables → Fixed-scope assets delivered with speed and clarity.",
+                        "Platform Licensing → Branded CRM and analytics environments that create sticky, recurring infrastructure."
+                    ]},
+                    {"type": "Callout", "text": "Action: Prioritize recurring revenue models and highlight in sales materials."}
                 ]
             })
         elif sec_id == "key_findings":
@@ -130,11 +159,14 @@ def build_marketing_kit(data):
                 "title": "Key Findings",
                 "blocks": [
                     {"type": "Bullets", "items": [
-                        "Vintage sound and build quality are highly valued by our customers.",
-                        "Direct connection to Abbey Road and EMI is a unique emotional driver.",
-                        "Hand-made construction and attention to detail set us apart.",
-                        "Customers appreciate personal support and authentic relationships."
-                    ]}
+                        f"Fragmentation is the Core Problem: Most businesses piece together agencies, consultants, and disconnected tools. This creates silos, wasted spend, and stalled execution. {brand_name} was designed to remove fragmentation by embedding all disciplines under one roof.",
+                        "Independence is Reshaping Work: By 2027, 60% of the workforce will be independent, and most companies already outsource or hire globally. {brand_name}'s model embraces this shift, connecting distributed expertise into a unified system.",
+                        "Execution is the Bottleneck: Strategy without delivery—or delivery without strategy—stalls growth. Competitors lean one way or the other. {brand_name} bridges this gap by aligning strategy, speed, and execution.",
+                        "The Mid-Market is Underserved: Smaller companies rely on scrappy tactics, while enterprises hire full teams and agencies. Mid-market businesses are left in between—too complex for freelancers, too lean for enterprise retainers. {brand_name} focuses on this gap.",
+                        "Embedded Models Outperform Vendors: Hiring 'another agency' adds more complexity. Businesses scale faster when expertise is embedded, accountable, and aligned to outcomes. {brand_name} operates as an extension of the client team, not just a vendor.",
+                        "Infrastructure is the Differentiator: Most competitors stop at services. {brand_name} builds systems: CRM, automation, and analytics platforms that create consistency, visibility, and scale. This backbone is what makes results sustainable."
+                    ]},
+                    {"type": "Callout", "text": "Action: Use these findings to inform positioning, sales decks, and onboarding materials."}
                 ]
             })
         elif sec_id == "market_landscape":
@@ -142,20 +174,40 @@ def build_marketing_kit(data):
                 "id": "market_landscape",
                 "title": "Market Landscape",
                 "blocks": [
-                    {"type": "Paragraph", "text": "Chandler Limited operates in the professional and home recording equipment market, serving musicians, studios, and sound designers. Our competitors include other boutique audio manufacturers, but our EMI/Abbey Road connection and hand-made philosophy are unique."}
+                    {"type": "Subhead", "text": "Macro Trends & Growth"},
+                    {"type": "Bullets", "items": [
+                        "Outsourcing is mainstream. Roughly 66% of U.S. businesses outsource at least one department, including IT, HR, and marketing.",
+                        "Independence is surging. Workforce models are shifting—fractional and freelance talent is increasingly central to the future of work.",
+                        "Businesses scale globally. The global BPO market is valued at $302.6 billion (2024) with projected growth to $525 billion by 2030.",
+                        "Strategic not just tactical. Outsourcing is evolving into a tool for innovation and flexibility, not just cost savings or capacity fill-ins."
+                    ]},
+                    {"type": "Subhead", "text": "Competitor Landscape & Buying Behavior"},
+                    {"type": "Bullets", "items": [
+                        "Agencies sell 'campaigns.' They focus on tactical execution rather than integrated strategy and infrastructure.",
+                        "Consultants sell 'strategy.' Insight-rich but often disconnected from execution and follow-through.",
+                        "Dev shops sell 'code.' Technical execution without strategic framing or broader business alignment.",
+                        f"{brand_name} sells all three—embedded. Our model combines strategy, fast execution, and infrastructure in one aligned package, bridging the gaps competitors leave behind."
+                    ]},
+                    {"type": "Subhead", "text": "Channel Opportunities"},
+                    {"type": "Table", "columns": ["Channel", "Opportunity Insight", "Recommendation"], "rows": [
+                        ["Search (Google)", "Decision-makers in mid-market companies actively search for solutions around outsourcing, CRM setup, digital transformation, and growth strategy.", "Launch high-priority search campaigns targeting terms like 'fractional marketing support,' 'outsourced development team,' and 'CRM for mid-market businesses.' Build landing pages aligned to each search intent."],
+                        ["Awareness Channels (FB/IG/YouTube)", "Business owners and executives are exposed to brand credibility via thought leadership and case storytelling, even if they don’t convert immediately.", "Use short video explainers and client stories to showcase momentum, execution speed, and integrated disciplines. Position {brand_name} as the alternative to fragmented agencies and consultants."],
+                        ["Email Marketing (B2B)", "Executives and founders expect clear communication, education, and proof before booking exploratory calls.", "Deploy nurture flows highlighting case studies, industry insights, and ROI proof points. Segment by vertical for relevance."],
+                        ["B2B Partnerships / Retail", "Agencies and consultancies lack capacity but need reliable execution partners. White-label partnerships offer scalability.", "Build structured white-label programs with sell sheets, co-branded case studies, and agency outreach campaigns."],
+                        ["LinkedIn", "Primary platform for C-suite, founders, and decision-makers. Strongest channel for direct outreach and thought leadership.", "Invest in LinkedIn both for outbound and inbound. Build credibility through leadership profiles."]
+                    ]}
                 ]
             })
         elif sec_id == "audience_personas":
             kit["document"]["sections"].append({
                 "id": "audience_personas",
-                "title": "Audience & Personas",
+                "title": "Audience & User Personas",
                 "blocks": [
-                    {"type": "Bullets", "items": [
-                        "Professional recording studios seeking vintage sound.",
-                        "Home studio enthusiasts wanting high-quality gear.",
-                        "Sound designers for film, TV, and games.",
-                        "Artists and producers who value authenticity and craftsmanship."
-                    ]}
+                    {"type": "Subhead", "text": "B2B User Personas"},
+                    {"type": "Persona", "name": "The Overloaded Founder", "profile": "Founders/CEOs of $1M–$20M businesses.", "motivation": "Free up time and mental bandwidth to focus on vision.", "needs": "Reliable execution, clarity across disciplines, and partners who can own outcomes without handholding.", "messaging": "Momentum without micromanagement.", "demographic": "Gen X/Millennial founders; often in manufacturing, tech, or service industries.", "psychographic": "Ambitious but burned out; values autonomy, quick wins, and partners who 'get it done.'", "buying_behavior": "Chooses vendors who feel like extensions of their team; willing to pay for speed, efficiency, and reduced complexity."},
+                    {"type": "Persona", "name": "The Skeptical Executive", "profile": "COOs, CMOs, and VPs of Growth in mid-sized companies.", "motivation": "Confidence in execution, transparency in reporting, and measurable ROI.", "needs": "Strategy tied directly to delivery; clear visibility into results.", "messaging": "Not another vendor. A connected partner.", "demographic": "Senior leaders at $10M–$100M companies.", "psychographic": "Data-driven, expects rigor and reliability; values credibility over creativity alone.", "buying_behavior": "Requires case studies, references, and dashboards; signs long-term once trust is built."},
+                    {"type": "Persona", "name": "The White Label Agency Lead", "profile": "Agency founders or boutique consultants (marketing, creative, or dev shops).", "motivation": "Increase delivery capacity while protecting margins.", "needs": "Invisible, reliable execution partner who works seamlessly under their brand.", "messaging": "Expand without overhead.", "demographic": "Agency teams of 5–25, often in design, marketing, or niche tech services.", "psychographic": "Entrepreneurial, protective of their client relationships, values white-label discretion.", "buying_behavior": "Buys on trust; long-term partnerships once delivery quality is proven."},
+                    {"type": "Persona", "name": "The Enterprise Operator", "profile": "Directors and senior managers at enterprises ($100M+ revenue).", "motivation": "Fill capability gaps quickly without navigating corporate hiring hurdles.", "needs": "Cross-functional expertise, scalable infrastructure, and embedded teams that feel internal.", "messaging": "Teams that build momentum.", "demographic": "Corporate decision-makers in operations, marketing, or digital transformation.", "psychographic": "Risk-averse but pragmatic; values proven partners who can navigate enterprise complexity.", "buying_behavior": "Engages via pilot projects; expands to multi-discipline retainers when results are clear."}
                 ]
             })
         elif sec_id == "b2b_industry_targets":
@@ -163,11 +215,43 @@ def build_marketing_kit(data):
                 "id": "b2b_industry_targets",
                 "title": "B2B Industry Targets",
                 "blocks": [
+                    {"type": "Subhead", "text": "Manufacturing"},
                     {"type": "Bullets", "items": [
-                        "Recording studios",
-                        "Music production companies",
-                        "Film and TV sound departments",
-                        "Educational institutions with audio programs"
+                        "Mid-Market Manufacturers: Companies ($10M–$250M) modernizing operations, sales, and customer engagement.",
+                        "Niche Industrial Producers: Plastics, materials, and component manufacturers needing branding, sales support, and digital presence.",
+                        "Regional Supply Chain Operators: Manufacturers seeking CRM, workflow, and automation tools to streamline B2B distribution and partnerships.",
+                        "OEM & Equipment Builders: Producers requiring scalable marketing infrastructure and sales enablement to support dealer networks."
+                    ]},
+                    {"type": "Subhead", "text": "Software & Technology"},
+                    {"type": "Bullets", "items": [
+                        "SaaS Scale-Ups: Growth-stage companies needing embedded marketing, design, and development to accelerate adoption.",
+                        "Independent Software Vendors (ISVs): Teams that require CRM, automation, and product marketing infrastructure.",
+                        "Tech-Enabled Services: Businesses offering hybrid software + services models that lack in-house creative and operational depth.",
+                        "AI & Emerging Tech Firms: Innovators requiring brand credibility, decks, and proposals to secure funding and partnerships."
+                    ]},
+                    {"type": "Subhead", "text": "Agencies & Channel Partners"},
+                    {"type": "Bullets", "items": [
+                        "Independent Marketing Agencies: 5–50 person firms seeking white-label design, dev, or marketing execution.",
+                        "Creative Boutiques: Niche design and branding shops needing support to scale delivery capacity.",
+                        "Consultants & Fractional Leaders: Fractional CMOs, COOs, and growth consultants requiring execution to turn strategies into outcomes.",
+                        "Agency Networks: Groups of small agencies that can resell or embed {brand_name}'s CRM + analytics platform under their own brand."
+                    ]},
+                    {"type": "Subhead", "text": "Consumer Goods"},
+                    {"type": "Bullets", "items": [
+                        "Emerging Consumer Brands: Early-stage DTC companies building brand identity, websites, and ecommerce platforms.",
+                        "Mid-Market Consumer Goods: Companies scaling regionally/nationally that require CRM-driven sales infrastructure and digital marketing.",
+                        "Lifestyle & Specialty Goods: Premium product makers needing brand kits, campaign execution, and retail support.",
+                        "Retail-Ready Brands: Consumer packaged goods expanding into retail channels that need design, sales, and marketing alignment."
+                    ]},
+                    {"type": "Subhead", "text": "NAICS Codes Research"},
+                    {"type": "Table", "columns": ["NAICS Code", "Industry", "Description"], "rows": [
+                        ["541611", "Administrative Management", "Consulting services for business management"],
+                        ["541512", "Computer Systems Design", "IT and software services"],
+                        ["459910", "Pet and Pet Supplies Retailers", "Retailing pets, pet foods, and pet supplies."],
+                        ["812910", "Pet Care (except Veterinary)", "Pet grooming, boarding, daycare, walking, sitting, etc."],
+                        ["541940", "Veterinary Services", "Practice of veterinary medicine, dentistry, surgery for pets; includes pet hospitals and clinics."],
+                        ["311111, 311119", "Pet Food Manufacturing", "Dog and Cat Food Manufacturing and Other Animal Food Manufacturing: For companies producing pet foods."],
+                        ["424990", "Wholesale (Pets & Supplies)", "Other Miscellaneous Nondurable Goods Merchant Wholesalers: Includes wholesalers in pet-related categories."]
                     ]}
                 ]
             })
@@ -176,7 +260,22 @@ def build_marketing_kit(data):
                 "id": "brand_archetypes",
                 "title": "Brand Archetypes",
                 "blocks": [
-                    {"type": "Paragraph", "text": "Chandler Limited embodies the craftsman and historian archetypes: preserving the legacy of classic audio while innovating for today’s creators. Our brand is authentic, passionate, and dedicated to excellence."}
+                    {"type": "Subhead", "text": "Primary: Architect (System Builder)"},
+                    {"type": "Paragraph", "text": f"As the Architect archetype, {brand_name} exists to design and connect the systems that power growth. We are not just another agency or consultancy—we build frameworks where design, marketing, development, operations, sales, and strategy align under one roof. Originality lives in how we integrate disciplines; precision lives in the infrastructure we create. Our voice is confident and structured, using clear, outcome-driven language to demonstrate how fragmented efforts become momentum when brought together. The result is not just outsourced support, but a growth engine designed with purpose."},
+                    {"type": "Bullets", "items": [
+                        "Mission: Build and align the infrastructure that allows businesses to scale without fragmentation.",
+                        "Voice: Confident, precise, structured, outcome-focused.",
+                        "Values: Integration, clarity, accountability, design of systems.",
+                        "Emotional Promise: 'We don’t patch problems—we architect momentum.'"
+                    ]},
+                    {"type": "Subhead", "text": "Secondary: Collective (Community Builder)"},
+                    {"type": "Paragraph", "text": f"Embracing the Collective archetype, {brand_name} stands as proof that independence is strongest when it moves together. We thrive on connection—independents collaborating across borders, disciplines working without silos, ideas scaling through shared execution. Our role is to unify, not command: to foster collaboration, shared ownership, and sustainable momentum. Our voice is inclusive, collaborative, and forward-moving, using language that emphasizes unity and progress over hierarchy. For clients, the message is clear—when you work with {brand_name}, you don’t hire a vendor; you join a system of independence moving as one."},
+                    {"type": "Bullets", "items": [
+                        "Mission: Prove that independence is strongest when it moves together, unbound by borders, labels, or limits.",
+                        "Voice: Inclusive, collaborative, momentum-driven.",
+                        "Values: Connection, contribution, trust, shared progress.",
+                        "Emotional Promise: 'We don’t just work for you—we move with you.'"
+                    ]}
                 ]
             })
         elif sec_id == "brand_voice":
@@ -184,7 +283,43 @@ def build_marketing_kit(data):
                 "id": "brand_voice",
                 "title": "Brand Voice",
                 "blocks": [
-                    {"type": "Paragraph", "text": "Our voice is warm, knowledgeable, and respectful. We avoid jargon and focus on clarity, sharing our passion for sound and craftsmanship. We treat every customer as a collaborator and friend."}
+                    {"type": "Subhead", "text": "Brand Essence"},
+                    {"type": "Paragraph", "text": f"Momentum through clarity. {brand_name} transforms fragmented efforts into connected systems—embedding design, marketing, development, operations, sales, and strategy under one roof. We move with precision and speed, creating infrastructure that drives growth without chaos."},
+                    {"type": "Subhead", "text": "Brand Purpose"},
+                    {"type": "Paragraph", "text": f"Help businesses grow without fragmentation by uniting strategy, execution, and technology in one embedded partner—so leaders can focus on vision while {brand_name} delivers momentum."},
+                    {"type": "Subhead", "text": "Brand Personality"},
+                    {"type": "Bullets", "items": [
+                        "Adjectives: Confident, precise, collaborative, accountable, modern, outcome-driven.",
+                        "Expression: Clear, declarative statements; structured yet approachable; future-focused with a pragmatic edge."
+                    ]},
+                    {"type": "Subhead", "text": "Tone & Voice Examples"},
+                    {"type": "Bullets", "items": [
+                        '“We measure outcomes, not hours.”',
+                        '“Independence is strongest when it moves together.”',
+                        '“Momentum without micromanagement.”',
+                        '“Strategy is nothing without execution.”',
+                        f'Homepage headline: “Building momentum through connected disciplines.”',
+                        f'LinkedIn caption: “Most agencies sell campaigns. Consultants sell strategy. Dev shops sell code. We bring them together into one embedded system—designed to deliver outcomes.”',
+                        f'Twitter/X Post: “Growth doesn’t stall from lack of ideas. It stalls from fragmentation. {brand_name} removes the silos so execution actually scales.”',
+                        f'Sales Deck Slide: “Products. Support. Platform. Three tracks. One system. Growth without fragmentation.”',
+                        f'Google Search Ad: Headline: Outsourced Support + Products | Description: Design, marketing, and development aligned under one roof. Faster outcomes, scalable infrastructure.”',
+                        f'Email reassurance: “{brand_name} isn’t another vendor. We embed as part of your team, aligning strategy, execution, and tools to deliver measurable outcomes.”'
+                    ]},
+                    {"type": "Subhead", "text": "Client Do’s & Don’ts"},
+                    {"type": "Bullets", "items": [
+                        "Do: Lead with clarity and confidence—short, declarative statements that emphasize outcomes.",
+                        "Do: Highlight the unique model: Support + Products + Platform.",
+                        "Do: Emphasize independence, embedded collaboration, and elimination of silos.",
+                        "Do: Celebrate measurable progress: execution speed, infrastructure, and momentum.",
+                        "Do: Show proof through case studies, dashboards, and results, not just claims.",
+                        "Do: Use modern, structured visuals—clean grids, bold typography, systems imagery.",
+                        "Don’t: Use vague marketing jargon like 'innovative solutions' or 'cutting-edge.'",
+                        "Don’t: Position as a traditional agency, consultancy, or dev shop.",
+                        "Don’t: Overpromise outcomes—results must be shown through proof, not hype.",
+                        "Don’t: Soften the voice with tentative phrases ('we try,' 'we hope'). Replace with assertive clarity ('we deliver,' 'we build,' 'we prove').",
+                        "Don’t: Over-humanize with casual slang or emojis—tone is professional, modern, and outcome-driven.",
+                        "Don’t: Hide the infrastructure. The platform, the embedded model, and the system approach are differentiators and should always be front and center."
+                    ]}
                 ]
             })
         elif sec_id == "content":
@@ -192,7 +327,31 @@ def build_marketing_kit(data):
                 "id": "content",
                 "title": "Content",
                 "blocks": [
-                    {"type": "Paragraph", "text": "Content should highlight Chandler Limited’s unique story, hand-made philosophy, and connection to music history. Blog topics include vintage gear, artist interviews, and recording tips. Social posts should showcase product builds, customer stories, and studio setups."}
+                    {"type": "Subhead", "text": "Keyword Opportunities"},
+                    {"type": "Paragraph", "text": f"{brand_name}'s keyword strategy focuses on owning mid-market B2B search intent across manufacturing, technology, services, and agency/partner ecosystems. The goal is to capture decision-makers searching for outsourced execution, embedded teams, CRM + analytics, and growth strategy—positioning {brand_name} as the integrated alternative to fragmented agencies, consultants, and dev shops."},
+                    {"type": "Bullets", "items": [
+                        "Core Service Keywords: outsourced marketing support, embedded development team, fractional operations partner, CRM + analytics platform for mid-market businesses, outsourced business strategy support.",
+                        "Use Case Keywords: workflow automation for manufacturers, sales enablement for SaaS scaleups, digital transformation for mid-market companies, agency white-label execution partner, CRM implementation for B2B growth.",
+                        "Trust & Differentiation Keywords: growth without fragmentation, embedded cross-functional team, outcomes over hours, strategy + execution partner, momentum through connected disciplines.",
+                        "B2B/Channel Keywords: white-label marketing execution partner, outsourced dev for agencies, embedded team for consultants, CRM + analytics white-label platform, agency enablement partner."
+                    ]},
+                    {"type": "Subhead", "text": "Keyword Opportunity Analysis"},
+                    {"type": "Bullets", "items": [
+                        "Phase 1: Mid-Market Ownership (Low Competition, High Relevance): Target niche intent like 'fractional marketing support,' 'embedded development team,' and 'CRM for mid-market companies.' Establish category clarity before broadening.",
+                        "Phase 2: Category Expansion (Mid Competition, Category Building): Compete on functional solutions: 'workflow automation for B2B,' 'outsourced operations partner,' 'SaaS sales enablement.'",
+                        "Phase 3: High-Volume Capture (Broad Market, High Competition): Expand into competitive, high-volume terms: 'outsourced marketing agency,' 'business growth strategy,' 'CRM implementation services.'"
+                    ]},
+                    {"type": "Subhead", "text": "Blog Strategy (Priority Ranking Topics)"},
+                    {"type": "Bullets", "items": [
+                        "Hub 1: Growth Without Fragmentation (Education Hub): Why Strategy Without Execution Stalls Growth, The True Cost of Siloed Agencies and Consultants, How Embedded Teams Build Sustainable Momentum.",
+                        "Hub 2: Tools & Infrastructure (Systems Hub): 5 Signs Your CRM is Holding You Back, Building a Scalable Analytics Backbone for B2B Companies, Automation Tools that Save Time—and Build Clarity.",
+                        "Hub 3: Industry Applications (Use Case Hub): How Mid-Market Manufacturers Can Modernize Sales Ops, The SaaS Scaleup’s Guide to Embedded Marketing Teams, Why Consultants Partner with Execution Experts.",
+                        "Hub 4: Partnerships & Ecosystems (Community Hub): How Agencies Scale Faster with White-Label Partners, The Future of Outsourcing: Independence Moving Together, Client Spotlight: From Chaos to Clarity with {brand_name}."
+                    ]},
+                    {"type": "Subhead", "text": "Blog Structure"},
+                    {"type": "Bullets", "items": [
+                        "Title, Introduction, Problem/Need Context, Core Insights (solutions, differentiation), Proof/Evidence (case studies, stats, examples), Practical Applications, Industry/Market Trends, Internal Links, External Sources, Call to Action, About {brand_name}."
+                    ]}
                 ]
             })
         elif sec_id == "social_strategy":
@@ -200,11 +359,88 @@ def build_marketing_kit(data):
                 "id": "social_strategy",
                 "title": "Social Strategy",
                 "blocks": [
+                    {"type": "Paragraph", "text": f"The marketing kit and the Social Program Strategy section provide a clear, actionable framework for creating, writing, and designing organic social content. It is designed for internal creators to produce consistent, on-brand assets quickly. We need a balanced mix of proof and case storytelling, thought leadership, system how-tos, behind-the-scenes team moments, and partner spotlights aligned to {brand_name}'s goals of clarity, momentum, and outcomes."},
                     {"type": "Bullets", "items": [
-                        "Share behind-the-scenes of product builds.",
-                        "Feature customer stories and testimonials.",
-                        "Highlight historical connections (Abbey Road, EMI).",
-                        "Engage with artists and studios on social platforms."
+                        "Lead with outcomes, not hype, using short declarative statements that show how connected disciplines create momentum.",
+                        "Prioritize modern, structured visuals, clean grids, bold typography, and systems imagery that reinforce Support, Products, and Platform.",
+                        "Elevate credibility with case snippets, dashboards, and before-after narratives when available.",
+                        "Keep tone confident, precise, collaborative, and professional. Avoid casual slang and emoji.",
+                        "Align posts to mid-market B2B interests in manufacturing, technology, and services, plus agency white-label audiences."
+                    ]},
+                    {"type": "Subhead", "text": "Required Content Mix"},
+                    {"type": "Bullets", "items": [
+                        "Static content, proof and case posts, thought leadership quotes, solution one-pagers translated to feed assets.",
+                        "Dynamic content, short-form videos for how-tos and system walkthroughs, stories for day-in-the-life and works-in-progress.",
+                        "Community and partner items, agency white-label spotlights, client wins, podcast episode clips, event or webinar promos and recaps."
+                    ]},
+                    {"type": "Subhead", "text": "Creative Emphases"},
+                    {"type": "Bullets", "items": [
+                        "Growth without fragmentation, show embedded teams connecting design, marketing, development, operations, sales, and strategy.",
+                        "Outcomes over hours, highlight visible progress, speed to execution, and infrastructure that scales.",
+                        "Architect and Collective archetypes, balance system design with collaboration, independence aligned.",
+                        "Platform backbone, show CRM, analytics, and automation as the differentiator that turns activity into momentum."
+                    ]},
+                    {"type": "Subhead", "text": "Primary Goals"},
+                    {"type": "Bullets", "items": [
+                        "Establish {brand_name} as the trusted alternative to fragmented vendors and drive exploratory conversations.",
+                        "Demonstrate proof of execution speed and infrastructure through repeatable formats and case snippets.",
+                        "Attract partners and talent into the ecosystem by showcasing white-label wins and cross-disciplinary work."
+                    ]},
+                    {"type": "Subhead", "text": "Primary Post Types"},
+                    {"type": "Bullets", "items": [
+                        "Static Feed: Summary, show a before-after of a fragmented stack replaced by {brand_name}'s connected system.",
+                        "Dynamic Stories: Day-in-the-life sequence showing design, marketing, and dev handoffs.",
+                        "Dynamic Reels: 30 to 45 second how-to breaking down a CRM or analytics setup step.",
+                        "Dynamic Videos: 60 to 120 second founder or operator insight on outcomes over hours.",
+                        "Static UGC: Partner spotlight featuring an agency’s white-label win with {brand_name} behind the scenes."
+                    ]},
+                    {"type": "Subhead", "text": "Social Production Checklist"},
+                    {"type": "Bullets", "items": [
+                        "Content Sources: Approved sources include case materials, leadership insights, solution pages, CRM and analytics artifacts, and podcast clips.",
+                        "Design Tips: Use clean grids and clear hierarchy, large headlines and concise body text. Favor bold typography and systems or workflow imagery. Maintain ample spacing, avoid clutter, keep overlays minimal and legible. Ensure captions on video for silent playback, and provide descriptive alt text on images. Keep brand elements modern and structured, avoid heavy filters or novelty effects.",
+                        "Copy Guidelines: Voice is confident, precise, and outcome focused. Use declarative sentences that avoid jargon and filler. No emoji, no casual slang, no overpromising. Reference Support, Products, and Platform when relevant, tying posts to real artifacts or actions. Invite soft CTAs to learn more or book exploratory at {brand_url}.",
+                        "Idea Starters: A three-panel before-after showing how a connected CRM and analytics stack changed weekly reporting. A reel that compresses an end-to-end handoff, brief to live, in under 45 seconds. A founder quote card on growth stalling from fragmentation, linked to a short blog. A partner spotlight on a white-label delivery win with a single approved proof point. A story sequence that tracks one task across design, marketing, and development in a single day. A quick how-to showing one automation that saves time and increases clarity.",
+                        "Cadence and Governance: Weekly rhythm aligns to the kit, three to five posts across LinkedIn, Instagram, and Facebook, plus two to three short-form videos per month and two to three thought leadership posts per month. Rotate formats to balance proof, thought leadership, how-tos, behind-the-scenes, and partner spotlights."
+                    ]}
+                ]
+            })
+        elif sec_id == "engagement_framework":
+            kit["document"]["sections"].append({
+                "id": "engagement_framework",
+                "title": "Engagement Framework",
+                "blocks": [
+                    {"type": "Paragraph", "text": f"{brand_name}'s marketing strategy is built on Initiatives, which define our core priorities. Each Initiative is carried out through Projects, which break big goals into focused efforts. Projects are made up of Deliverables—the tangible outputs that move us forward. Every Deliverable requires one or more team members to complete specific Tasks, providing clarity of ownership, accountability, and progress at every level. This hierarchy of Initiatives → Projects → Deliverables → Tasks forms the foundation of how we plan, execute, and measure our work."},
+                    {"type": "Subhead", "text": "Initiative 1: Evergreen"},
+                    {"type": "Bullets", "items": [
+                        "Maintain consistent, long-term visibility for {brand_name} through ongoing campaigns that reinforce credibility, drive awareness, and capture opportunities across our priority markets.",
+                        "Run continuous digital campaigns (search, social, email) highlighting Support, Products, and Platform.",
+                        "Publish thought leadership content that demonstrates expertise across marketing, design, development, and strategy.",
+                        "Capture and share client case studies, testimonials, and measurable outcomes.",
+                        "Maintain a steady cadence of brand storytelling through blogs, newsletters, and short-form video content."
+                    ]},
+                    {"type": "Subhead", "text": "Initiative 2: Solutions"},
+                    {"type": "Bullets", "items": [
+                        "Showcase and scale {brand_name}'s solutions by building structured campaigns around Support, Products, and Platform, positioning {brand_name} as a connected system that delivers momentum for clients.",
+                        "Develop campaigns focused on each solution pillar to clarify offerings.",
+                        "Build sales enablement assets (flyers, decks, playbooks) for each solution.",
+                        "Highlight integration benefits of combining multiple solutions.",
+                        "Host webinars and demos that demonstrate how solutions solve specific client challenges."
+                    ]},
+                    {"type": "Subhead", "text": "Initiative 3: Podcast"},
+                    {"type": "Bullets", "items": [
+                        "Launch a podcast that turns candid conversations with business leaders into weekly, shippable playbooks, short clips, and pipeline-ready insights that map to solution pillars.",
+                        "Develop campaigns around each solution pillar, using episodes and clips to clarify offerings.",
+                        "Build sales enablement from each episode, flyers, decks, playbooks, and case snippets for every solution.",
+                        "Highlight integration benefits by packaging multi-solution stories and before-after teardowns.",
+                        "Host webinars and live demos that extend episodes to show how solutions solve specific client challenges."
+                    ]},
+                    {"type": "Subhead", "text": "Initiative 4: Merch Store"},
+                    {"type": "Bullets", "items": [
+                        "Launch a Merch Store that turns solution pillars into wearable storytelling, limited drops, and shoppable assets that fuel brand affinity, partner co-marketing, and pipeline lift.",
+                        "Develop collections for each solution pillar, with clear taglines and use-case motifs.",
+                        "Build sales enablement from the store, QR-coded cards, lookbook, bundle sheets, and offer inserts that point to demos and case studies.",
+                        "Highlight integration benefits with combo bundles that pair pillars, example, Support + Products kits with trackable UTMs and referral codes.",
+                        "Run themed drops tied to campaigns and episodes, pop-up carts at events, and co-branded partner capsules that showcase joint solutions."
                     ]}
                 ]
             })
@@ -213,7 +449,11 @@ def build_marketing_kit(data):
                 "id": "references",
                 "title": "References",
                 "blocks": [
-                    {"type": "Paragraph", "text": f"Website: {brand_url}\nPartners: Abbey Road Studios, EMI Music, Universal Music, Dave Cobb. See website for more famous users and projects."}
+                    {"type": "Paragraph", "text": "DemandSage. (2025). Outsourcing Statistics: Key Facts and Trends. https://www.demandsage.com/outsourcing-statistics/"},
+                    {"type": "Paragraph", "text": "Wired. (2023). High-Value Freelancers Are Keeping the Wheels of Tech Turning. https://www.wired.com/story/high-value-freelancers-are-keeping-the-wheels-of-tech-turning/"},
+                    {"type": "Paragraph", "text": "Wikipedia. (2025). Business process outsourcing. https://en.wikipedia.org/wiki/Business_process_outsourcing"},
+                    {"type": "Paragraph", "text": "Shekhar, S. (2022). Outsourcing for Innovation and Flexibility. arXiv. https://arxiv.org/abs/2206.00982"},
+                    {"type": "Paragraph", "text": "SICCODE.com. (n.d.). NAICS Code 459910 – Pet and Pet Supplies Retailers. https://siccode.com/naics-code/459910/pet-pet-supplies-retailers"}
                 ]
             })
         elif sec_id == "engagement_framework":
@@ -223,9 +463,8 @@ def build_marketing_kit(data):
                 "blocks": [{"type": "Paragraph", "text": "[FILL] (To be completed by human)"}]
             })
         else:
-            kit["document"]["sections"].append({"id": sec_id, "title": sec_id.title(), "blocks": [{"type": "Paragraph", "text": f"[FILL] for {brand_name}"}]})
+            section = example_sections.get(sec_id)
             if section:
-                # Try to inject client name and offering into section blocks
                 blocks = []
                 for block in section.get("blocks", []):
                     block_text = block.get("text", "")
