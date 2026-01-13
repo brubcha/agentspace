@@ -1,4 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
+import IconButton from "@mui/material/IconButton";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { ThemeProvider, CssBaseline, Container, Box, Typography } from "@mui/material";
 import { lightTheme, darkTheme } from "./theme";
 import NavBar from "./components/NavBar";
@@ -102,17 +105,73 @@ function App() {
 
   const theme = useMemo(() => (darkMode ? darkTheme : lightTheme), [darkMode]);
 
+  const [chatOpen, setChatOpen] = useState(true);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar darkMode={darkMode} onToggleDarkMode={handleToggleDarkMode} />
       <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)' }}>
         {/* Left panel: Chat History */}
-        <Box sx={{ width: 320, minWidth: 220, maxWidth: 400, borderRight: 1, borderColor: 'divider', bgcolor: 'background.paper', overflowY: 'auto', pt: 2 }}>
-          <Typography variant="h6" sx={{ px: 2, mb: 1 }}>
-            Chat History
-          </Typography>
-          <ChatHistory history={chatHistory} />
+        <Box
+          sx={{
+            width: chatOpen ? 320 : 0,
+            minWidth: chatOpen ? 220 : 0,
+            maxWidth: chatOpen ? 400 : 0,
+            borderRight: chatOpen ? 1 : 0,
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            overflowY: 'auto',
+            pt: 2,
+            px: 2,
+            transition: 'width 0.3s cubic-bezier(.4,2,.6,1), min-width 0.3s cubic-bezier(.4,2,.6,1), max-width 0.3s cubic-bezier(.4,2,.6,1)',
+            position: 'relative',
+            boxShadow: chatOpen ? 1 : 0,
+          }}
+        >
+          {chatOpen && (
+            <>
+              <Typography variant="h6" sx={{ px: 2, mb: 1 }}>
+                Chat History
+              </Typography>
+              <ChatHistory history={chatHistory} />
+            </>
+          )}
+        </Box>
+        {/* Hide/unhide button, always visible between panels */}
+        <Box
+          sx={{
+            position: 'relative',
+            zIndex: 3,
+            width: 0,
+            display: 'flex',
+            alignItems: 'flex-start',
+          }}
+        >
+          <IconButton
+            size="small"
+            onClick={() => setChatOpen((v) => !v)}
+            sx={{
+              position: 'fixed',
+              top: 88,
+              left: chatOpen ? (chatOpen ? 320 : 0) : 0,
+              zIndex: 1301,
+              width: 32,
+              height: 32,
+              bgcolor: 'background.paper',
+              border: 1,
+              borderColor: 'divider',
+              boxShadow: 1,
+              p: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              transition: 'left 0.3s',
+            }}
+          >
+            {chatOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
         </Box>
         {/* Main panel: Form, Welcome, Errors */}
         <Box sx={{ flex: 1, p: 3, overflowY: 'auto' }}>

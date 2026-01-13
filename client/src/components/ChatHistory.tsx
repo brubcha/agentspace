@@ -17,9 +17,6 @@ function isKitData(content: any) {
 
 const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
   <Box sx={{ mt: 2, mb: 2 }}>
-    <Typography variant="h6" gutterBottom>
-      Chat History
-    </Typography>
     {history.length === 0 ? (
       <Typography variant="body2" color="text.secondary">
         No chat history yet.
