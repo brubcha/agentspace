@@ -1,13 +1,16 @@
 # Product Requirements
 
 ## Users and Roles
+
 - **Requestor (internal):** submits a request, provides context, reviews agent output.
 - **Human Reviewer/Editor:** humanizes output, approves, packages for client delivery.
 - **Admin/Governance Owner:** controls agent behaviors, templates, permissions, data boundaries.
 - **AI Agent Owner / Agent Cluster:** executes production steps, generates deliverables, produces a handoff packet.
 
 ## MVP Deliverable Scope (Design + Marketing)
+
 ### Design Examples
+
 - Social post concepts and copy blocks with design directions
 - Brand kit components (logo usage rules draft, typography recommendations, color palette options)
 - Creative brief drafts
@@ -15,6 +18,7 @@
 - Simple landing page wireframe description + content blocks
 
 ### Marketing Examples
+
 - Email sequences, newsletter drafts
 - Paid ad copy sets (Google, Meta) with variants
 - Blog outlines and full drafts with metadata suggestions
@@ -23,6 +27,7 @@
 - Value prop and positioning drafts
 
 ## Core Functional Requirements
+
 1. **Structured request intake**
    - Deliverable-type selection (MVP: Design, Marketing catalog)
    - Required fields per type (goal, audience, offer, brand constraints, references, due date)
@@ -51,6 +56,7 @@
    - Export formats (MVP): Google Doc, PDF, copy blocks, simple presentation output later
 
 ## Non-Functional Requirements
+
 - Strong authentication, permissioning, and audit trails
 - Data encryption in transit and at rest
 - Separation of environments and tenant data

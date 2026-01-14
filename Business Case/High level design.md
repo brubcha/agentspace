@@ -1,6 +1,7 @@
 # High Level Design
 
 ## Core Modules
+
 - **Request Intake:** Forms + chat intake → normalized structured request
 - **Agent Control Plane:** Agent registry (Design Agent, Marketing Agent, etc.), routing rules to agent owners or clusters, production recipes and policy enforcement
 - **Context Vault:** Company context (voice, offers, rules), client context (brand kit, history, campaigns), end-client IP context (restricted and scoped), retrieval layer with strict boundary enforcement
