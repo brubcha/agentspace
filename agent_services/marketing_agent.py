@@ -181,6 +181,7 @@ def build_marketing_kit(data):
                         "Businesses scale globally. The global BPO market is valued at $302.6 billion (2024) with projected growth to $525 billion by 2030.",
                         "Strategic not just tactical. Outsourcing is evolving into a tool for innovation and flexibility, not just cost savings or capacity fill-ins."
                     ]},
+                    {"type": "Callout", "text": "Action: Use these macro trends to inform annual planning and market positioning."},
                     {"type": "Subhead", "text": "Competitor Landscape & Buying Behavior"},
                     {"type": "Bullets", "items": [
                         "Agencies sell 'campaigns.' They focus on tactical execution rather than integrated strategy and infrastructure.",
@@ -188,14 +189,16 @@ def build_marketing_kit(data):
                         "Dev shops sell 'code.' Technical execution without strategic framing or broader business alignment.",
                         f"{brand_name} sells all three—embedded. Our model combines strategy, fast execution, and infrastructure in one aligned package, bridging the gaps competitors leave behind."
                     ]},
+                    {"type": "Callout", "text": "Action: Highlight {brand_name}'s integrated model in all sales and marketing collateral."},
                     {"type": "Subhead", "text": "Channel Opportunities"},
                     {"type": "Table", "columns": ["Channel", "Opportunity Insight", "Recommendation"], "rows": [
                         ["Search (Google)", "Decision-makers in mid-market companies actively search for solutions around outsourcing, CRM setup, digital transformation, and growth strategy.", "Launch high-priority search campaigns targeting terms like 'fractional marketing support,' 'outsourced development team,' and 'CRM for mid-market businesses.' Build landing pages aligned to each search intent."],
-                        ["Awareness Channels (FB/IG/YouTube)", "Business owners and executives are exposed to brand credibility via thought leadership and case storytelling, even if they don’t convert immediately.", "Use short video explainers and client stories to showcase momentum, execution speed, and integrated disciplines. Position {brand_name} as the alternative to fragmented agencies and consultants."],
+                        ["Awareness Channels (FB/IG/YouTube)", "Business owners and executives are exposed to brand credibility via thought leadership and case storytelling, even if they don’t convert immediately.", f"Use short video explainers and client stories to showcase momentum, execution speed, and integrated disciplines. Position {brand_name} as the alternative to fragmented agencies and consultants."],
                         ["Email Marketing (B2B)", "Executives and founders expect clear communication, education, and proof before booking exploratory calls.", "Deploy nurture flows highlighting case studies, industry insights, and ROI proof points. Segment by vertical for relevance."],
                         ["B2B Partnerships / Retail", "Agencies and consultancies lack capacity but need reliable execution partners. White-label partnerships offer scalability.", "Build structured white-label programs with sell sheets, co-branded case studies, and agency outreach campaigns."],
                         ["LinkedIn", "Primary platform for C-suite, founders, and decision-makers. Strongest channel for direct outreach and thought leadership.", "Invest in LinkedIn both for outbound and inbound. Build credibility through leadership profiles."]
-                    ]}
+                    ]},
+                    {"type": "Callout", "text": "Action: Prioritize top 2–3 channels for next quarter's campaign focus."}
                 ]
             })
         elif sec_id == "audience_personas":
@@ -207,7 +210,8 @@ def build_marketing_kit(data):
                     {"type": "Persona", "name": "The Overloaded Founder", "profile": "Founders/CEOs of $1M–$20M businesses.", "motivation": "Free up time and mental bandwidth to focus on vision.", "needs": "Reliable execution, clarity across disciplines, and partners who can own outcomes without handholding.", "messaging": "Momentum without micromanagement.", "demographic": "Gen X/Millennial founders; often in manufacturing, tech, or service industries.", "psychographic": "Ambitious but burned out; values autonomy, quick wins, and partners who 'get it done.'", "buying_behavior": "Chooses vendors who feel like extensions of their team; willing to pay for speed, efficiency, and reduced complexity."},
                     {"type": "Persona", "name": "The Skeptical Executive", "profile": "COOs, CMOs, and VPs of Growth in mid-sized companies.", "motivation": "Confidence in execution, transparency in reporting, and measurable ROI.", "needs": "Strategy tied directly to delivery; clear visibility into results.", "messaging": "Not another vendor. A connected partner.", "demographic": "Senior leaders at $10M–$100M companies.", "psychographic": "Data-driven, expects rigor and reliability; values credibility over creativity alone.", "buying_behavior": "Requires case studies, references, and dashboards; signs long-term once trust is built."},
                     {"type": "Persona", "name": "The White Label Agency Lead", "profile": "Agency founders or boutique consultants (marketing, creative, or dev shops).", "motivation": "Increase delivery capacity while protecting margins.", "needs": "Invisible, reliable execution partner who works seamlessly under their brand.", "messaging": "Expand without overhead.", "demographic": "Agency teams of 5–25, often in design, marketing, or niche tech services.", "psychographic": "Entrepreneurial, protective of their client relationships, values white-label discretion.", "buying_behavior": "Buys on trust; long-term partnerships once delivery quality is proven."},
-                    {"type": "Persona", "name": "The Enterprise Operator", "profile": "Directors and senior managers at enterprises ($100M+ revenue).", "motivation": "Fill capability gaps quickly without navigating corporate hiring hurdles.", "needs": "Cross-functional expertise, scalable infrastructure, and embedded teams that feel internal.", "messaging": "Teams that build momentum.", "demographic": "Corporate decision-makers in operations, marketing, or digital transformation.", "psychographic": "Risk-averse but pragmatic; values proven partners who can navigate enterprise complexity.", "buying_behavior": "Engages via pilot projects; expands to multi-discipline retainers when results are clear."}
+                    {"type": "Persona", "name": "The Enterprise Operator", "profile": "Directors and senior managers at enterprises ($100M+ revenue).", "motivation": "Fill capability gaps quickly without navigating corporate hiring hurdles.", "needs": "Cross-functional expertise, scalable infrastructure, and embedded teams that feel internal.", "messaging": "Teams that build momentum.", "demographic": "Corporate decision-makers in operations, marketing, or digital transformation.", "psychographic": "Risk-averse but pragmatic; values proven partners who can navigate enterprise complexity.", "buying_behavior": "Engages via pilot projects; expands to multi-discipline retainers when results are clear."},
+                    {"type": "Callout", "text": "Action: Use these personas to segment messaging and personalize outreach."}
                 ]
             })
         elif sec_id == "b2b_industry_targets":
@@ -234,7 +238,7 @@ def build_marketing_kit(data):
                         "Independent Marketing Agencies: 5–50 person firms seeking white-label design, dev, or marketing execution.",
                         "Creative Boutiques: Niche design and branding shops needing support to scale delivery capacity.",
                         "Consultants & Fractional Leaders: Fractional CMOs, COOs, and growth consultants requiring execution to turn strategies into outcomes.",
-                        "Agency Networks: Groups of small agencies that can resell or embed {brand_name}'s CRM + analytics platform under their own brand."
+                        f"Agency Networks: Groups of small agencies that can resell or embed {brand_name}'s CRM + analytics platform under their own brand."
                     ]},
                     {"type": "Subhead", "text": "Consumer Goods"},
                     {"type": "Bullets", "items": [
@@ -252,7 +256,8 @@ def build_marketing_kit(data):
                         ["541940", "Veterinary Services", "Practice of veterinary medicine, dentistry, surgery for pets; includes pet hospitals and clinics."],
                         ["311111, 311119", "Pet Food Manufacturing", "Dog and Cat Food Manufacturing and Other Animal Food Manufacturing: For companies producing pet foods."],
                         ["424990", "Wholesale (Pets & Supplies)", "Other Miscellaneous Nondurable Goods Merchant Wholesalers: Includes wholesalers in pet-related categories."]
-                    ]}
+                    ]},
+                    {"type": "Callout", "text": "Action: Use this industry segmentation to prioritize outreach and tailor case studies for each vertical."}
                 ]
             })
         elif sec_id == "brand_archetypes":
@@ -268,6 +273,7 @@ def build_marketing_kit(data):
                         "Values: Integration, clarity, accountability, design of systems.",
                         "Emotional Promise: 'We don’t patch problems—we architect momentum.'"
                     ]},
+                    {"type": "Callout", "text": "Action: Use the Architect archetype to guide all infrastructure and process messaging."},
                     {"type": "Subhead", "text": "Secondary: Collective (Community Builder)"},
                     {"type": "Paragraph", "text": f"Embracing the Collective archetype, {brand_name} stands as proof that independence is strongest when it moves together. We thrive on connection—independents collaborating across borders, disciplines working without silos, ideas scaling through shared execution. Our role is to unify, not command: to foster collaboration, shared ownership, and sustainable momentum. Our voice is inclusive, collaborative, and forward-moving, using language that emphasizes unity and progress over hierarchy. For clients, the message is clear—when you work with {brand_name}, you don’t hire a vendor; you join a system of independence moving as one."},
                     {"type": "Bullets", "items": [
@@ -275,7 +281,8 @@ def build_marketing_kit(data):
                         "Voice: Inclusive, collaborative, momentum-driven.",
                         "Values: Connection, contribution, trust, shared progress.",
                         "Emotional Promise: 'We don’t just work for you—we move with you.'"
-                    ]}
+                    ]},
+                    {"type": "Callout", "text": "Action: Use the Collective archetype to foster collaboration and community in all client-facing programs."}
                 ]
             })
         elif sec_id == "brand_voice":
@@ -319,7 +326,8 @@ def build_marketing_kit(data):
                         "Don’t: Soften the voice with tentative phrases ('we try,' 'we hope'). Replace with assertive clarity ('we deliver,' 'we build,' 'we prove').",
                         "Don’t: Over-humanize with casual slang or emojis—tone is professional, modern, and outcome-driven.",
                         "Don’t: Hide the infrastructure. The platform, the embedded model, and the system approach are differentiators and should always be front and center."
-                    ]}
+                    ]},
+                    {"type": "Callout", "text": "Action: Use these voice guidelines to review all public-facing content and ensure consistency."}
                 ]
             })
         elif sec_id == "content":
@@ -335,23 +343,26 @@ def build_marketing_kit(data):
                         "Trust & Differentiation Keywords: growth without fragmentation, embedded cross-functional team, outcomes over hours, strategy + execution partner, momentum through connected disciplines.",
                         "B2B/Channel Keywords: white-label marketing execution partner, outsourced dev for agencies, embedded team for consultants, CRM + analytics white-label platform, agency enablement partner."
                     ]},
+                    {"type": "Callout", "text": "Action: Review and update keyword targets quarterly based on campaign performance and market shifts."},
                     {"type": "Subhead", "text": "Keyword Opportunity Analysis"},
                     {"type": "Bullets", "items": [
                         "Phase 1: Mid-Market Ownership (Low Competition, High Relevance): Target niche intent like 'fractional marketing support,' 'embedded development team,' and 'CRM for mid-market companies.' Establish category clarity before broadening.",
                         "Phase 2: Category Expansion (Mid Competition, Category Building): Compete on functional solutions: 'workflow automation for B2B,' 'outsourced operations partner,' 'SaaS sales enablement.'",
                         "Phase 3: High-Volume Capture (Broad Market, High Competition): Expand into competitive, high-volume terms: 'outsourced marketing agency,' 'business growth strategy,' 'CRM implementation services.'"
                     ]},
+                    {"type": "Callout", "text": "Action: Assign content owners for each phase and track progress in a shared dashboard."},
                     {"type": "Subhead", "text": "Blog Strategy (Priority Ranking Topics)"},
                     {"type": "Bullets", "items": [
                         "Hub 1: Growth Without Fragmentation (Education Hub): Why Strategy Without Execution Stalls Growth, The True Cost of Siloed Agencies and Consultants, How Embedded Teams Build Sustainable Momentum.",
                         "Hub 2: Tools & Infrastructure (Systems Hub): 5 Signs Your CRM is Holding You Back, Building a Scalable Analytics Backbone for B2B Companies, Automation Tools that Save Time—and Build Clarity.",
                         "Hub 3: Industry Applications (Use Case Hub): How Mid-Market Manufacturers Can Modernize Sales Ops, The SaaS Scaleup’s Guide to Embedded Marketing Teams, Why Consultants Partner with Execution Experts.",
-                        "Hub 4: Partnerships & Ecosystems (Community Hub): How Agencies Scale Faster with White-Label Partners, The Future of Outsourcing: Independence Moving Together, Client Spotlight: From Chaos to Clarity with {brand_name}."
+                        f"Hub 4: Partnerships & Ecosystems (Community Hub): How Agencies Scale Faster with White-Label Partners, The Future of Outsourcing: Independence Moving Together, Client Spotlight: From Chaos to Clarity with {brand_name}."
                     ]},
                     {"type": "Subhead", "text": "Blog Structure"},
                     {"type": "Bullets", "items": [
-                        "Title, Introduction, Problem/Need Context, Core Insights (solutions, differentiation), Proof/Evidence (case studies, stats, examples), Practical Applications, Industry/Market Trends, Internal Links, External Sources, Call to Action, About {brand_name}."
-                    ]}
+                        f"Title, Introduction, Problem/Need Context, Core Insights (solutions, differentiation), Proof/Evidence (case studies, stats, examples), Practical Applications, Industry/Market Trends, Internal Links, External Sources, Call to Action, About {brand_name}."
+                    ]},
+                    {"type": "Callout", "text": "Action: Ensure every blog post includes at least one case study, actionable recommendation, and internal link to other {brand_name} content."}
                 ]
             })
         elif sec_id == "social_strategy":
@@ -367,6 +378,7 @@ def build_marketing_kit(data):
                         "Keep tone confident, precise, collaborative, and professional. Avoid casual slang and emoji.",
                         "Align posts to mid-market B2B interests in manufacturing, technology, and services, plus agency white-label audiences."
                     ]},
+                    {"type": "Callout", "text": "Action: Review social content monthly to ensure alignment with brand voice and campaign goals."},
                     {"type": "Subhead", "text": "Required Content Mix"},
                     {"type": "Bullets", "items": [
                         "Static content, proof and case posts, thought leadership quotes, solution one-pagers translated to feed assets.",
@@ -386,6 +398,7 @@ def build_marketing_kit(data):
                         "Demonstrate proof of execution speed and infrastructure through repeatable formats and case snippets.",
                         "Attract partners and talent into the ecosystem by showcasing white-label wins and cross-disciplinary work."
                     ]},
+                    {"type": "Callout", "text": "Action: Track engagement metrics for each post type and iterate content mix quarterly."},
                     {"type": "Subhead", "text": "Primary Post Types"},
                     {"type": "Bullets", "items": [
                         "Static Feed: Summary, show a before-after of a fragmented stack replaced by {brand_name}'s connected system.",
