@@ -19,6 +19,7 @@
 - Paid ad copy sets (Google, Meta) with variants
 - Blog outlines and full drafts with metadata suggestions
 - Campaign briefs and calendars
+- Marketing Kits
 - Value prop and positioning drafts
 
 ## Core Functional Requirements
