@@ -8,8 +8,7 @@ const WelcomeMessage: React.FC = () => (
       Welcome to AgentSpace
     </Typography>
     <Typography variant="body1">
-      Start by selecting a request and providing context to generate your custom
-      marketing kit.
+      Start by selecting a request and providing context to generate the asset you are seeking.
     </Typography>
   </Box>
 );
