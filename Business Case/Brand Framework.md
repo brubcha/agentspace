@@ -4,9 +4,13 @@
 
 You are building a secure, company-controlled agent platform that turns internal requests into client-ready deliverables. Instead of routing work to human owners, the platform routes requests to an AI Agent Owner (or cluster of agents) that produces the deliverable using controlled processes, templates, and governed access to company and end-client context. Humans then review, humanize, and deliver the final output to clients. MVP focuses on Design and Marketing deliverables.
 
+This platform is initially developed as an internal resource to streamline and secure our own client deliverable workflows. Our long-term vision is to refine, package, and offer this solution as a product for other organizations seeking the same level of agent-driven, governed production.
+
 ## Vision Statement
 
-Enable companies to reliably produce high-quality, professional client deliverables at scale by deploying governed AI agents that execute production work end-to-end, while keeping humans in control of final polish and client delivery, with enterprise-grade protection of company and end-client IP.
+Enable companies to reliably produce high-quality, professional client deliverables at scale by deploying governed AI agents that execute production work end-to-end, while keeping humans in control of final polish and delivery, with enterprise-grade protection of company and/or end-client IP.
+
+Our approach ensures we solve real internal needs first, then empower other companies to adopt the same secure, scalable agent platform for their own client work.
 
 ## Problem Statement
 
@@ -19,6 +23,7 @@ Service teams are expected to deliver a growing volume of recurring, high-stakes
 - Protected environment: restrict access to paying companies and enforce strong data isolation so end-client IP is protected.
 - Human-in-control handoff: provide a clean review, editing, and packaging layer so humans can professionalize outputs before delivery.
 - MVP focus: launch with Design and Marketing deliverable generation and delivery, then expand to Development, Sales, Strategy, Operations.
+- Build for internal excellence and external readiness: Design the platform to meet our own standards, while ensuring it can be productized and delivered to other organizations as a secure, scalable solution.
 
 ## Competitor Set
 
