@@ -129,7 +129,11 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
                     date.getMinutes(),
                   )}${pad(date.getSeconds())}`;
                   const filename = `${clientName}_${requestType}_${dateStr}.docx`;
-                  downloadKitDoc(msg.content, filename);
+                  if (msg.content?.document?.sections) {
+                    downloadKitDoc(msg.content.document.sections, filename);
+                  } else {
+                    console.warn("ChatHistory: msg.content.document.sections missing", msg.content);
+                  }
                 }}
                 sx={{
                   mt: 1,

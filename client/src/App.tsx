@@ -79,11 +79,30 @@ function App() {
 
     try {
       let res, result;
-      // Always send as JSON (files as array of { filename, content })
+      // Send as multipart/form-data using FormData
+      const formData = new FormData();
+      // Append all fields except files
+      Object.entries(data).forEach(([key, value]) => {
+        if (key !== "files") {
+          // Only append string or Blob; convert objects/arrays to JSON string
+          if (typeof value === 'string' || value instanceof Blob) {
+            formData.append(key, value ?? "");
+          } else if (value !== undefined && value !== null) {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, "");
+          }
+        }
+      });
+      // Append files
+      if (data.files && Array.isArray(data.files)) {
+        data.files.forEach((file: File) => {
+          formData.append("files", file);
+        });
+      }
       res = await fetch("/api/agent", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: formData,
       });
       if (!res.ok) {
         const errText = await res.text();

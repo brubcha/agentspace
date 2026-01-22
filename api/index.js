@@ -4,14 +4,14 @@ const cors = require("cors");
 require("dotenv").config();
 
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "uploads/", limits: { fileSize: 50 * 1024 * 1024 } });
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get("/api/health", express.json({ limit: '50mb' }), (req, res) => {
   res.json({ status: "ok" });
 });
 
@@ -20,6 +20,7 @@ const axios = require("axios");
 const AGENT_SERVICE_URL =
   process.env.AGENT_SERVICE_URL || "http://localhost:7000";
 
+// Only multer handles file uploads for this route (no express.json or urlencoded)
 app.post("/api/agent", upload.array("files"), async (req, res) => {
   try {
     let data = req.body;

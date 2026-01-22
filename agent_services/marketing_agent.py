@@ -120,6 +120,9 @@ def build_marketing_kit(data):
             prompt += f"Attached Files: {' | '.join(file_contents)[:2000]}\n"  # Limit total file content for prompt size
         prompt += f"Section: {section_title}\n"
         prompt += ("\nIMPORTANT: For this section, use specific examples, data, and actionable recommendations relevant to the client's industry and context. Avoid generic or vague language. Every paragraph should reference the client or their market context. If you cannot provide a concrete example or recommendation, leave a [REVIEW] tag for human review.\n")
+        # Special handling for checklists: always mark as checked
+        if 'checklist' in sec_id or 'post_types' in sec_id or 'production' in sec_id:
+            prompt += ("\nIf you generate a Checklist block for this section, set 'checked: true' for all items so they display as green checks in the output doc.\n")
         # Add a few-shot example from the markdown if available
         md_key = sec_id.lower().replace('&', 'and').replace(' ', '_').replace('-', '_')
         if md_key in md_sections:
@@ -137,11 +140,24 @@ def build_marketing_kit(data):
                 prompt += f"- {crit}\n"
         prompt += (
             "\n\nReturn the section as a JSON array of blocks. "
-            "Each block should be an object with a 'type' field (e.g., 'Paragraph', 'Bullets', 'Table', 'Subhead'), "
-            "and the appropriate fields for that type. "
-            "For example: [{\"type\": \"Paragraph\", \"text\": \"...\"}], "
+            "Each block should be an object with a 'type' field and the appropriate fields for that type. "
+            "Supported block types include: "
+            "- Paragraph: {type: 'Paragraph', text: string} "
+            "- Bullets: {type: 'Bullets', items: [string]} "
+            "- Table: {type: 'Table', title: string, columns: [string], rows: [[string]]} "
+            "- Subhead: {type: 'Subhead', text: string} "
+            "- Callout: {type: 'Callout', variant: 'info'|'warning'|'success', text: string} "
+            "- ArchetypeCard: {type: 'ArchetypeCard', variant: 'primary'|'secondary', label: string, text: string} "
+            "- Checklist: {type: 'Checklist', items: [{text: string, checked: boolean}]} "
+            "- NumberedList: {type: 'NumberedList', items: [{text: string}]} "
+            "For example: "
+            "[{\"type\": \"Paragraph\", \"text\": \"...\"}], "
             "[{\"type\": \"Bullets\", \"items\": [\"...\", \"...\"]}], "
-            "[{\"type\": \"Table\", \"title\": \"...\", \"columns\": [\"...\"], \"rows\": [[\"...\"]]}], etc. "
+            "[{\"type\": \"Table\", \"title\": \"...\", \"columns\": [\"...\"], \"rows\": [[\"...\"]]}], "
+            "[{\"type\": \"Callout\", \"variant\": \"info\", \"text\": \"Important note...\"}], "
+            "[{\"type\": \"ArchetypeCard\", \"variant\": \"primary\", \"label\": \"Primary Archetype\", \"text\": \"Description...\"}], "
+            "[{\"type\": \"Checklist\", \"items\": [{\"text\": \"Item 1\", \"checked\": true}, {\"text\": \"Item 2\", \"checked\": false}]}], "
+            "[{\"type\": \"NumberedList\", \"items\": [{\"text\": \"Step 1\"}, {\"text\": \"Step 2\"}]}] "
             "Use the example copy as a guide for structure. "
             "Do not include any explanation or prose outside the JSON."
         )

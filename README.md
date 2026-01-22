@@ -56,6 +56,20 @@ A monorepo tool for teams to communicate with AI agents. The MVP features a Mark
 
 ---
 
+## Color Reference for Output Documents
+
+The project uses a comprehensive color reference for all docx and web output, ensuring brand consistency and accessibility. The color palette is documented in:
+
+**Design Code Package/output-doc/marketing-kit-color-refereence.md**
+
+- This file lists all table, list, callout, card, and text colors with hex/RGB values and usage notes.
+- The frontend docx generator (see `client/src/utils/designTokens.ts` and `downloadKitDoc.ts`) uses these tokens for all output styling.
+- To update or expand the color palette, edit the markdown file and sync changes to `designTokens.ts`.
+
+Refer to this file when designing new output features or reviewing color usage for accessibility and brand alignment.
+
+---
+
 ## Project Structure
 
 ```

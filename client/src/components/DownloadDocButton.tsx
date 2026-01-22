@@ -37,7 +37,11 @@ const DownloadDocButton: React.FC<DownloadDocButtonProps> = ({ kitData }) => {
     const pad = (n: number) => n.toString().padStart(2, "0");
     const dateStr = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
     const filename = `${clientName}_${requestType}_${dateStr}.docx`;
-    downloadKitDoc(kitData, filename);
+    if (kitData?.document?.sections) {
+      downloadKitDoc(kitData.document.sections, filename);
+    } else {
+      console.warn("DownloadDocButton: kitData.document.sections missing", kitData);
+    }
   };
 
   return (

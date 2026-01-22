@@ -3,622 +3,809 @@ import {
   Document,
   Packer,
   Paragraph,
-  HeadingLevel,
   TextRun,
+  HeadingLevel,
   Table,
   TableRow,
   TableCell,
   WidthType,
-  AlignmentType,
+  AlignmentType
 } from "docx";
 import { designTokens } from "./designTokens";
-// @ts-ignore
-import { lexer } from "marked";
 
-// Helper to split text into TextRuns for bold (**...**)
-function parseBold(text: string, baseStyle: any = {}): TextRun[] {
-  const runs: TextRun[] = [];
-  let lastIndex = 0;
-  const boldRegex = /\*\*(.*?)\*\*/g;
-  let match;
-  while ((match = boldRegex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      runs.push(
-        new TextRun({ text: text.slice(lastIndex, match.index), ...baseStyle }),
-      );
-    }
-    runs.push(new TextRun({ text: match[1], bold: true, ...baseStyle }));
-    lastIndex = match.index + match[0].length;
-  }
-  if (lastIndex < text.length) {
-    runs.push(new TextRun({ text: text.slice(lastIndex), ...baseStyle }));
-  }
-  return runs;
-}
+// Add any other needed imports (e.g. parseBold)
 
-// Helper: Convert markdown string to docx Paragraph/TextRun array
-function markdownToDocxParagraphs(md: string): Paragraph[] {
-  const tokens = lexer(md);
-  const paragraphs: Paragraph[] = [];
-  tokens.forEach((token: any) => {
-    if (token.type === "heading") {
-      const level = token.depth;
-      paragraphs.push(
-        new Paragraph({
-          children: parseBold(token.text, {
-            bold: level <= 3,
-            color:
-              level === 1
-                ? designTokens.colors.heading1
-                : level === 2
-                  ? designTokens.colors.heading2
-                  : designTokens.colors.subhead,
-            size:
-              level === 1
-                ? designTokens.fontSize.heading1
-                : level === 2
-                  ? designTokens.fontSize.heading2
-                  : designTokens.fontSize.subhead,
-            font:
-              level === 1 ? "Inter" : level === 2 ? "Montserrat" : "Open Sans",
-          }),
-          heading:
-            level === 1
-              ? HeadingLevel.HEADING_1
-              : level === 2
-                ? HeadingLevel.HEADING_2
-                : HeadingLevel.HEADING_3,
-          spacing: {
-            before:
-              level === 1
-                ? designTokens.spacing.heading1Before
-                : level === 2
-                  ? designTokens.spacing.heading2Before
-                  : designTokens.spacing.subheadBefore,
-            after:
-              level === 1
-                ? designTokens.spacing.heading1After
-                : level === 2
-                  ? designTokens.spacing.heading2After
-                  : designTokens.spacing.subheadAfter,
-          },
-        }),
-      );
-    } else if (token.type === "paragraph") {
-      paragraphs.push(
-        new Paragraph({
-          children: parseBold(token.text, {
-            color: designTokens.colors.foreground,
-            size: designTokens.fontSize.base,
-            font: "Roboto",
-          }),
-          spacing: { after: designTokens.spacing.paragraphAfter },
-          alignment: AlignmentType.LEFT,
-        }),
-      );
-    } else if (token.type === "list") {
-      token.items.forEach((item: any) => {
-        paragraphs.push(
-          new Paragraph({
-            children: [
-              ...parseBold("• ", {
-                color: designTokens.colors.foreground,
-                size: designTokens.fontSize.base,
-                font: "Lato",
-              }),
-              ...parseBold(item.text, {
-                color: designTokens.colors.foreground,
-                size: designTokens.fontSize.base,
-                font: "Lato",
-              }),
-            ],
-            spacing: { after: designTokens.spacing.bulletAfter },
-            alignment: AlignmentType.LEFT,
-          }),
-        );
-      });
-    }
-    // Add more token types as needed (blockquote, code, etc.)
-  });
-  return paragraphs;
-}
-
-export function downloadKitDoc(kitData: any, filename = "marketing_kit.docx") {
-  if (!kitData) return;
+export function downloadKitDoc(arr: any[], filename: string) {
   const children: any[] = [];
-  // Title (Heading 1 style)
-  children.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: "Marketing Kit",
-          bold: true,
-          color: designTokens.colors.heading1,
-          size: designTokens.fontSize.heading1,
-          font: "Inter",
-        }),
-      ],
-      heading: HeadingLevel.HEADING_1,
-      spacing: {
-        before: designTokens.spacing.heading1Before,
-        after: designTokens.spacing.heading1After,
-      },
-    }),
-  );
+  const dividerAfter = [/* section titles to add divider after */];
 
-  // Ensure all required sections are present (based on template spec/example)
-  const requiredSections = [
-    "Overview",
-    "The Goal",
-    "Opportunity Areas",
-    "Key Findings",
-    "Market Landscape",
-    "Audience & User Personas",
-    "B2B Industry Targets",
-    "Brand Archetypes",
-    "Brand Voice",
-    "Content",
-    "Social Strategy",
-    "Engagement Framework",
-    "References",
-    "Engagement Index",
-  ];
-  if (kitData.document && Array.isArray(kitData.document.sections)) {
-    // Build a map of present section titles (case-insensitive)
-    const presentSections = new Set(
-      kitData.document.sections.map((s: any) =>
-        (s.title || s.id || "").toLowerCase(),
-      ),
+  if (!Array.isArray(arr)) {
+    console.warn("downloadKitDoc: arr is not an array", arr);
+    return;
+  }
+  console.log("downloadKitDoc: sections input", arr);
+
+  let engagementIndexRendered = false;
+  arr.forEach((section, idx) => {
+    if (!section || !Array.isArray(section.blocks)) {
+      console.warn("downloadKitDoc: section missing or blocks not array", section);
+      return;
+    }
+    // Section title as heading
+    children.push(
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: section.title || `Section ${idx + 1}`,
+            bold: true,
+            color: designTokens.colors.heading1,
+            size: designTokens.fontSize.heading1,
+            font: "Open Sans",
+          }),
+        ],
+        spacing: {
+          before: designTokens.spacing.heading1Before,
+          after: designTokens.spacing.heading1After,
+        },
+      })
     );
-    // Add missing sections as empty
-    requiredSections.forEach((title) => {
-      if (!presentSections.has(title.toLowerCase())) {
-        kitData.document.sections.push({
-          title,
-          id: title.replace(/\s+/g, "_").toLowerCase(),
-          blocks: [],
-        });
-      }
-    });
-    // Sort sections to match required order
-    kitData.document.sections.sort((a: any, b: any) => {
-      const aIdx = requiredSections.findIndex(
-        (t) => t.toLowerCase() === (a.title || a.id || "").toLowerCase(),
-      );
-      const bIdx = requiredSections.findIndex(
-        (t) => t.toLowerCase() === (b.title || b.id || "").toLowerCase(),
-      );
-      return aIdx - bIdx;
-    });
-    // Render each section
-    kitData.document.sections.forEach((section: any) => {
-      // Section Heading (Heading 2 style)
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: section.title || section.id,
-              bold: true,
-              color: designTokens.colors.heading2,
-              size: designTokens.fontSize.heading2,
-              font: "Montserrat",
-            }),
-          ],
-          heading: HeadingLevel.HEADING_2,
-          spacing: {
-            before: designTokens.spacing.heading2Before,
-            after: designTokens.spacing.heading2After,
-          },
-        }),
-      );
-      if (Array.isArray(section.blocks)) {
-        section.blocks.forEach((block: any) => {
-          // Remove [REVIEW] tags and skip empty review blocks
-          if (block.type === "Paragraph" && block.text && block.text.trim().startsWith("[REVIEW]")) {
-            // If the rest is empty or just markdown heading, skip
-            const cleaned = block.text.replace(/^\[REVIEW\]\s*/i, "").trim();
-            if (!cleaned || cleaned === "###" || cleaned === "##" || cleaned === "#") {
-              return; // skip this block
-            }
-            block.text = cleaned;
-          }
-          if (block.type === "Paragraph") {
-            // If block.text contains markdown, parse and convert to styled docx
-            if (
-              block.text &&
-              (block.text.includes("##") ||
-                block.text.includes("**") ||
-                block.text.includes("* "))
-            ) {
-              markdownToDocxParagraphs(block.text).forEach((p) =>
-                children.push(p),
-              );
-            } else {
-              children.push(
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: block.text || "",
-                      color: designTokens.colors.foreground,
-                      size: designTokens.fontSize.base,
-                      font: "Roboto",
-                    }),
-                  ],
-                  spacing: { after: designTokens.spacing.paragraphAfter },
-                  alignment: AlignmentType.LEFT,
-                })
-              );
-            }
-          } else if (block.type === "Bullets" && Array.isArray(block.items)) {
-            // Bullets/List items with bold parsing
-            block.items.forEach((item: string) => {
-              children.push(
-                new Paragraph({
-                  children: [
-                    ...parseBold("• ", {
-                      color: designTokens.colors.foreground,
-                      size: designTokens.fontSize.base,
-                      font: "Lato",
-                    }),
-                    ...parseBold(item, {
-                      color: designTokens.colors.foreground,
-                      size: designTokens.fontSize.base,
-                      font: "Lato",
-                    }),
-                  ],
-                  spacing: { after: designTokens.spacing.bulletAfter },
-                  alignment: AlignmentType.LEFT,
-                }),
-              );
-            });
-          } else if (block.type === "Subhead") {
-            children.push(
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: block.text || "",
-                    bold: true,
-                    color: designTokens.colors.subhead,
-                    size: designTokens.fontSize.subhead,
-                    font: "Open Sans",
-                  }),
-                ],
-                heading: HeadingLevel.HEADING_3,
-                spacing: {
-                  before: designTokens.spacing.subheadBefore,
-                  after: designTokens.spacing.subheadAfter,
-                },
-              }),
-            );
-          } else if (
-            block.type === "ListOfSections" &&
-            Array.isArray(block.section_titles)
-          ) {
-            children.push(
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "Sections Included:",
-                    bold: true,
-                    color: designTokens.colors.subhead,
-                    size: designTokens.fontSize.subhead,
-                    font: "Open Sans",
-                  }),
-                ],
-                heading: HeadingLevel.HEADING_3,
-                spacing: {
-                  before: designTokens.spacing.subheadBefore,
-                  after: designTokens.spacing.subheadAfter,
-                },
-              }),
-            );
-            block.section_titles.forEach((title: string) => {
-              children.push(
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: `- ${title}`,
-                      color: designTokens.colors.foreground,
-                      size: designTokens.fontSize.base,
-                      font: "Lato",
-                    }),
-                  ],
-                  spacing: { after: designTokens.spacing.sectionTitleAfter },
-                  alignment: AlignmentType.LEFT,
-                }),
-              );
-            });
-          } else if (
-            block.type === "Table" &&
-            Array.isArray(block.rows) &&
-            Array.isArray(block.columns)
-          ) {
-            // Table with mapped styles
-            children.push(
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: block.title || "Table",
-                    bold: true,
-                    color: designTokens.colors.subhead,
-                    size: designTokens.fontSize.subhead,
-                    font: "Open Sans",
-                  }),
-                ],
-                heading: HeadingLevel.HEADING_3,
-                spacing: {
-                  before: designTokens.spacing.subheadBefore,
-                  after: designTokens.spacing.subheadAfter,
-                },
-              }),
-            );
-            // Build table rows
-            const tableRows = [];
-            // Header row
-            tableRows.push(
-              new TableRow({
-                children: block.columns.map(
-                  (col: string) =>
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          children: [
-                            new TextRun({
-                              text: col,
-                              bold: true,
-                              color: designTokens.colors.tableHeaderFg,
-                              size: designTokens.fontSize.tableHeader,
-                              font: "Open Sans",
-                            }),
-                          ],
-                          alignment: AlignmentType.LEFT,
-                        }),
-                      ],
-                      shading: { fill: designTokens.colors.tableHeaderBg },
-                      margins: {
-                        top: designTokens.spacing.tableCellPadding,
-                        bottom: designTokens.spacing.tableCellPadding,
-                        left: designTokens.spacing.tableCellPadding,
-                        right: designTokens.spacing.tableCellPadding,
-                      },
-                      borders: {
-                        top: {
-                          color: designTokens.colors.border,
-                          size: 4,
-                          style: "single",
-                        },
-                        bottom: {
-                          color: designTokens.colors.border,
-                          size: 4,
-                          style: "single",
-                        },
-                        left: {
-                          color: designTokens.colors.border,
-                          size: 4,
-                          style: "single",
-                        },
-                        right: {
-                          color: designTokens.colors.border,
-                          size: 4,
-                          style: "single",
-                        },
-                      },
-                      width: { size: 1000, type: WidthType.DXA },
-                    }),
-                ),
-              }),
-            );
-            // Data rows
-            block.rows.forEach((row: any[], rowIndex: number) => {
-              tableRows.push(
-                new TableRow({
-                  children: row.map(
-                    (cell: string) =>
-                      new TableCell({
-                        children: [
-                          new Paragraph({
-                            children: [
-                              new TextRun({
-                                text: cell,
-                                color: designTokens.colors.foreground,
-                                size: designTokens.fontSize.tableCell,
+    section.blocks.forEach((block: any, bIdx: number) => {
+                              // Subhead block
+                              if (block.type === "Subhead" && block.text) {
+                                children.push(new Paragraph({
+                                  children: [
+                                    new TextRun({
+                                      text: block.text.replace('[REVIEW]','').trim(),
+                                      bold: true,
+                                      color: designTokens.colors.heading2,
+                                      size: designTokens.fontSize.heading2,
+                                      font: "Open Sans",
+                                    }),
+                                  ],
+                                  spacing: {
+                                    before: designTokens.spacing.heading2Before,
+                                    after: designTokens.spacing.heading2After,
+                                  },
+                                }));
+                                return;
+                              }
+
+                              // Info block
+                              if (block.type === "INFO" && block.text) {
+                                children.push(new Paragraph({
+                                  children: [
+                                    new TextRun({
+                                      text: block.text.replace('[REVIEW]','').trim(),
+                                      color: designTokens.colors.infoText,
+                                      font: "Roboto",
+                                      size: designTokens.fontSize.base,
+                                    }),
+                                  ],
+                                  shading: { fill: designTokens.colors.infoBg },
+                                  spacing: { after: designTokens.spacing.paragraphAfter },
+                                }));
+                                return;
+                              }
+
+                              // Paragraph block (rich text)
+                              if (block.type === "Paragraph" && block.text) {
+                                children.push(new Paragraph({
+                                  children: [
+                                    new TextRun({
+                                      text: block.text.replace('[REVIEW]','').trim(),
+                                      color: designTokens.colors.primaryText,
+                                      font: "Roboto",
+                                      size: designTokens.fontSize.base,
+                                    }),
+                                  ],
+                                  spacing: { after: designTokens.spacing.paragraphAfter },
+                                }));
+                                return;
+                              }
+                        // Paragraph block (rich text)
+                        if (block.type === "Paragraph" && block.content) {
+                          let runs = [];
+                          if (Array.isArray(block.content)) {
+                            block.content.forEach((part: any) => {
+                              runs.push(new TextRun({
+                                text: part.text || part,
+                                bold: !!part.bold,
+                                italics: !!part.italic,
+                                color: designTokens.colors.primaryText,
                                 font: "Roboto",
-                              }),
-                            ],
-                            alignment: AlignmentType.LEFT,
-                          }),
-                        ],
-                        shading: {
-                          fill:
-                            rowIndex % 2 === 0
-                              ? designTokens.colors.tableRow
-                              : designTokens.colors.tableRowAlt,
-                        },
-                        margins: {
-                          top: designTokens.spacing.tableCellPadding,
-                          bottom: designTokens.spacing.tableCellPadding,
-                          left: designTokens.spacing.tableCellPadding,
-                          right: designTokens.spacing.tableCellPadding,
-                        },
-                        borders: {
-                          top: {
-                            color: designTokens.colors.border,
-                            size: 4,
-                            style: "single",
-                          },
-                          bottom: {
-                            color: designTokens.colors.border,
-                            size: 4,
-                            style: "single",
-                          },
-                          left: {
-                            color: designTokens.colors.border,
-                            size: 4,
-                            style: "single",
-                          },
-                          right: {
-                            color: designTokens.colors.border,
-                            size: 4,
-                            style: "single",
-                          },
-                        },
-                        width: { size: 1000, type: WidthType.DXA },
-                      }),
-                  ),
-                }),
-              );
-            });
-            children.push(
-              new Table({
-                rows: tableRows,
-                width: { size: 10000, type: WidthType.DXA },
-              }),
-            );
-          }
-          // Handle StaticEngagementIndexTables blocks
-          else if (
-            block.type === "StaticEngagementIndexTables" &&
-            Array.isArray(block.tables)
-          ) {
-            block.tables.forEach((table: any) => {
-              children.push(
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: table.title || "Table",
-                      bold: true,
-                      color: designTokens.colors.subhead,
-                      size: designTokens.fontSize.subhead,
-                      font: "Open Sans",
-                    }),
-                  ],
-                  heading: HeadingLevel.HEADING_3,
-                  spacing: {
-                    before: designTokens.spacing.subheadBefore,
-                    after: designTokens.spacing.subheadAfter,
-                  },
-                }),
-              );
-              // Table header
-              const tableRows = [];
-              if (Array.isArray(table.columns)) {
-                tableRows.push(
-                  new TableRow({
-                    children: table.columns.map(
-                      (col: string) =>
-                        new TableCell({
-                          children: [
-                            new Paragraph({
+                                size: designTokens.fontSize.base,
+                                underline: part.underline ? { type: "single", color: designTokens.colors.primaryText } : undefined,
+                              }));
+                            });
+                          } else {
+                            runs.push(new TextRun({
+                              text: block.content,
+                              color: designTokens.colors.primaryText,
+                              font: "Roboto",
+                              size: designTokens.fontSize.base,
+                            }));
+                          }
+                          children.push(new Paragraph({
+                            children: runs,
+                            spacing: { after: designTokens.spacing.paragraphAfter },
+                          }));
+                          return;
+                        }
+
+                        // Bullets block (rich text)
+                        if (block.type === "Bullets" && Array.isArray(block.items)) {
+                          block.items.forEach((item: any) => {
+                            let runs = [];
+                            if (Array.isArray(item)) {
+                              item.forEach((part: any) => {
+                                runs.push(new TextRun({
+                                  text: part.text || part,
+                                  bold: !!part.bold,
+                                  italics: !!part.italic,
+                                  color: "000000", // Black bullets
+                                  font: "Roboto",
+                                  size: designTokens.fontSize.base,
+                                  underline: part.underline ? { type: "single", color: "000000" } : undefined,
+                                }));
+                              });
+                            } else {
+                              runs.push(new TextRun({
+                                text: item,
+                                color: "000000", // Black bullets
+                                font: "Roboto",
+                                size: designTokens.fontSize.base,
+                              }));
+                            }
+                            children.push(new Paragraph({
+                              children: runs,
+                              bullet: { level: 0 },
+                              spacing: { after: designTokens.spacing.bulletAfter },
+                            }));
+                          });
+                          return;
+                        }
+
+                        // NumberedList block
+                        if (block.type === "NumberedList" && Array.isArray(block.items)) {
+                          block.items.forEach((item: any, i: number) => {
+                            children.push(new Paragraph({
                               children: [
                                 new TextRun({
-                                  text: col,
+                                  text: `${i + 1}. ${item.text}`,
+                                  color: "000000", // Black for numbered list
+                                  size: designTokens.fontSize.base,
+                                  font: "Roboto",
                                   bold: true,
-                                  color: "FFFFFF",
-                                  size: designTokens.fontSize.tableHeader,
-                                  font: "Open Sans",
                                 }),
                               ],
-                              alignment: AlignmentType.LEFT,
-                            }),
-                          ],
-                          shading: { fill: "000000" },
-                          margins: {
-                            top: 120,
-                            bottom: 120,
-                            left: 160,
-                            right: 160,
-                          },
-                          borders: {
-                            top: { color: "d1d5db", size: 4, style: "single" },
-                            bottom: {
-                              color: "d1d5db",
-                              size: 4,
-                              style: "single",
-                            },
-                            left: { color: "d1d5db", size: 4, style: "single" },
-                            right: {
-                              color: "d1d5db",
-                              size: 4,
-                              style: "single",
-                            },
-                          },
-                          width: { size: 1000, type: WidthType.DXA },
-                        }),
-                    ),
-                  }),
-                );
-              }
-              // Table rows
-              if (Array.isArray(table.rows)) {
-                table.rows.forEach((row: any[], rowIndex: number) => {
-                  tableRows.push(
-                    new TableRow({
-                      children: row.map(
-                        (cell: string) =>
-                          new TableCell({
+                              numbering: { reference: "numbered-list", level: 0 },
+                              spacing: { after: designTokens.spacing.bulletAfter },
+                            }));
+                          });
+                          return;
+                        }
+
+                        // Heading block
+                        if (block.type === "Heading" && block.content && block.level) {
+                          const headingMap: { [key: string]: { level: typeof HeadingLevel[keyof typeof HeadingLevel]; color: string; size: number; before: number; after: number } } = {
+                            "1": { level: HeadingLevel.HEADING_1, color: designTokens.colors.heading1, size: designTokens.fontSize.heading1, before: designTokens.spacing.heading1Before, after: designTokens.spacing.heading1After },
+                            "2": { level: HeadingLevel.HEADING_2, color: designTokens.colors.heading2, size: designTokens.fontSize.heading2, before: designTokens.spacing.heading2Before, after: designTokens.spacing.heading2After },
+                            "3": { level: HeadingLevel.HEADING_3, color: designTokens.colors.heading3, size: designTokens.fontSize.heading3, before: designTokens.spacing.heading3Before, after: designTokens.spacing.heading3After },
+                            "4": { level: HeadingLevel.HEADING_4, color: designTokens.colors.heading3, size: designTokens.fontSize.heading3, before: designTokens.spacing.heading3Before, after: designTokens.spacing.heading3After },
+                            "5": { level: HeadingLevel.HEADING_5, color: designTokens.colors.heading3, size: designTokens.fontSize.heading3, before: designTokens.spacing.heading3Before, after: designTokens.spacing.heading3After },
+                          };
+                          const levelNum = String(block.level);
+                          const h = headingMap[levelNum] || headingMap["2"];
+                          children.push(new Paragraph({
                             children: [
-                              new Paragraph({
-                                children: [
-                                  new TextRun({
-                                    text: cell,
-                                    color: designTokens.colors.foreground,
-                                    size: designTokens.fontSize.base,
-                                    font: "Roboto",
-                                  }),
-                                ],
-                                alignment: AlignmentType.LEFT,
+                              new TextRun({
+                                text: block.content,
+                                bold: true,
+                                color: h.color,
+                                size: h.size,
+                                font: "Open Sans",
                               }),
                             ],
-                            shading: {
-                              fill: rowIndex % 2 === 0 ? "FFFFFF" : "F9FAFB",
+                            heading: h.level,
+                            spacing: {
+                              before: h.before,
+                              after: h.after,
                             },
-                            margins: {
-                              top: 120,
-                              bottom: 120,
-                              left: 160,
-                              right: 160,
-                            },
-                            borders: {
-                              top: {
-                                color: "d1d5db",
-                                size: 4,
-                                style: "single",
-                              },
-                              bottom: {
-                                color: "d1d5db",
-                                size: 4,
-                                style: "single",
-                              },
-                              left: {
-                                color: "d1d5db",
-                                size: 4,
-                                style: "single",
-                              },
-                              right: {
-                                color: "d1d5db",
-                                size: 4,
-                                style: "single",
-                              },
-                            },
-                            width: { size: 1000, type: WidthType.DXA },
-                          }),
-                      ),
-                    }),
-                  );
-                });
+                          }));
+                          return;
+                        }
+
+                        // Table block (generic)
+                        if (block.type === "Table" && Array.isArray(block.rows) && Array.isArray(block.columns)) {
+                          children.push(new Paragraph({
+                            children: [
+                              new TextRun({
+                                text: block.title || "Table",
+                                bold: true,
+                                color: "000000", // Black for table title
+                                size: designTokens.fontSize.heading3,
+                                font: "Open Sans",
+                              }),
+                            ],
+                            spacing: { after: designTokens.spacing.heading3After },
+                          }));
+                          // Table header row
+                          const headerRow = new TableRow({
+                            children: block.columns.map((col: string) =>
+                              new TableCell({
+                                children: [
+                                  new Paragraph({
+                                    children: [
+                                      new TextRun({
+                                        text: col,
+                                        bold: true,
+                                        color: "000000", // Black for table header text
+                                        size: designTokens.fontSize.tableHeader,
+                                        font: "Roboto",
+                                      }),
+                                    ],
+                                    spacing: { after: designTokens.spacing.tableCellPadding },
+                                  }),
+                                ],
+                                shading: {
+                                  fill: designTokens.colors.tableHeaderBg,
+                                },
+                                borders: {
+                                  top: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                                  bottom: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                                  left: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                                  right: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                                },
+                                width: { size: 1000, type: WidthType.DXA },
+                              })
+                            ),
+                          });
+                          // Table body rows with zebra striping
+                          const bodyRows = block.rows.map((row: string[], rIdx: number) =>
+                            new TableRow({
+                              children: row.map((cell: string) =>
+                                new TableCell({
+                                  children: [
+                                    new Paragraph({
+                                      children: [
+                                        new TextRun({
+                                          text: cell,
+                                          color: "000000", // Black for table cell text
+                                          size: designTokens.fontSize.tableCell,
+                                          font: "Roboto",
+                                        }),
+                                      ],
+                                      spacing: { after: designTokens.spacing.tableCellPadding },
+                                    }),
+                                  ],
+                                  shading: {
+                                    fill: rIdx % 2 === 0 ? designTokens.colors.tableRow : designTokens.colors.tableRowAlt,
+                                  },
+                                  borders: {
+                                    top: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                                    bottom: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                                    left: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                                    right: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                                  },
+                                  width: { size: 1000, type: WidthType.DXA },
+                                })
+                              ),
+                            })
+                          );
+                          children.push(new Table({
+                            rows: [headerRow, ...bodyRows],
+                            width: { size: 10000, type: WidthType.DXA },
+                            alignment: AlignmentType.CENTER,
+                          }));
+                          return;
+                        }
+
+                        // Fallback for unknown block types
+                        // If block type is not recognized, skip rendering instead of showing error text
+                        // ...existing code...
+            // Callout block
+            if (block.type === "Callout" && block.variant && block.text) {
+              let bg, border, color;
+              if (block.variant === "info") {
+                bg = designTokens.colors.infoBg;
+                border = designTokens.colors.infoBorder;
+                color = designTokens.colors.infoText;
+              } else if (block.variant === "warning") {
+                bg = designTokens.colors.warningBg;
+                border = designTokens.colors.warningBorder;
+                color = designTokens.colors.warningText;
+              } else if (block.variant === "success") {
+                bg = designTokens.colors.successBg;
+                border = designTokens.colors.successBorder;
+                color = designTokens.colors.successText;
+              } else {
+                bg = designTokens.colors.infoBg;
+                border = designTokens.colors.infoBorder;
+                color = designTokens.colors.infoText;
               }
               children.push(
-                new Table({
-                  rows: tableRows,
-                  width: { size: 10000, type: WidthType.DXA },
-                }),
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `[${block.variant.toUpperCase()}] `,
+                      bold: true,
+                      color,
+                      font: "Roboto",
+                      size: designTokens.fontSize.base,
+                    }),
+                    new TextRun({
+                      text: block.text,
+                      color,
+                      font: "Roboto",
+                      size: designTokens.fontSize.base,
+                    }),
+                  ],
+                  shading: { fill: bg },
+                  spacing: { after: designTokens.spacing.paragraphAfter },
+                  border: { top: { color: border, size: 6, style: "single" }, bottom: { color: border, size: 6, style: "single" }, left: { color: border, size: 6, style: "single" }, right: { color: border, size: 6, style: "single" } },
+                })
               );
-            });
-          }
-        });
+              return;
+            }
+
+            // ArchetypeCard block
+            if (block.type === "ArchetypeCard" && block.variant && block.label && block.text) {
+              let bg, border, labelBg, labelText;
+              if (block.variant === "primary") {
+                bg = designTokens.colors.primaryGradientStart;
+                border = designTokens.colors.primaryBorder;
+                labelBg = designTokens.colors.primaryLabelBg;
+                labelText = designTokens.colors.primaryLabelText;
+              } else {
+                bg = designTokens.colors.secondaryGradientStart;
+                border = designTokens.colors.secondaryBorder;
+                labelBg = designTokens.colors.secondaryLabelBg;
+                labelText = designTokens.colors.secondaryLabelText;
+              }
+              children.push(
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `[${block.label}] `,
+                      bold: true,
+                      color: labelText,
+                      font: "Roboto",
+                      shading: { fill: labelBg },
+                      size: designTokens.fontSize.base,
+                    }),
+                    new TextRun({
+                      text: block.text,
+                      color: designTokens.colors.primaryText,
+                      font: "Roboto",
+                      size: designTokens.fontSize.base,
+                    }),
+                  ],
+                  shading: { fill: bg },
+                  spacing: { after: designTokens.spacing.paragraphAfter },
+                  border: { top: { color: border, size: 6, style: "single" }, bottom: { color: border, size: 6, style: "single" }, left: { color: border, size: 6, style: "single" }, right: { color: border, size: 6, style: "single" } },
+                })
+              );
+              return;
+            }
+
+            // Checklist block
+            if (block.type === "Checklist" && Array.isArray(block.items)) {
+              block.items.forEach((item: any) => {
+                children.push(
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: item.checked ? "✔ " : "✗ ",
+                        color: item.checked ? designTokens.colors.checkMarkGreen : designTokens.colors.xMarkRed,
+                        font: "Roboto",
+                        bold: true,
+                        size: designTokens.fontSize.base,
+                      }),
+                      new TextRun({
+                        text: item.text,
+                        color: designTokens.colors.primaryText,
+                        font: "Roboto",
+                        size: designTokens.fontSize.base,
+                      }),
+                    ],
+                    spacing: { after: designTokens.spacing.bulletAfter },
+                  })
+                );
+              });
+              return;
+            }
+
+            // OpportunityCard block
+            if (block.type === "OpportunityCard" && block.title && block.body) {
+              children.push(
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `[Opportunity] `,
+                      bold: true,
+                      color: designTokens.colors.opportunityCardTitle,
+                      font: "Roboto",
+                      size: designTokens.fontSize.base,
+                    }),
+                    new TextRun({
+                      text: block.title,
+                      bold: true,
+                      color: designTokens.colors.opportunityCardTitle,
+                      font: "Roboto",
+                      size: designTokens.fontSize.base,
+                    }),
+                    new TextRun({
+                      text: " - ",
+                      color: designTokens.colors.opportunityCardTitle,
+                      font: "Roboto",
+                      size: designTokens.fontSize.base,
+                    }),
+                    new TextRun({
+                      text: block.body,
+                      color: designTokens.colors.opportunityCardBody,
+                      font: "Roboto",
+                      size: designTokens.fontSize.base,
+                    }),
+                  ],
+                  shading: { fill: designTokens.colors.opportunityCardBg },
+                  spacing: { after: designTokens.spacing.paragraphAfter },
+                  border: { top: { color: designTokens.colors.opportunityCardBorder, size: 6, style: "single" }, bottom: { color: designTokens.colors.opportunityCardBorder, size: 6, style: "single" }, left: { color: designTokens.colors.opportunityCardBorder, size: 6, style: "single" }, right: { color: designTokens.colors.opportunityCardBorder, size: 6, style: "single" } },
+                })
+              );
+              return;
+            }
+      // Subsection title: Heading 2/3 for blocks with a title (except Factual Foundations)
+      if (block.title && block.type !== "Table") {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: block.title,
+                color: designTokens.colors.heading2,
+                size: designTokens.fontSize.heading2,
+                font: "Open Sans",
+              }),
+            ],
+            spacing: {
+              before: designTokens.spacing.heading2Before,
+              after: designTokens.spacing.heading2After,
+            },
+          })
+        );
       }
+      // Handle Factual Foundations Table as before
+      if (
+        block.type === "Table" &&
+        block.title === "Factual Foundations" &&
+        Array.isArray(block.rows) &&
+        Array.isArray(block.columns)
+      ) {
+        const [essence, purpose, personality] = block.rows[0];
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Brand Essence",
+                bold: true,
+                color: designTokens.colors.subhead,
+                size: designTokens.fontSize.subhead,
+                font: "Open Sans",
+              }),
+            ],
+            heading: HeadingLevel.HEADING_3,
+            spacing: {
+              before: designTokens.spacing.subheadBefore,
+              after: designTokens.spacing.subheadAfter,
+            },
+          }),
+        );
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: essence,
+                color: designTokens.colors.primaryText,
+                font: "Roboto",
+              }),
+            ],
+            spacing: { after: designTokens.spacing.paragraphAfter },
+          }),
+        );
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Brand Purpose",
+                bold: true,
+                color: designTokens.colors.subhead,
+                size: designTokens.fontSize.subhead,
+                font: "Open Sans",
+              }),
+            ],
+            heading: HeadingLevel.HEADING_3,
+            spacing: {
+              before: designTokens.spacing.subheadBefore,
+              after: designTokens.spacing.subheadAfter,
+            },
+          }),
+        );
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: purpose,
+                color: designTokens.colors.primaryText,
+                font: "Roboto",
+              }),
+            ],
+            spacing: { after: designTokens.spacing.paragraphAfter },
+          }),
+        );
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Brand Personality",
+                bold: true,
+                color: designTokens.colors.subhead,
+                size: designTokens.fontSize.subhead,
+                font: "Open Sans",
+              }),
+            ],
+            heading: HeadingLevel.HEADING_3,
+            spacing: {
+              before: designTokens.spacing.subheadBefore,
+              after: designTokens.spacing.subheadAfter,
+            },
+          }),
+        );
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: personality,
+                color: designTokens.colors.primaryText,
+                font: "Roboto",
+              }),
+            ],
+            spacing: { after: designTokens.spacing.paragraphAfter },
+          }),
+        );
+        return;
+      }
+
+      // Paragraph block
+      if (block.type === "Paragraph" && block.content) {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: block.content,
+                color: designTokens.colors.primaryText,
+                size: designTokens.fontSize.base,
+                font: "Roboto",
+              }),
+            ],
+            spacing: { after: designTokens.spacing.paragraphAfter },
+          })
+        );
+        return;
+      }
+
+      // Bullets block
+      if (block.type === "Bullets" && Array.isArray(block.items)) {
+        block.items.forEach((item: string) => {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: item,
+                  color: designTokens.colors.bulletGray,
+                  size: designTokens.fontSize.base,
+                  font: "Roboto",
+                }),
+              ],
+              bullet: { level: 0 },
+              spacing: { after: designTokens.spacing.bulletAfter },
+            })
+          );
+        });
+        return;
+      }
+
+      // NumberedList block
+      if (block.type === "NumberedList" && Array.isArray(block.items)) {
+        block.items.forEach((item: any, i: number) => {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `${i + 1}. ${item.text}`,
+                  color: designTokens.colors.orangeGradientStart,
+                  size: designTokens.fontSize.base,
+                  font: "Roboto",
+                  bold: true,
+                }),
+              ],
+              numbering: { reference: "numbered-list", level: 0 },
+              spacing: { after: designTokens.spacing.bulletAfter },
+            })
+          );
+        });
+        return;
+      }
+
+      // Table block (generic)
+      if (block.type === "Table" && Array.isArray(block.rows) && Array.isArray(block.columns)) {
+        // Only render Engagement Index table once
+        if (block.title && block.title.toLowerCase().includes("engagement index")) {
+          if (!engagementIndexRendered) {
+            engagementIndexRendered = true;
+            children.push(new Paragraph({
+              children: [
+                new TextRun({
+                  text: block.title,
+                  color: designTokens.colors.heading3,
+                  size: designTokens.fontSize.heading3,
+                  font: "Open Sans",
+                }),
+              ],
+              spacing: { after: designTokens.spacing.heading3After },
+            }));
+            const headerRow = new TableRow({
+              children: block.columns.map((col: string) =>
+                new TableCell({
+                  children: [
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: col,
+                          color: designTokens.colors.tableCellText,
+                          size: designTokens.fontSize.tableHeader,
+                          font: "Roboto",
+                        }),
+                      ],
+                      spacing: { after: designTokens.spacing.tableCellPadding },
+                    }),
+                  ],
+                  shading: {
+                    fill: designTokens.colors.tableHeaderBg,
+                  },
+                  borders: {
+                    top: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                    bottom: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                    left: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                    right: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                  },
+                  width: { size: 1000, type: WidthType.DXA },
+                })
+              ),
+            });
+            const bodyRows = block.rows.map((row: string[], rIdx: number) =>
+              new TableRow({
+                children: row.map((cell: string) =>
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: cell,
+                            color: designTokens.colors.tableCellText,
+                            size: designTokens.fontSize.tableCell,
+                            font: "Roboto",
+                          }),
+                        ],
+                        spacing: { after: designTokens.spacing.tableCellPadding },
+                      }),
+                    ],
+                    shading: {
+                      fill: rIdx % 2 === 0 ? designTokens.colors.tableRow : designTokens.colors.tableRowAlt,
+                    },
+                    borders: {
+                      top: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                      bottom: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                      left: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                      right: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                    },
+                    width: { size: 1000, type: WidthType.DXA },
+                  })
+                ),
+              })
+            );
+            children.push(new Table({
+              rows: [headerRow, ...bodyRows],
+              width: { size: 10000, type: WidthType.DXA },
+              alignment: AlignmentType.CENTER,
+            }));
+          }
+        } else {
+          // Render other tables as usual
+          children.push(new Paragraph({
+            children: [
+              new TextRun({
+                text: block.title || "Table",
+                color: designTokens.colors.heading3,
+                size: designTokens.fontSize.heading3,
+                font: "Open Sans",
+              }),
+            ],
+            spacing: { after: designTokens.spacing.heading3After },
+          }));
+          const headerRow = new TableRow({
+            children: block.columns.map((col: string) =>
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: col,
+                        color: designTokens.colors.tableCellText,
+                        size: designTokens.fontSize.tableHeader,
+                        font: "Roboto",
+                      }),
+                    ],
+                    spacing: { after: designTokens.spacing.tableCellPadding },
+                  }),
+                ],
+                shading: {
+                  fill: designTokens.colors.tableHeaderBg,
+                },
+                borders: {
+                  top: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                  bottom: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                  left: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                  right: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                },
+                width: { size: 1000, type: WidthType.DXA },
+              })
+            ),
+          });
+          const bodyRows = block.rows.map((row: string[], rIdx: number) =>
+            new TableRow({
+              children: row.map((cell: string) =>
+                new TableCell({
+                  children: [
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: cell,
+                          color: designTokens.colors.tableCellText,
+                          size: designTokens.fontSize.tableCell,
+                          font: "Roboto",
+                        }),
+                      ],
+                      spacing: { after: designTokens.spacing.tableCellPadding },
+                    }),
+                  ],
+                  shading: {
+                    fill: rIdx % 2 === 0 ? designTokens.colors.tableRow : designTokens.colors.tableRowAlt,
+                  },
+                  borders: {
+                    top: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                    bottom: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                    left: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                    right: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                  },
+                  width: { size: 1000, type: WidthType.DXA },
+                })
+              ),
+            })
+          );
+          children.push(new Table({
+            rows: [headerRow, ...bodyRows],
+            width: { size: 10000, type: WidthType.DXA },
+            alignment: AlignmentType.CENTER,
+          }));
+        }
+        return;
+      }
+
+      // Fallback for unknown block types
+      // Do not render anything for unknown block types
     });
-  }
+    // ...existing code...
+  });
+
   const doc = new Document({
     sections: [
       {
@@ -638,3 +825,4 @@ export function downloadKitDoc(kitData: any, filename = "marketing_kit.docx") {
   });
   Packer.toBlob(doc).then((blob) => saveAs(blob, filename));
 }
+

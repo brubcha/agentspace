@@ -29,9 +29,8 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
   const [competitors, setCompetitors] = useState("");
   const [additionalDetails, setAdditionalDetails] = useState("");
   // Store files as { filename, content } objects
-  const [files, setFiles] = useState<{ filename: string; content: string }[]>(
-    [],
-  );
+  // Store files as File objects
+  const [files, setFiles] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -137,27 +136,8 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                 setIsDragOver(false);
                 const droppedFiles = Array.from(e.dataTransfer.files);
                 if (droppedFiles.length > 0) {
-                  // Read all files as text (or base64 if needed)
-                  const readFiles = await Promise.all(
-                    droppedFiles.map(
-                      (file) =>
-                        new Promise<{ filename: string; content: string }>(
-                          (resolve, reject) => {
-                            const reader = new FileReader();
-                            reader.onload = () => {
-                              resolve({
-                                filename: file.name,
-                                content: reader.result as string,
-                              });
-                            };
-                            reader.onerror = reject;
-                            reader.readAsText(file); // Use readAsDataURL(file) for base64 if needed
-                          },
-                        ),
-                    ),
-                  );
-                  setFiles((prev) => [...prev, ...readFiles]);
-                  console.log("Dropped files:", readFiles);
+                  setFiles((prev) => [...prev, ...droppedFiles]);
+                  console.log("Dropped files:", droppedFiles);
                 }
               }}
               onClick={() => fileInputRef.current?.click()}
@@ -188,25 +168,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                 onChange={async (e) => {
                   const fileList = e.target.files;
                   if (fileList && fileList.length > 0) {
-                    const readFiles = await Promise.all(
-                      Array.from(fileList).map(
-                        (file) =>
-                          new Promise<{ filename: string; content: string }>(
-                            (resolve, reject) => {
-                              const reader = new FileReader();
-                              reader.onload = () => {
-                                resolve({
-                                  filename: file.name,
-                                  content: reader.result as string,
-                                });
-                              };
-                              reader.onerror = reject;
-                              reader.readAsText(file); // Use readAsDataURL(file) for base64 if needed
-                            },
-                          ),
-                      ),
-                    );
-                    setFiles((prev) => [...prev, ...readFiles]);
+                    setFiles((prev) => [...prev, ...Array.from(fileList)]);
                   }
                 }}
               />
@@ -218,7 +180,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                       variant="caption"
                       sx={(theme) => ({ color: theme.palette.primary.main })}
                     >
-                      {file.filename}
+                      {file.name}
                     </Typography>
                   ))}
                 </Box>
@@ -244,7 +206,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
       target_markets: targetMarkets,
       competitors,
       additional_details: additionalDetails,
-      files, // Now array of { filename, content }
+      files, // Now array of File objects
     });
   };
 
