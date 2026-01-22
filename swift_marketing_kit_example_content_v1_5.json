@@ -26,25 +26,822 @@
       "doc_title": "Marketing Kit"
     },
     "sections": [
-      { "type": "Section", "id": "overview", "title": "Overview", "blocks": [ { "type": "Paragraph", "text": "Swift Innovation is more than a services company, it is a connected system of disciplines designed to build momentum for businesses." }, { "type": "Bullets", "items": [ "Clarify position in the Support + Products + Platform market.", "Define target audiences and their challenges.", "Document voice, archetypes, and identity.", "Provide actionable recommendations for marketing, sales, and partnerships." ] }, { "type": "Subhead", "text": "How to Use It" }, { "type": "Paragraph", "text": "This kit serves as the foundation for all activity, from campaigns and creative assets to sales presentations and partnerships." }, { "type": "Subhead", "text": "What’s Inside" }, { "type": "ListOfSections", "section_titles": [ "Overview", "The Goal", "Opportunity Areas", "Key Findings", "Market Landscape", "Audience & User Personas", "B2B Industry Targets", "Brand Archetypes", "Brand Voice", "Content", "Social Strategy", "Engagement Framework", "References", "Engagement Index" ] } ] },
-      { "type": "Section", "id": "goal", "title": "The Goal", "blocks": [ { "type": "Paragraph", "text": "To establish Swift Innovation as the go-to partner for companies seeking to align strategy, speed, and execution under one roof." } ] },
-      { "type": "Section", "id": "opportunity_areas", "title": "Opportunity Areas", "blocks": [ { "type": "Subhead", "text": "Workflow Efficiency" }, { "type": "Paragraph", "text": "Silos slow everything down. Swift embeds cross-disciplinary teams into client workflows to improve handoffs and throughput." }, { "type": "Subhead", "text": "Digital Tools" }, { "type": "Paragraph", "text": "Disconnected platforms create wasted time and unclear results. Swift equips clients with a unified foundation of CRM, analytics, and automation." }, { "type": "Subhead", "text": "Market Trends" }, { "type": "Paragraph", "text": "Workforce models are shifting toward independent and distributed expertise. Swift was built for this operating reality." }, { "type": "Subhead", "text": "Revenue Streams" }, { "type": "Paragraph", "text": "Sustainable growth requires layered channels. Swift expands revenue through:" }, { "type": "Bullets", "items": [ "Support Retainers, ongoing embedded cross-functional teams.", "Productized Deliverables, fixed-scope assets delivered with speed and clarity.", "Platform Licensing, branded CRM and analytics environments that create recurring infrastructure." ] } ] },
-      { "type": "Section", "id": "key_findings", "title": "Key Findings", "blocks": [ { "type": "NumberedFindingsList", "items": [ { "text": "Most businesses piece together agencies, consultants, and disconnected tools, creating silos and stalled execution." }, { "text": "Distributed expertise is becoming central, and embedded models coordinate it into outcomes." }, { "text": "Strategy without delivery, or delivery without strategy, stalls growth. Swift aligns both." } ] } ] },
-      { "type": "Section", "id": "market_landscape", "title": "Market Landscape", "blocks": [ { "type": "Subhead", "text": "Macro Trends & Growth" }, { "type": "Bullets", "items": [ "Digital transformation is accelerating across industries.", "Remote and hybrid work models are becoming standard.", "Data-driven decision making is a competitive advantage." ] }, { "type": "Subhead", "text": "Competitor Landscape & Buying Behavior" }, { "type": "Bullets", "items": [ "Buyers seek partners who can deliver both strategy and execution.", "Competitors are consolidating services to offer end-to-end solutions.", "Trust and proven results drive purchasing decisions." ] }, { "type": "Subhead", "text": "Channel Opportunities" }, { "type": "Table", "title": "Channel Opportunities", "columns": [ "Channel", "Description", "Recommendation" ], "rows": [ [ "Direct Sales", "In-house team selling to prospects", "Invest in sales enablement and training" ], [ "Partner Channels", "Alliances with agencies and consultants", "Develop co-marketing programs" ], [ "Digital Marketing", "Online campaigns and content", "Increase investment in SEO and content marketing" ] ] } ] },
-      { "type": "Section", "id": "audience_personas", "title": "Audience & User Personas", "blocks": [ { "type": "Subhead", "text": "B2B User Personas" }, { "type": "PersonaBlocks", "personas": [ { "name": "Growth-Oriented CEO", "description": "Seeks scalable solutions for rapid expansion.", "needs": [ "Integrated strategy and execution", "Clear ROI on marketing spend" ] }, { "name": "Marketing Director", "description": "Wants to unify brand messaging and campaigns.", "needs": [ "Consistent brand voice", "Actionable insights from analytics" ] } ] } ] },
-      { "type": "Section", "id": "b2b_industry_targets", "title": "B2B Industry Targets", "blocks": [ { "type": "IndustryTargetBlocks", "industries": [ { "name": "Manufacturing", "description": "Needs digital transformation and workflow automation." }, { "name": "Software & Technology", "description": "Seeks scalable platforms and analytics." } ] }, { "type": "Subhead", "text": "NAICS Codes Research" }, { "type": "Table", "title": "NAICS Codes Research", "columns": [ "NAICS Code", "Industry", "Description" ], "rows": [ [ "541611", "Administrative Management", "Consulting services for business management" ], [ "541512", "Computer Systems Design", "IT and software services" ] ] }, { "type": "Subhead", "text": "Data Broker Research" }, { "type": "Table", "title": "Data Broker Research", "columns": [ "Broker", "Service", "Description" ], "rows": [ [ "Acxiom", "Data enrichment", "Provides B2B data solutions" ], [ "Dun & Bradstreet", "Business intelligence", "Offers company insights and analytics" ] ] } ] },
-      { "type": "Section", "id": "brand_archetypes", "title": "Brand Archetypes", "blocks": [ { "type": "ArchetypeBlock", "label": "Primary: Architect (System Builder)", "paragraph": "Swift exists to design and connect the systems that power growth, aligning disciplines under one roof.", "fields": { "Essence": "System Builder", "Purpose": "Design and connect growth systems" } }, { "type": "ArchetypeBlock", "label": "Secondary: Collective (Community Builder)", "paragraph": "Swift proves independence is strongest when it moves together, unifying teams and partners into shared progress.", "fields": { "Essence": "Community Builder", "Purpose": "Unify teams and partners" } } ] },
-      { "type": "Section", "id": "brand_voice", "title": "Brand Voice", "blocks": [ { "type": "LabeledBullets", "items": [ { "label": "Essence", "text": "Momentum without micromanagement." }, { "label": "Purpose", "text": "Growth without fragmentation." }, { "label": "Personality", "text": "Confident, clear, and collaborative." } ] }, { "type": "Subhead", "text": "Tone & Voice Examples" }, { "type": "QuoteList", "items": [ { "quote": "We build momentum for your business." }, { "quote": "Strategy and execution, unified." } ] }, { "type": "Subhead", "text": "Client Do’s & Don’ts" }, { "type": "Bullets", "items": [ "Do: Keep messaging clear and actionable.", "Don’t: Use jargon or buzzwords." ] } ] },
-      { "type": "Section", "id": "content", "title": "Content", "blocks": [ { "type": "Subhead", "text": "Keyword Opportunities" }, { "type": "Paragraph", "text": "Keyword strategy focuses on mid-market B2B intent across outsourcing, embedded teams, CRM and analytics, and growth strategy." }, { "type": "KeywordLists", "groups": [ { "category": "Outsourcing", "keywords": [ "outsourced marketing", "embedded teams" ] }, { "category": "CRM & Analytics", "keywords": [ "crm analytics", "growth analytics" ] } ] }, { "type": "Subhead", "text": "Blog Strategy (Priority Ranking Topics)" }, { "type": "HubSpokeList", "hubs": [ { "hub": "Growth Strategy", "spokes": [ "Scaling operations", "Market expansion" ] } ] }, { "type": "Subhead", "text": "Blog Structure" }, { "type": "Bullets", "items": [ "Introduction", "Key points", "Conclusion" ] } ] },
-      { "type": "Section", "id": "social_strategy", "title": "Social Strategy", "blocks": [ { "type": "Subhead", "text": "Content preferences" }, { "type": "Bullets", "items": [ "Short, actionable posts", "Visual storytelling" ] }, { "type": "Subhead", "text": "Primary Post Types" }, { "type": "Table", "title": "Primary Post Types", "columns": [ "Type", "Description", "Cadence" ], "rows": [ [ "Announcement", "Company news and updates", "Monthly" ], [ "Case Study", "Client success stories", "Quarterly" ] ] }, { "type": "Subhead", "text": "Landing Page Strategy" }, { "type": "Bullets", "items": [ "Dedicated landing pages for campaigns", "Clear calls to action" ] } ] },
-      { "type": "Section", "id": "engagement_framework", "title": "Engagement Framework", "blocks": [ { "type": "Subhead", "text": "Foundation Priorities" }, { "type": "Paragraph", "text": "Initiatives define priorities. Projects break goals into workstreams. Deliverables are tangible outputs. Tasks are the units of work." }, { "type": "InitiativeBlocks", "initiatives": [ { "name": "Initiative 1: Digital Transformation", "alignment": [ "Strategy", "Execution" ], "audience": [ "Internal teams", "Clients" ] } ] }, { "type": "Subhead", "text": "Accessibility & Inclusivity Notes" }, { "type": "Bullets", "items": [ "Ensure all content is accessible.", "Use inclusive language." ] }, { "type": "Subhead", "text": "Consistency Checklist" }, { "type": "Bullets", "items": [ "Consistent branding", "Clear messaging" ] } ] },
-      { "type": "Section", "id": "references", "title": "References", "blocks": [ { "type": "ReferencesList", "items": [ { "reference": "Swift Innovation Website" }, { "reference": "Client Interviews" } ] } ] },
-      { "type": "Section", "id": "engagement_index", "title": "Engagement Index", "blocks": [ { "type": "StaticEngagementIndexTables", "tables": [] } ] }
+      {
+        "type": "Section",
+        "id": "overview",
+        "title": "Overview",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "Swift Innovation is more than a services company, it is a connected system of disciplines designed to build momentum for businesses."
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "Clarify position in the Support + Products + Platform market.",
+              "Define target audiences and their challenges.",
+              "Document voice, archetypes, and identity.",
+              "Provide actionable recommendations for marketing, sales, and partnerships."
+            ]
+          },
+          { "type": "Subhead", "text": "How to Use It" },
+          {
+            "type": "Paragraph",
+            "text": "This kit serves as the foundation for all activity, from campaigns and creative assets to sales presentations and partnerships."
+          },
+          { "type": "Subhead", "text": "What’s Inside" },
+          {
+            "type": "ListOfSections",
+            "section_titles": [
+              "Overview",
+              "The Goal",
+              "Opportunity Areas",
+              "Key Findings",
+              "Market Landscape",
+              "Audience & User Personas",
+              "B2B Industry Targets",
+              "Brand Archetypes",
+              "Brand Voice",
+              "Content",
+              "Social Strategy",
+              "Engagement Framework",
+              "References",
+              "Engagement Index"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "goal",
+        "title": "The Goal",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "To establish Swift Innovation as the go-to partner for companies seeking to align strategy, speed, and execution under one roof."
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "opportunity_areas",
+        "title": "Opportunity Areas",
+        "blocks": [
+          { "type": "Subhead", "text": "Workflow Efficiency" },
+          {
+            "type": "Paragraph",
+            "text": "Silos slow everything down. Swift embeds cross-disciplinary teams into client workflows to improve handoffs and throughput."
+          },
+          { "type": "Subhead", "text": "Digital Tools" },
+          {
+            "type": "Paragraph",
+            "text": "Disconnected platforms create wasted time and unclear results. Swift equips clients with a unified foundation of CRM, analytics, and automation."
+          },
+          { "type": "Subhead", "text": "Market Trends" },
+          {
+            "type": "Paragraph",
+            "text": "Workforce models are shifting toward independent and distributed expertise. Swift was built for this operating reality."
+          },
+          { "type": "Subhead", "text": "Revenue Streams" },
+          {
+            "type": "Paragraph",
+            "text": "Sustainable growth requires layered channels. Swift expands revenue through:"
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "Support Retainers, ongoing embedded cross-functional teams.",
+              "Productized Deliverables, fixed-scope assets delivered with speed and clarity.",
+              "Platform Licensing, branded CRM and analytics environments that create recurring infrastructure."
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "key_findings",
+        "title": "Key Findings",
+        "blocks": [
+          {
+            "type": "NumberedFindingsList",
+            "items": [
+              {
+                "text": "Most businesses piece together agencies, consultants, and disconnected tools, creating silos and stalled execution."
+              },
+              {
+                "text": "Distributed expertise is becoming central, and embedded models coordinate it into outcomes."
+              },
+              {
+                "text": "Strategy without delivery, or delivery without strategy, stalls growth. Swift aligns both."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "market_landscape",
+        "title": "Market Landscape",
+        "blocks": [
+          { "type": "Subhead", "text": "Macro Trends & Growth" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Digital transformation is accelerating across industries.",
+              "Remote and hybrid work models are becoming standard.",
+              "Data-driven decision making is a competitive advantage."
+            ]
+          },
+          {
+            "type": "Subhead",
+            "text": "Competitor Landscape & Buying Behavior"
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "Buyers seek partners who can deliver both strategy and execution.",
+              "Competitors are consolidating services to offer end-to-end solutions.",
+              "Trust and proven results drive purchasing decisions."
+            ]
+          },
+          { "type": "Subhead", "text": "Channel Opportunities" },
+          {
+            "type": "Table",
+            "title": "Channel Opportunities",
+            "columns": ["Channel", "Description", "Recommendation"],
+            "rows": [
+              [
+                "Direct Sales",
+                "In-house team selling to prospects",
+                "Invest in sales enablement and training"
+              ],
+              [
+                "Partner Channels",
+                "Alliances with agencies and consultants",
+                "Develop co-marketing programs"
+              ],
+              [
+                "Digital Marketing",
+                "Online campaigns and content",
+                "Increase investment in SEO and content marketing"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "audience_personas",
+        "title": "Audience & User Personas",
+        "blocks": [
+          { "type": "Subhead", "text": "B2B User Personas" },
+          {
+            "type": "PersonaBlocks",
+            "personas": [
+              {
+                "name": "Growth-Oriented CEO",
+                "description": "Seeks scalable solutions for rapid expansion.",
+                "needs": [
+                  "Integrated strategy and execution",
+                  "Clear ROI on marketing spend"
+                ]
+              },
+              {
+                "name": "Marketing Director",
+                "description": "Wants to unify brand messaging and campaigns.",
+                "needs": [
+                  "Consistent brand voice",
+                  "Actionable insights from analytics"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "b2b_industry_targets",
+        "title": "B2B Industry Targets",
+        "blocks": [
+          {
+            "type": "IndustryTargetBlocks",
+            "industries": [
+              {
+                "name": "Manufacturing",
+                "description": "Needs digital transformation and workflow automation."
+              },
+              {
+                "name": "Software & Technology",
+                "description": "Seeks scalable platforms and analytics."
+              }
+            ]
+          },
+          { "type": "Subhead", "text": "NAICS Codes Research" },
+          {
+            "type": "Table",
+            "title": "NAICS Codes Research",
+            "columns": ["NAICS Code", "Industry", "Description"],
+            "rows": [
+              [
+                "541611",
+                "Administrative Management",
+                "Consulting services for business management"
+              ],
+              ["541512", "Computer Systems Design", "IT and software services"]
+            ]
+          },
+          { "type": "Subhead", "text": "Data Broker Research" },
+          {
+            "type": "Table",
+            "title": "Data Broker Research",
+            "columns": ["Broker", "Service", "Description"],
+            "rows": [
+              ["Acxiom", "Data enrichment", "Provides B2B data solutions"],
+              [
+                "Dun & Bradstreet",
+                "Business intelligence",
+                "Offers company insights and analytics"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "brand_archetypes",
+        "title": "Brand Archetypes",
+        "blocks": [
+          {
+            "type": "ArchetypeBlock",
+            "label": "Primary: Architect (System Builder)",
+            "paragraph": "Swift exists to design and connect the systems that power growth, aligning disciplines under one roof.",
+            "fields": {
+              "Essence": "System Builder",
+              "Purpose": "Design and connect growth systems"
+            }
+          },
+          {
+            "type": "ArchetypeBlock",
+            "label": "Secondary: Collective (Community Builder)",
+            "paragraph": "Swift proves independence is strongest when it moves together, unifying teams and partners into shared progress.",
+            "fields": {
+              "Essence": "Community Builder",
+              "Purpose": "Unify teams and partners"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "brand_voice",
+        "title": "Brand Voice",
+        "blocks": [
+          {
+            "type": "LabeledBullets",
+            "items": [
+              {
+                "label": "Essence",
+                "text": "Momentum without micromanagement."
+              },
+              { "label": "Purpose", "text": "Growth without fragmentation." },
+              {
+                "label": "Personality",
+                "text": "Confident, clear, and collaborative."
+              }
+            ]
+          },
+          { "type": "Subhead", "text": "Tone & Voice Examples" },
+          {
+            "type": "QuoteList",
+            "items": [
+              { "quote": "We build momentum for your business." },
+              { "quote": "Strategy and execution, unified." }
+            ]
+          },
+          { "type": "Subhead", "text": "Client Do’s & Don’ts" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Do: Keep messaging clear and actionable.",
+              "Don’t: Use jargon or buzzwords."
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "content",
+        "title": "Content",
+        "blocks": [
+          { "type": "Subhead", "text": "Keyword Opportunities" },
+          {
+            "type": "Paragraph",
+            "text": "Keyword strategy focuses on mid-market B2B intent across outsourcing, embedded teams, CRM and analytics, and growth strategy."
+          },
+          {
+            "type": "KeywordLists",
+            "groups": [
+              {
+                "category": "Outsourcing",
+                "keywords": ["outsourced marketing", "embedded teams"]
+              },
+              {
+                "category": "CRM & Analytics",
+                "keywords": ["crm analytics", "growth analytics"]
+              }
+            ]
+          },
+          {
+            "type": "Subhead",
+            "text": "Blog Strategy (Priority Ranking Topics)"
+          },
+          {
+            "type": "HubSpokeList",
+            "hubs": [
+              {
+                "hub": "Growth Strategy",
+                "spokes": ["Scaling operations", "Market expansion"]
+              }
+            ]
+          },
+          { "type": "Subhead", "text": "Blog Structure" },
+          {
+            "type": "Bullets",
+            "items": ["Introduction", "Key points", "Conclusion"]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "social_strategy",
+        "title": "Social Strategy",
+        "blocks": [
+          { "type": "Subhead", "text": "Content preferences" },
+          {
+            "type": "Bullets",
+            "items": ["Short, actionable posts", "Visual storytelling"]
+          },
+          { "type": "Subhead", "text": "Primary Post Types" },
+          {
+            "type": "Table",
+            "title": "Primary Post Types",
+            "columns": ["Type", "Description", "Cadence"],
+            "rows": [
+              ["Announcement", "Company news and updates", "Monthly"],
+              ["Case Study", "Client success stories", "Quarterly"]
+            ]
+          },
+          { "type": "Subhead", "text": "Landing Page Strategy" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Dedicated landing pages for campaigns",
+              "Clear calls to action"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "engagement_framework",
+        "title": "Engagement Framework",
+        "blocks": [
+          { "type": "Subhead", "text": "Foundation Priorities" },
+          {
+            "type": "Paragraph",
+            "text": "Initiatives define priorities. Projects break goals into workstreams. Deliverables are tangible outputs. Tasks are the units of work."
+          },
+          {
+            "type": "InitiativeBlocks",
+            "initiatives": [
+              {
+                "name": "Initiative 1: Digital Transformation",
+                "alignment": ["Strategy", "Execution"],
+                "audience": ["Internal teams", "Clients"]
+              }
+            ]
+          },
+          { "type": "Subhead", "text": "Accessibility & Inclusivity Notes" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Ensure all content is accessible.",
+              "Use inclusive language."
+            ]
+          },
+          { "type": "Subhead", "text": "Consistency Checklist" },
+          {
+            "type": "Bullets",
+            "items": ["Consistent branding", "Clear messaging"]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "references",
+        "title": "References",
+        "blocks": [
+          {
+            "type": "ReferencesList",
+            "items": [
+              { "reference": "Swift Innovation Website" },
+              { "reference": "Client Interviews" }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "engagement_index",
+        "title": "Engagement Index",
+        "blocks": [
+          {
+            "type": "StaticEngagementIndexTables",
+            "tables": [
+              {
+                "title": "Engagement Structure",
+                "columns": ["Level", "Definition"],
+                "rows": [
+                  ["Client", "The organization your agency is serving."],
+                  [
+                    "Initiative",
+                    "A themed engagement for the client (e.g., Evergreen, Revenue-centric, Product-centric) that contains multiple projects."
+                  ],
+                  [
+                    "Project",
+                    "A defined workstream within an initiative, structured around goals or deliverables (see list below)."
+                  ],
+                  [
+                    "Deliverable",
+                    "The functional activity required to deliver a project (design, content, workflow, etc.)."
+                  ],
+                  [
+                    "Task",
+                    "The specific unit of work (e.g., blog copy, email scheduling, landing page content, ad designs) mapped to a group."
+                  ]
+                ]
+              },
+              {
+                "title": "Project Types",
+                "columns": ["Project Type", "Definition"],
+                "rows": [
+                  [
+                    "Awareness Campaign",
+                    "A recurring 12-month program focused on building visibility, brand presence, and broad audience engagement."
+                  ],
+                  [
+                    "Event Campaign",
+                    "A campaign promoting a physical, virtual, or hybrid event, including pre-event marketing, day-of content, and post-event recaps."
+                  ],
+                  [
+                    "Prospecting Campaign",
+                    "A targeted, time-bound campaign designed to generate qualified leads and opportunities through segmented outreach."
+                  ],
+                  [
+                    "Webinar",
+                    "Online educational or promotional sessions, often recorded, requiring registration, marketing, and follow-up."
+                  ],
+                  [
+                    "Product Development",
+                    "Workstreams related to creating, enhancing, or launching a client’s product (digital or physical)."
+                  ],
+                  [
+                    "Event",
+                    "The planning and execution of a live activity (in-person, virtual, or hybrid) for community, partner, or client audiences."
+                  ],
+                  [
+                    "Website Development",
+                    "The strategy, design, build, QA, and launch of public-facing websites or microsites (CMS templates, components, content migration)."
+                  ],
+                  [
+                    "Blog Program",
+                    "Ongoing creation, optimization, publication, and distribution of blog content for SEO and education."
+                  ],
+                  [
+                    "Podcast Series",
+                    "Planning, recording, editing, distribution, and promotion of an episodic audio (and optional video) show."
+                  ]
+                ]
+              },
+              {
+                "title": "Task Groups",
+                "columns": ["Task Group", "Definition"],
+                "rows": [
+                  [
+                    "Strategy/Research",
+                    "Audience definition, keyword research, positioning, measurement plans."
+                  ],
+                  [
+                    "Design",
+                    "Visual and creative asset production (graphics, layout, video, print)."
+                  ],
+                  [
+                    "Content",
+                    "Written, visual, or multimedia assets that convey messaging."
+                  ],
+                  [
+                    "Build",
+                    "Technical development of assets (web pages, components, CRM objects, audio/video edit)."
+                  ],
+                  [
+                    "Workflow",
+                    "CRM, automation, integrations, permissions, and operational setup."
+                  ],
+                  [
+                    "Schedule",
+                    "Preparing and timing assets for release (emails, socials, ads, episodes)."
+                  ],
+                  [
+                    "Publish",
+                    "Launching assets into live environments (web, app, podcast networks, CRM, ad platforms)."
+                  ],
+                  [
+                    "QA/Compliance",
+                    "Functional, cross-browser, accessibility, brand/legal checks before/after launch."
+                  ],
+                  [
+                    "Analytics/Reporting",
+                    "Tracking, dashboards, post-launch analysis, insights, and iteration."
+                  ],
+                  [
+                    "Other",
+                    "Miscellaneous or custom work not captured by core groups."
+                  ]
+                ]
+              },
+              {
+                "title": "Task Types",
+                "columns": ["Task Type", "Definition"],
+                "rows": [
+                  [
+                    "Blog",
+                    "Long-form written article (≥750 words) for SEO and education."
+                  ],
+                  [
+                    "Blog Brief / Outline",
+                    "SEO+editorial brief with keywords, H1/H2s, internal links."
+                  ],
+                  [
+                    "Blog Graphics",
+                    "Feature image, inline visuals, diagrams, charts."
+                  ],
+                  [
+                    "Blog Optimization",
+                    "On-page SEO (meta, schema, links), readability, accessibility."
+                  ],
+                  [
+                    "Emails",
+                    "Campaign-specific emails (prospecting, invites, reminders, newsletters)."
+                  ],
+                  [
+                    "Email Nurture",
+                    "Automated drip sequence designed to educate or convert."
+                  ],
+                  [
+                    "Social",
+                    "Social media posts (organic or paid) for visibility and engagement."
+                  ],
+                  [
+                    "Digital Ads",
+                    "Paid media ads for social/search/display; creative + copy."
+                  ],
+                  [
+                    "Press Release",
+                    "Public announcement distributed to media outlets."
+                  ],
+                  [
+                    "Website Landing Page",
+                    "Public-facing page (WordPress/other CMS) for conversion or info."
+                  ],
+                  [
+                    "CRM Landing Page",
+                    "Simple campaign page hosted inside CRM platform."
+                  ],
+                  [
+                    "CRM Funnel Landing Page",
+                    "Multi-step conversion funnel page(s) in CRM."
+                  ],
+                  [
+                    "Web Page (Core)",
+                    "Non-landing CMS pages (Home, About, Services, Careers, etc.)."
+                  ],
+                  [
+                    "Component/Template Build",
+                    "Reusable CMS components, templates, blocks, snippets."
+                  ],
+                  [
+                    "Content Migration",
+                    "Move, normalize, and QA legacy content into new CMS."
+                  ],
+                  [
+                    "Information Architecture",
+                    "Sitemap, navigation, content model, taxonomy."
+                  ],
+                  [
+                    "Wireframe / Prototype",
+                    "UX flows and low-/mid-fi page structures."
+                  ],
+                  ["UI Design", "High-fi visual design of pages/components."],
+                  [
+                    "Tracking & Analytics",
+                    "GA4/GTM setup, event mapping, pixels, UTM governance."
+                  ],
+                  [
+                    "Accessibility Remediation",
+                    "WCAG fixes (ALT, headings, contrast, focus, semantics)."
+                  ],
+                  [
+                    "Performance Optimization",
+                    "Core Web Vitals (LCP/CLS/INP), media optimization, caching."
+                  ],
+                  [
+                    "Redirect Map",
+                    "URL mapping, 301s, canonicalization for launches."
+                  ],
+                  [
+                    "QA Testing",
+                    "Cross-browser/device, functional and content checks."
+                  ],
+                  [
+                    "Podcast Planning",
+                    "Show concept, episode briefs, guest sourcing, run-of-show."
+                  ],
+                  [
+                    "Podcast Recording",
+                    "Remote/in-studio recording, file capture, backups."
+                  ],
+                  [
+                    "Podcast Editing/Mixing",
+                    "Clean-up, leveling, music beds, mastering."
+                  ],
+                  [
+                    "Podcast Show Notes",
+                    "Episode summary, links, keywords, CTAs."
+                  ],
+                  [
+                    "Podcast Artwork/Thumbnails",
+                    "Episode cover, audiograms, reels."
+                  ],
+                  [
+                    "Podcast Distribution",
+                    "RSS setup, platforms (Apple/Spotify), scheduling."
+                  ],
+                  [
+                    "Event Logistics",
+                    "Venue/platform, registration, tech stack, run-of-show."
+                  ],
+                  [
+                    "Event Collateral",
+                    "Agendas, signage, slide templates, badges."
+                  ],
+                  [
+                    "Event Capture & Recap",
+                    "Photo/video, livestream, recap blog/email."
+                  ],
+                  [
+                    "Reporting",
+                    "Post-campaign/event/webinar performance report."
+                  ]
+                ]
+              }
+            ]
+          }
+        ]
+      }
     ],
     "front_matter": [
-      { "type": "MarkdownTable", "title": "\ud83d\udce6 Kit Overview", "columns": [ "Field", "Value" ], "rows": [ [ "Brand", "Swift Innovation" ], [ "Primary Offerings", "Support Retainers, Productized Deliverables, Platform Licensing" ], [ "Priority Industries", "Manufacturing, Software & Technology, Agencies & Channel Partners, Consumer Goods" ], [ "Regions", "USA, Remote" ], [ "Positioning Line", "Momentum without micromanagement." ], [ "Brand Promise", "Growth without fragmentation." ], [ "Differentiators", "Support + Products + Platform, embedded cross-functional model, CRM + analytics backbone" ], [ "Contact / Primary CTA", "Book exploratory" ], [ "Brand Domain", "https://swiftinnovation.io/" ] ] },
-      { "type": "MarkdownTable", "title": "\ud83e\uddd1\u200d\ud83d\udcbb Kit Structure", "columns": [ "Section", "Contents", "Output Type" ], "rows": [ [ "Overview", "Purpose, how to use, quick summary, what’s inside", "Narrative + list" ], [ "The Goal", "Business and marketing goal", "Narrative" ], [ "Opportunity Areas", "Workflow efficiency, digital tools, market trends, revenue streams", "Narrative" ], [ "Key Findings", "6 truths revealed by inputs", "Ordered list" ], [ "Market Landscape", "Macro trends, competitor patterns, channel opportunities", "Narrative + bullets + table" ], [ "Audience & User Personas", "3 to 5 personas with labeled bullets", "Paragraph + labeled bullets" ], [ "B2B Industry Targets", "Target segments plus NAICS and broker tables", "Bullets + tables" ], [ "Brand Archetypes", "Primary and secondary archetypes with fields", "Paragraph + labeled bullets" ], [ "Brand Voice", "Essence, purpose, personality, examples, dos and don'ts", "Narrative + lists" ], [ "Content", "Keyword strategy, hubs, blog structure", "Narrative + lists" ], [ "Social Strategy", "Channels, content types, cadence, campaigns, landing pages", "Lists + short narrative" ], [ "Engagement Framework", "Initiatives to projects to deliverables to tasks", "Narrative + tables" ], [ "References", "Source list", "List" ], [ "Engagement Index", "Engagement Structure, Project Types, Task Groups, Task Types", "Tables" ] ] },
-      { "type": "MarkdownTable", "title": "Section-to-Engagement Index Mapping", "columns": [ "Kit Section", "Task Groups", "Task Types" ], "rows": [ [ "Audience & Personas", "Strategy/Research, Content", "Blog Brief / Outline, Social, Emails" ], [ "Brand Archetypes", "Strategy/Research, Content, Design", "Web Page (Core), Deck Copy" ], [ "Brand Voice", "Strategy/Research, Content", "Web Page (Core), Emails, Social" ], [ "Content", "Strategy/Research, Content, Schedule", "Blog, Social, Digital Ads" ], [ "Social Strategy", "Strategy/Research, Content, Schedule, Publish", "Social, Digital Ads, Reporting" ], [ "Engagement Framework", "Strategy/Research, Workflow", "Reporting, Tracking & Analytics" ], [ "Landing Page Strategy", "Strategy/Research, Content, Design, Build, QA/Compliance, Publish", "Website Landing Page, Blog Optimization, Tracking & Analytics" ] ] }
+      {
+        "type": "MarkdownTable",
+        "title": "\ud83d\udce6 Kit Overview",
+        "columns": ["Field", "Value"],
+        "rows": [
+          ["Brand", "Swift Innovation"],
+          [
+            "Primary Offerings",
+            "Support Retainers, Productized Deliverables, Platform Licensing"
+          ],
+          [
+            "Priority Industries",
+            "Manufacturing, Software & Technology, Agencies & Channel Partners, Consumer Goods"
+          ],
+          ["Regions", "USA, Remote"],
+          ["Positioning Line", "Momentum without micromanagement."],
+          ["Brand Promise", "Growth without fragmentation."],
+          [
+            "Differentiators",
+            "Support + Products + Platform, embedded cross-functional model, CRM + analytics backbone"
+          ],
+          ["Contact / Primary CTA", "Book exploratory"],
+          ["Brand Domain", "https://swiftinnovation.io/"]
+        ]
+      },
+      {
+        "type": "MarkdownTable",
+        "title": "\ud83e\uddd1\u200d\ud83d\udcbb Kit Structure",
+        "columns": ["Section", "Contents", "Output Type"],
+        "rows": [
+          [
+            "Overview",
+            "Purpose, how to use, quick summary, what’s inside",
+            "Narrative + list"
+          ],
+          ["The Goal", "Business and marketing goal", "Narrative"],
+          [
+            "Opportunity Areas",
+            "Workflow efficiency, digital tools, market trends, revenue streams",
+            "Narrative"
+          ],
+          ["Key Findings", "6 truths revealed by inputs", "Ordered list"],
+          [
+            "Market Landscape",
+            "Macro trends, competitor patterns, channel opportunities",
+            "Narrative + bullets + table"
+          ],
+          [
+            "Audience & User Personas",
+            "3 to 5 personas with labeled bullets",
+            "Paragraph + labeled bullets"
+          ],
+          [
+            "B2B Industry Targets",
+            "Target segments plus NAICS and broker tables",
+            "Bullets + tables"
+          ],
+          [
+            "Brand Archetypes",
+            "Primary and secondary archetypes with fields",
+            "Paragraph + labeled bullets"
+          ],
+          [
+            "Brand Voice",
+            "Essence, purpose, personality, examples, dos and don'ts",
+            "Narrative + lists"
+          ],
+          [
+            "Content",
+            "Keyword strategy, hubs, blog structure",
+            "Narrative + lists"
+          ],
+          [
+            "Social Strategy",
+            "Channels, content types, cadence, campaigns, landing pages",
+            "Lists + short narrative"
+          ],
+          [
+            "Engagement Framework",
+            "Initiatives to projects to deliverables to tasks",
+            "Narrative + tables"
+          ],
+          ["References", "Source list", "List"],
+          [
+            "Engagement Index",
+            "Engagement Structure, Project Types, Task Groups, Task Types",
+            "Tables"
+          ]
+        ]
+      },
+      {
+        "type": "MarkdownTable",
+        "title": "Section-to-Engagement Index Mapping",
+        "columns": ["Kit Section", "Task Groups", "Task Types"],
+        "rows": [
+          [
+            "Audience & Personas",
+            "Strategy/Research, Content",
+            "Blog Brief / Outline, Social, Emails"
+          ],
+          [
+            "Brand Archetypes",
+            "Strategy/Research, Content, Design",
+            "Web Page (Core), Deck Copy"
+          ],
+          [
+            "Brand Voice",
+            "Strategy/Research, Content",
+            "Web Page (Core), Emails, Social"
+          ],
+          [
+            "Content",
+            "Strategy/Research, Content, Schedule",
+            "Blog, Social, Digital Ads"
+          ],
+          [
+            "Social Strategy",
+            "Strategy/Research, Content, Schedule, Publish",
+            "Social, Digital Ads, Reporting"
+          ],
+          [
+            "Engagement Framework",
+            "Strategy/Research, Workflow",
+            "Reporting, Tracking & Analytics"
+          ],
+          [
+            "Landing Page Strategy",
+            "Strategy/Research, Content, Design, Build, QA/Compliance, Publish",
+            "Website Landing Page, Blog Optimization, Tracking & Analytics"
+          ]
+        ]
+      }
     ],
     "meta": {
       "brand": "Swift Innovation",

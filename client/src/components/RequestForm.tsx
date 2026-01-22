@@ -12,7 +12,7 @@ import {
 const requestOptions = [
   {
     value: "marketing_kit",
-    label: "Generate Marketing Kit",
+    label: "Marketing Kit",
     tooltip: "Create a marketing kit for your client.",
   },
   // Add more request types as needed
@@ -28,7 +28,10 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
   const [targetMarkets, setTargetMarkets] = useState("");
   const [competitors, setCompetitors] = useState("");
   const [additionalDetails, setAdditionalDetails] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
+  // Store files as { filename, content } objects
+  const [files, setFiles] = useState<{ filename: string; content: string }[]>(
+    [],
+  );
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -114,7 +117,9 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                 position: "relative",
                 overflow: "hidden",
                 transition: "border 0.2s, background 0.2s",
-                boxShadow: isDragOver ? `0 0 0 2px ${theme.palette.primary.main}` : undefined,
+                boxShadow: isDragOver
+                  ? `0 0 0 2px ${theme.palette.primary.main}`
+                  : undefined,
               }}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -126,21 +131,43 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                 e.stopPropagation();
                 setIsDragOver(false);
               }}
-              onDrop={(e) => {
+              onDrop={async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 setIsDragOver(false);
                 const droppedFiles = Array.from(e.dataTransfer.files);
                 if (droppedFiles.length > 0) {
-                  setFiles((prev) => [...prev, ...droppedFiles]);
-                  console.log("Dropped files:", droppedFiles);
+                  // Read all files as text (or base64 if needed)
+                  const readFiles = await Promise.all(
+                    droppedFiles.map(
+                      (file) =>
+                        new Promise<{ filename: string; content: string }>(
+                          (resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                              resolve({
+                                filename: file.name,
+                                content: reader.result as string,
+                              });
+                            };
+                            reader.onerror = reject;
+                            reader.readAsText(file); // Use readAsDataURL(file) for base64 if needed
+                          },
+                        ),
+                    ),
+                  );
+                  setFiles((prev) => [...prev, ...readFiles]);
+                  console.log("Dropped files:", readFiles);
                 }
               }}
               onClick={() => fileInputRef.current?.click()}
             >
               <Typography
                 variant="body2"
-                sx={theme => ({ color: theme.palette.mode === 'dark' ? '#000' : 'text.secondary' })}
+                sx={(theme) => ({
+                  color:
+                    theme.palette.mode === "dark" ? "#000" : "text.secondary",
+                })}
               >
                 Drag and drop files here, or click to select files
               </Typography>
@@ -158,10 +185,28 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                   pointerEvents: "none",
                 }}
                 tabIndex={-1}
-                onChange={(e) => {
+                onChange={async (e) => {
                   const fileList = e.target.files;
                   if (fileList && fileList.length > 0) {
-                    setFiles((prev) => [...prev, ...Array.from(fileList)]);
+                    const readFiles = await Promise.all(
+                      Array.from(fileList).map(
+                        (file) =>
+                          new Promise<{ filename: string; content: string }>(
+                            (resolve, reject) => {
+                              const reader = new FileReader();
+                              reader.onload = () => {
+                                resolve({
+                                  filename: file.name,
+                                  content: reader.result as string,
+                                });
+                              };
+                              reader.onerror = reject;
+                              reader.readAsText(file); // Use readAsDataURL(file) for base64 if needed
+                            },
+                          ),
+                      ),
+                    );
+                    setFiles((prev) => [...prev, ...readFiles]);
                   }
                 }}
               />
@@ -171,9 +216,9 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                     <Typography
                       key={idx}
                       variant="caption"
-                      sx={theme => ({ color: theme.palette.primary.main })}
+                      sx={(theme) => ({ color: theme.palette.primary.main })}
                     >
-                      {file.name}
+                      {file.filename}
                     </Typography>
                   ))}
                 </Box>
@@ -188,15 +233,18 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Map frontend fields to backend-expected keys
     onSubmit({
-      requestType,
-      clientName,
-      website,
+      request_type: requestType,
+      client_name: clientName,
+      brand_name: clientName, // for compatibility
+      brand_url: website,
+      website: website, // for compatibility
       offering,
-      targetMarkets,
+      target_markets: targetMarkets,
       competitors,
-      additionalDetails,
-      files,
+      additional_details: additionalDetails,
+      files, // Now array of { filename, content }
     });
   };
 

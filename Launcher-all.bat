@@ -5,7 +5,7 @@ REM Start backend API
 start cmd /k "cd /d %~dp0api && npm start"
 
 REM Start agent microservice
-start cmd /k "cd /d %~dp0agent_services && python marketing_agent.py"
+start cmd /k "cd /d %~dp0agent_services && ..\.venv\Scripts\python.exe marketing_agent.py"
 
 REM Start React frontend
 start cmd /k "cd /d %~dp0client && npm start"
