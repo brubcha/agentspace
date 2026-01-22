@@ -1355,5 +1355,18 @@ export function downloadKitDoc(
       },
     ],
   });
-  Packer.toBlob(doc).then((blob) => saveAs(blob, filename));
+  Packer.toBlob(doc)
+    .then((blob) => {
+      try {
+        saveAs(blob, filename);
+        console.log('Word document generated and saved:', filename);
+      } catch (saveErr) {
+        console.error('Error saving Word document:', saveErr);
+        alert('Error saving Word document. See console for details.');
+      }
+    })
+    .catch((err) => {
+      console.error('Error generating Word document:', err);
+      alert('Error generating Word document. See console for details.');
+    });
 }

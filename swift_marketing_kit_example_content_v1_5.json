@@ -35,6 +35,7 @@
             "type": "Paragraph",
             "text": "Swift Innovation is more than a services company, it is a connected system of disciplines designed to build momentum for businesses."
           },
+          { "type": "Subhead", "text": "Purpose of the Kit" },
           {
             "type": "Bullets",
             "items": [

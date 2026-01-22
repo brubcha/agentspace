@@ -112,14 +112,15 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
                     msg.content.client ||
                     "Client"
                   ).replace(/[^a-z0-9]+/gi, "_");
-                  const requestType = (
+                  const rawRequestType = (
                     msg.content.requestType ||
                     msg.content.request_type ||
                     msg.content.meta?.request_type ||
                     msg.content.type ||
                     msg.content.document?.request_type ||
                     "Marketing Kit"
-                  ).replace(/[^a-z0-9]+/gi, "_");
+                  );
+                  const sanitizedRequestType = rawRequestType.replace(/[^a-z0-9]+/gi, "_");
                   // Use the chat timestamp, format as YYYYMMDD_HHMMSS
                   const date = new Date(msg.timestamp);
                   const pad = (n: number) => n.toString().padStart(2, "0");
@@ -128,12 +129,12 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
                   )}${pad(date.getDate())}_${pad(date.getHours())}${pad(
                     date.getMinutes(),
                   )}${pad(date.getSeconds())}`;
-                  const filename = `${clientName}_${requestType}_${dateStr}.docx`;
+                  const filename = `${clientName}_${sanitizedRequestType}_${dateStr}.docx`;
                   if (msg.content?.document?.sections) {
                     downloadKitDoc(
                       msg.content.document.sections,
                       filename,
-                      requestType,
+                      rawRequestType,
                       clientName,
                     );
                   } else {
