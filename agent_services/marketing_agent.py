@@ -248,7 +248,14 @@ def build_marketing_kit(data):
         "references": {"refs": 5},
     }
     for sec_id in required_sections:
-        if sec_id == "engagement_index":
+        # Fully remove unwanted sections from output
+        if sec_id in [
+            "engagement_framework",
+            "engagement_index",
+            "accessibility_and_inclusivity_notes",
+            "consistency_checklist",
+            "references"
+        ]:
             continue
         user_blocks = []
         section_title = sec_id.replace('_', ' ').title()
@@ -268,6 +275,14 @@ def build_marketing_kit(data):
         elif isinstance(personas, str):
             persona_str = personas
         for attempt in range(max_retries):
+            # Goal section enhancements
+            if sec_id == "goal":
+                prompt += (
+                    "\nIMPORTANT: The goal must be clear, measurable, and unique to UCARI.\n"
+                    "- State a single, specific objective that sets UCARI apart in its market.\n"
+                    "- Include differentiators and what success looks like for UCARI.\n"
+                    "- Avoid generic or vague statements.\n"
+                )
             prompt = f"Generate the '{section_title}' section for a marketing kit.\n"
             prompt += f"Request Type: {request_type}\n"
             prompt += f"Client Name: {client_name}\n"
@@ -295,6 +310,15 @@ def build_marketing_kit(data):
             if file_contents:
                 prompt += f"Attached Files: {' | '.join(file_contents)[:2000]}\n"
             prompt += f"Section: {section_title}\n"
+            # Overview/Executive Summary enhancements
+            if sec_id == "overview":
+                prompt += (
+                    "\nIMPORTANT: The opening paragraph must describe what makes UCARI unique in its market, including its business model, value proposition, and differentiators. Avoid generic statements.\n"
+                    "- Add a 'Purpose of the Kit' subhead with actionable bullets tailored to UCARI's needs.\n"
+                    "- Add a 'How to Use It' subhead with a paragraph that gives practical, UCARI-specific guidance.\n"
+                    "- Add a 'What’s Inside' subhead with a list of all major sections, matching the original kit’s structure.\n"
+                    "- All content must be specific to UCARI, actionable, and avoid repetition or placeholders.\n"
+                )
             # Tailor prompt for industry/persona if relevant
             if selected_industry:
                 prompt += f"\nIMPORTANT: Tailor all recommendations, examples, and language to the '{selected_industry}' industry.\n"
@@ -344,7 +368,15 @@ def build_marketing_kit(data):
             if sec_id == "key_findings":
                 prompt += "\nIMPORTANT: You must generate at least 6 key findings, each with a short paragraph.\n"
             if sec_id == "opportunity_areas":
-                prompt += "\nIMPORTANT: You must cover all opportunity areas: workflow, digital tools, trends, and revenue streams.\n"
+                prompt += (
+                    "\nIMPORTANT: You must cover all opportunity areas: workflow, digital tools, trends, and revenue streams.\n"
+                    "For each subhead (Workflow Efficiency, Digital Tools, Market Trends, Revenue Streams):\n"
+                    "- Write at least two paragraphs of UCARI-specific, actionable, and richly detailed recommendations.\n"
+                    "- Include at least one bulleted list, callout, table, or checklist per subhead to add depth and variety.\n"
+                    "- Use data, examples, or scenarios relevant to UCARI's market context.\n"
+                    "- Avoid generic or vague statements.\n"
+                    "- Ensure all content is tailored to UCARI and demonstrates layered, multi-format insights.\n"
+                )
             if sec_id == "content_strategy":
                 prompt += "\nIMPORTANT: You must include keyword, blog, and social strategies, content mix, creative emphases, and campaign structure.\n"
             if sec_id == "engagement_framework":
@@ -559,53 +591,6 @@ def build_marketing_kit(data):
         })
 
 
-    # Ensure Engagement Framework, Accessibility, Consistency Checklist, Engagement Index are present
-    section_ids = [s["id"] for s in kit["document"]["sections"]]
-    # Engagement Framework
-    if "engagement_framework" not in section_ids:
-        kit["document"]["sections"].append({
-            "id": "engagement_framework",
-            "title": "Engagement Framework",
-            "blocks": [
-                {"type": "Paragraph", "text": "UCARI's engagement framework prioritizes customer-centric initiatives, personalized marketing, and responsive support."},
-                {"type": "Checklist", "items": [
-                    {"text": "Implement personalized campaigns", "checked": True},
-                    {"text": "Leverage data analytics for insights", "checked": True},
-                    {"text": "Provide proactive support", "checked": True}
-                ]}
-            ]
-        })
-    # Accessibility & Inclusivity Notes
-    if "accessibility_notes" not in section_ids:
-        kit["document"]["sections"].append({
-            "id": "accessibility_notes",
-            "title": "Accessibility & Inclusivity Notes",
-            "blocks": [
-                {"type": "Paragraph", "text": "UCARI is committed to inclusivity, optimizing digital platforms for assistive technologies and multilingual support."},
-                {"type": "Bullets", "label": "Accessibility Features", "items": [
-                    "Alt text for images and captions for videos.",
-                    "Font size customization and color contrast options.",
-                    "Multilingual support for diverse audiences."
-                ]}
-            ]
-        })
-    # Consistency Checklist
-    if "consistency_checklist" not in section_ids:
-        kit["document"]["sections"].append({
-            "id": "consistency_checklist",
-            "title": "Consistency Checklist",
-            "blocks": [
-                {"type": "Checklist", "items": [
-                    {"text": "Review and update brand guidelines regularly", "checked": True},
-                    {"text": "Train staff for consistent messaging", "checked": True},
-                    {"text": "Leverage automation for brand management", "checked": True}
-                ]}
-            ]
-        })
-    # Engagement Index
-    engagement_index_section = example_sections.get("engagement_index")
-    if engagement_index_section and "engagement_index" not in section_ids:
-        kit["document"]["sections"].append(engagement_index_section)
 
     return kit
 # marketing_agent.py
