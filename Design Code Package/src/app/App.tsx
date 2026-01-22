@@ -17,8 +17,8 @@ const sampleData: MarketingKitData = {
               content: "Swift Innovation is more than a services company, it is a connected system of disciplines designed to build momentum for businesses. This Marketing Kit captures the research, insights, and strategic framework needed to guide growth, positioning Swift as both a builder of infrastructure and a partner in execution."
             },
             {
-              type: "Paragraph",
-              content: "The purpose of this kit is to:"
+              type: "Subhead",
+              text: "Purpose of the Kit"
             },
             {
               type: "Bullets",

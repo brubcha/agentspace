@@ -85,7 +85,7 @@ function App() {
       Object.entries(data).forEach(([key, value]) => {
         if (key !== "files") {
           // Only append string or Blob; convert objects/arrays to JSON string
-          if (typeof value === 'string' || value instanceof Blob) {
+          if (typeof value === "string" || value instanceof Blob) {
             formData.append(key, value ?? "");
           } else if (value !== undefined && value !== null) {
             formData.append(key, JSON.stringify(value));

@@ -29,7 +29,7 @@ const DownloadDocButton: React.FC<DownloadDocButtonProps> = ({ kitData }) => {
       kitData.meta?.request_type ||
       kitData.type ||
       kitData.document?.request_type ||
-      "MarketingKit";
+      "Marketing Kit";
     clientName = String(clientName).replace(/[^a-z0-9]+/gi, "_");
     requestType = String(requestType).replace(/[^a-z0-9]+/gi, "_");
     // Use current date/time for download

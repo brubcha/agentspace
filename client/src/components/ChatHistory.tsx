@@ -118,7 +118,7 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => (
                     msg.content.meta?.request_type ||
                     msg.content.type ||
                     msg.content.document?.request_type ||
-                    "MarketingKit"
+                    "Marketing Kit"
                   ).replace(/[^a-z0-9]+/gi, "_");
                   // Use the chat timestamp, format as YYYYMMDD_HHMMSS
                   const date = new Date(msg.timestamp);

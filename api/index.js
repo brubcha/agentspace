@@ -4,14 +4,16 @@ const cors = require("cors");
 require("dotenv").config();
 
 const multer = require("multer");
-const upload = multer({ dest: "uploads/", limits: { fileSize: 50 * 1024 * 1024 } });
+const upload = multer({
+  dest: "uploads/",
+  limits: { fileSize: 50 * 1024 * 1024 },
+});
 
 const app = express();
 app.use(cors());
 
-
 // Health check
-app.get("/api/health", express.json({ limit: '50mb' }), (req, res) => {
+app.get("/api/health", express.json({ limit: "50mb" }), (req, res) => {
   res.json({ status: "ok" });
 });
 
@@ -35,7 +37,7 @@ app.post("/api/agent", upload.array("files"), async (req, res) => {
     }
     const agentRes = await axios.post(
       `${AGENT_SERVICE_URL}/agent/marketing-kit`,
-      data
+      data,
     );
     res.json(agentRes.data);
   } catch (err) {
