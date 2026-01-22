@@ -49,18 +49,19 @@ app.post("/api/agent", upload.array("files"), async (req, res) => {
   }
 });
 
-
 // Feedback endpoint: proxy to Python backend
 app.post("/api/feedback", express.json({ limit: "2mb" }), async (req, res) => {
   try {
     const feedbackRes = await axios.post(
       `${AGENT_SERVICE_URL}/feedback`,
-      req.body
+      req.body,
     );
     res.json(feedbackRes.data);
   } catch (err) {
     console.error("Error posting feedback to agent service:", err.message);
-    res.status(500).json({ message: "Error posting feedback", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error posting feedback", error: err.message });
   }
 });
 

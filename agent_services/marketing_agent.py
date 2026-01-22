@@ -31,12 +31,16 @@ def build_marketing_kit(data):
     for sec_id in required_sections:
         prompt = ""
         user_blocks = []
-        # Market Landscape fact-checking enforcement
+        # Market Landscape section requirements
         if sec_id == "market_landscape":
             prompt += (
-                "\nIMPORTANT: For every data point, statistic, or claim in the Market Landscape section, provide a credible source or reference (URL, report, or publication).\n"
+                "\nIMPORTANT: The Market Landscape section must include:\n"
+                "- Macro Trends & Growth: Provide at least 3-4 real market statistics (percentages, dollar values, growth projections) with credible sources.\n"
+                "- Competitor Landscape & Buying Behavior: Use narrative and bullets to compare agencies, consultants, dev shops, and the client’s model.\n"
+                "- Channel Opportunities: Present a table with columns Channel, Opportunity Insight, and Recommendation. Each row should include a narrative insight and a specific, actionable recommendation.\n"
+                "- All data points, statistics, or claims must include a credible source or reference (URL, report, or publication).\n"
                 "For example: 'Remote work is on the rise (Source: Gartner, 2025).'\n"
-                "If any claim is missing a source, re-prompt or add a placeholder.\n"
+                "Use the example copy as a guide for structure and depth.\n"
             )
         # Post-processing for Market Landscape fact-checking
         if sec_id == "market_landscape":
@@ -47,10 +51,20 @@ def build_marketing_kit(data):
                     if (any(word in text.lower() for word in ["percent", "%", "billion", "million", "growth", "increase", "rise", "trend", "statistic", "report", "study"]) or any(char.isdigit() for char in text)) and "source" not in text.lower() and "http" not in text.lower():
                         validated_blocks.append({"type": "Paragraph", "text": text + " [Source: Add credible reference]"})
 
-        # B2B Industry Targets enforcement
+        # Personas section requirements
         if sec_id == "audience_and_personas":
             prompt += (
-                "\nIMPORTANT: For B2B Industry Targets, generate at least 3-5 industry targets. For each, include NAICS code, industry name, a 1-2 sentence description, and why it is relevant to the client.\n"
+                "\nIMPORTANT: The Personas section must include at least 4 detailed personas. For each persona, provide the following fields in narrative and bullet format as in the gold standard:\n"
+                "- Name\n"
+                "- Profile (role, company size, industry, etc.)\n"
+                "- Motivation (what drives them)\n"
+                "- Needs (what they require from a partner/solution)\n"
+                "- Messaging (what resonates, key phrases)\n"
+                "- Demographic (age, title, company size, etc.)\n"
+                "- Psychographic (attitudes, values, pain points)\n"
+                "- Buying Behavior (how/why they buy, what triggers a decision)\n"
+                "Each persona should be realistic, specific, and reflect real-world pain points and buying triggers.\n"
+                "Use the example copy as a guide for structure and depth.\n"
             )
         # ...existing code...
 
@@ -77,9 +91,14 @@ def build_marketing_kit(data):
                         "Link to related posts and product pages."
                     ],
                     "Social Strategy": [
-                        "Showcase sustainability and eco-friendly practices.",
-                        "Engage with followers through interactive content.",
-                        "Collaborate with influencers for broader reach."
+                        "IMPORTANT: The Social Strategy section must include:\n"
+                        "- Content Mix: Specify the required mix (proof/case posts, thought leadership, how-tos, behind-the-scenes, partner spotlights, etc.).\n"
+                        "- Creative Emphases: Highlight brand themes, visual style, and messaging priorities.\n"
+                        "- Production Checklist: List content sources, design tips, and production best practices.\n"
+                        "- Copy Guidelines: Provide actionable rules for tone, language, and messaging.\n"
+                        "- Idea Starters: Give 5–6 specific post ideas or formats.\n"
+                        "- Cadence & Governance: Define posting frequency and content rotation.\n"
+                        "Use the example copy as a guide for structure and depth.\n"
                     ],
                     "Content Preferences": [
                         "Highlight product benefits and customer testimonials.",
@@ -344,27 +363,33 @@ def build_marketing_kit(data):
             # Section-specific minimums
             if sec_id == "brand_voice":
                 prompt += (
-                    "\nIMPORTANT: You must generate at least 10 Do's and 10 Don'ts, each specific and actionable, reflecting brand voice and pitfalls to avoid.\n"
-                    "You must also generate the following subcomponents, each as a clearly labeled block: Mission, Voice, Values, Emotional Promise.\n"
-                    "For example:\n"
-                    "Mission: Build and align the infrastructure that allows businesses to scale without fragmentation.\n"
-                    "Voice: Confident, precise, structured, outcome-focused.\n"
-                    "Values: Integration, clarity, accountability, design of systems.\n"
-                    "Emotional Promise: 'We don’t patch problems - we architect momentum.'\n"
-                    "If any subcomponent is missing, re-prompt or add a placeholder.\n"
+                    "\nIMPORTANT: The Brand Voice section must include:\n"
+                    "- Factual Foundations: List the brand’s model, disciplines, delivery capability, platform backbone, and proof points.\n"
+                    "- Taglines: Provide a list of evaluated taglines, marking on-brand and off-brand examples.\n"
+                    "- Voice-in-Action: Give real-world examples (headlines, captions, ads, emails) showing the brand voice in use.\n"
+                    "- Do’s & Don’ts: At least 10 of each, specific and actionable, reflecting brand voice and pitfalls to avoid.\n"
+                    "- Mission, Voice, Values, Emotional Promise: Each as a clearly labeled block.\n"
+                    "If any subcomponent is missing, re-prompt or add a placeholder. Use the example copy as a guide for structure and depth.\n"
                 )
             if sec_id == "brand_archetypes":
                 prompt += (
-                    "\nIMPORTANT: For each archetype, generate all of the following as clearly labeled blocks: Mission, Voice, Values, Emotional Promise.\n"
-                    "For example (Primary Archetype):\n"
-                    "Mission: Build and align the infrastructure that allows businesses to scale without fragmentation.\n"
-                    "Voice: Confident, precise, structured, outcome-focused.\n"
-                    "Values: Integration, clarity, accountability, design of systems.\n"
-                    "Emotional Promise: 'We don’t patch problems - we architect momentum.'\n"
-                    "If any subcomponent is missing, re-prompt or add a placeholder.\n"
+                    "\nIMPORTANT: For Brand Archetypes, provide both a narrative paragraph and all required fields for each archetype (Primary and Secondary):\n"
+                    "- Narrative: Describe the archetype’s role, philosophy, and how it shapes the brand’s approach, using direct quotes and 'voice' language.\n"
+                    "- Mission\n"
+                    "- Voice\n"
+                    "- Values\n"
+                    "- Emotional Promise\n"
+                    "If any subcomponent is missing, re-prompt or add a placeholder. Use the example copy as a guide for structure and depth.\n"
                 )
             if sec_id == "audience_and_personas":
-                prompt += "\nIMPORTANT: You must generate at least 4 detailed personas, each with profile, motivation, needs, messaging, demographics/psychographics, and buying behavior.\nInclude industry targets and NAICS code breakdowns.\n"
+                prompt += (
+                    "\nIMPORTANT: You must generate at least 4 detailed personas, each with profile, motivation, needs, messaging, demographics/psychographics, and buying behavior.\n"
+                    "You must also include a B2B Industry Targets section with:\n"
+                    "- At least 3-4 industry segments (e.g., Manufacturing, Software & Technology, Agencies, Consumer Goods), each with a detailed description.\n"
+                    "- A NAICS code table with category, code, estimated companies, and description for each relevant industry.\n"
+                    "- A Data Broker Research table with industry, company count, and description.\n"
+                    "Use the example copy as a guide for structure and depth.\n"
+                )
             if sec_id == "key_findings":
                 prompt += "\nIMPORTANT: You must generate at least 6 key findings, each with a short paragraph.\n"
             if sec_id == "opportunity_areas":
@@ -378,13 +403,24 @@ def build_marketing_kit(data):
                     "- Ensure all content is tailored to UCARI and demonstrates layered, multi-format insights.\n"
                 )
             if sec_id == "content_strategy":
-                prompt += "\nIMPORTANT: You must include keyword, blog, and social strategies, content mix, creative emphases, and campaign structure.\n"
+                prompt += (
+                    "\nIMPORTANT: The Content section must include:\n"
+                    "- Keyword Opportunity Analysis: Provide keyword strategy with categories (Core Service, Use Case, Trust & Differentiation, B2B/Channel) and a phased approach.\n"
+                    "- Hub/Spoke Blog Strategy: List 3–4 hubs, each with 2–3 spokes, showing how content themes are organized.\n"
+                    "- Blog Structure: Give a detailed structure (title, intro, problem, insights, proof, applications, trends, links, CTA) and minimum word count.\n"
+                    "Use the example copy as a guide for structure and depth.\n"
+                )
             if sec_id == "engagement_framework":
                 prompt += "\nIMPORTANT: You must include initiatives, projects, deliverables, tasks, and project/task types.\n"
             if sec_id == "campaign_structure":
                 prompt += "\nIMPORTANT: You must include campaign types and deliverable lists.\n"
             if sec_id == "landing_page_strategy":
-                prompt += "\nIMPORTANT: You must include landing page structure and types.\n"
+                prompt += (
+                    "\nIMPORTANT: The Landing Page Strategy section must include:\n"
+                    "- Structure: Provide a detailed structure (Hero, Features/Benefits, Problem→Solution, Visual/Offer, Testimonials, FAQ, Final CTA).\n"
+                    "- Types: List landing page types (CRM, Funnel, Website) and recommended CTAs for each.\n"
+                    "Use the example copy as a guide for structure and depth.\n"
+                )
             if sec_id == "references":
                 prompt += "\nIMPORTANT: You must include at least 5 credible references with links.\n"
             prompt += (

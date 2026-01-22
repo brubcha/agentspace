@@ -60,24 +60,36 @@ This rubric is designed to ensure every section of the marketing kit achieves th
 - Meets all general richness criteria
 
 ### 8. Brand Archetypes
-- Describes primary and secondary archetypes with mission, voice, values, and emotional promise
-- Uses narrative and callout boxes/quotes
+- For both primary and secondary archetypes: narrative paragraph plus Mission, Voice, Values, Emotional Promise (all as labeled fields)
+- Uses direct quotes and “voice” language
 - Meets all general richness criteria
 
 ### 9. Brand Voice
-- Defines brand essence, purpose, personality, tone, and voice examples
-- Includes do’s and don’ts, taglines, and factual foundations
+- Factual Foundations: brand’s model, disciplines, delivery capability, platform backbone, proof points
+- Taglines: evaluated list, marking on-brand and off-brand examples
+- Voice-in-Action: real-world examples (headlines, captions, ads, emails)
+- Do’s & Don’ts: at least 10 of each, specific and actionable
+- Mission, Voice, Values, Emotional Promise: each as a clearly labeled block
 - Meets all general richness criteria
 
 ### 10. Content
-- Outlines keyword opportunities, blog strategy, and structure
-- Includes blog topic hubs, structure, and sample titles
+- Keyword Opportunity Analysis: strategy with categories (Core Service, Use Case, Trust & Differentiation, B2B/Channel) and phased approach
+- Hub/Spoke Blog Strategy: 3–4 hubs, each with 2–3 spokes
+- Blog Structure: detailed structure (title, intro, problem, insights, proof, applications, trends, links, CTA) and minimum word count
 - Meets all general richness criteria
 
 ### 11. Social Strategy
-- Provides actionable framework for social content creation
-- Specifies content mix, creative emphases, post types, and production checklist
-- Includes campaign and landing page structure
+- Content Mix: required mix (proof/case posts, thought leadership, how-tos, behind-the-scenes, partner spotlights, etc.)
+- Creative Emphases: brand themes, visual style, messaging priorities
+- Production Checklist: content sources, design tips, production best practices
+- Copy Guidelines: actionable rules for tone, language, messaging
+- Idea Starters: 5–6 specific post ideas or formats
+- Cadence & Governance: posting frequency and content rotation
+- Meets all general richness criteria
+
+### 12. Landing Page Strategy
+- Structure: detailed structure (Hero, Features/Benefits, Problem→Solution, Visual/Offer, Testimonials, FAQ, Final CTA)
+- Types: landing page types (CRM, Funnel, Website) and recommended CTAs for each
 - Meets all general richness criteria
 
 ---

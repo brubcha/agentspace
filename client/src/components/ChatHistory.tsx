@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Box, Typography, Paper, Link, Rating, TextField, Button, Collapse } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  Link,
+  Rating,
+  TextField,
+  Button,
+  Collapse,
+} from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { downloadKitDoc } from "../utils/downloadKitDoc";
 
@@ -16,15 +25,18 @@ function isKitData(content: any) {
   );
 }
 
-
-const FeedbackBox: React.FC<{ onSubmit: (rating: number, comment: string) => void }> = ({ onSubmit }) => {
+const FeedbackBox: React.FC<{
+  onSubmit: (rating: number, comment: string) => void;
+}> = ({ onSubmit }) => {
   const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
   return (
     <Collapse in={!submitted}>
-      <Box sx={{ mt: 1, mb: 1, p: 1, bgcolor: '#f5f5f5', borderRadius: 1 }}>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>Rate this output:</Typography>
+      <Box sx={{ mt: 1, mb: 1, p: 1, bgcolor: "#f5f5f5", borderRadius: 1 }}>
+        <Typography variant="body2" sx={{ mb: 0.5 }}>
+          Rate this output:
+        </Typography>
         <Rating
           value={rating}
           onChange={(_, val) => setRating(val)}
@@ -34,7 +46,7 @@ const FeedbackBox: React.FC<{ onSubmit: (rating: number, comment: string) => voi
           size="small"
           label="Comments (optional)"
           value={comment}
-          onChange={e => setComment(e.target.value)}
+          onChange={(e) => setComment(e.target.value)}
           fullWidth
           sx={{ mt: 1, mb: 1 }}
         />
@@ -52,7 +64,9 @@ const FeedbackBox: React.FC<{ onSubmit: (rating: number, comment: string) => voi
           Submit Feedback
         </Button>
         {submitted && (
-          <Typography variant="caption" color="success.main">Thank you for your feedback!</Typography>
+          <Typography variant="caption" color="success.main">
+            Thank you for your feedback!
+          </Typography>
         )}
       </Box>
     </Collapse>
@@ -61,7 +75,9 @@ const FeedbackBox: React.FC<{ onSubmit: (rating: number, comment: string) => voi
 
 const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => {
   // Track feedback state for each agent message by index
-  const [feedback, setFeedback] = useState<{ [idx: number]: { rating: number; comment: string } }>({});
+  const [feedback, setFeedback] = useState<{
+    [idx: number]: { rating: number; comment: string };
+  }>({});
   return (
     <Box sx={{ mt: 2, mb: 2 }}>
       {history.length === 0 ? (
@@ -82,7 +98,8 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => {
             <Typography
               variant="caption"
               sx={(theme) => ({
-                color: theme.palette.mode === "dark" ? "#000" : "text.secondary",
+                color:
+                  theme.palette.mode === "dark" ? "#000" : "text.secondary",
               })}
             >
               {msg.role === "user" ? "You" : "Agent"} @ {msg.timestamp}
@@ -203,17 +220,24 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => {
                 </Link>
                 {/* Feedback UI for agent output */}
                 {feedback[idx] ? (
-                  <Typography variant="caption" color="success.main" sx={{ mt: 1 }}>
+                  <Typography
+                    variant="caption"
+                    color="success.main"
+                    sx={{ mt: 1 }}
+                  >
                     Thank you for your feedback!
                   </Typography>
                 ) : (
                   <FeedbackBox
                     onSubmit={async (rating, comment) => {
-                      setFeedback((prev) => ({ ...prev, [idx]: { rating, comment } }));
+                      setFeedback((prev) => ({
+                        ...prev,
+                        [idx]: { rating, comment },
+                      }));
                       try {
-                        await fetch('/api/feedback', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
+                        await fetch("/api/feedback", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({
                             rating,
                             comment,
@@ -223,7 +247,7 @@ const ChatHistory: React.FC<{ history: ChatMessage[] }> = ({ history }) => {
                         });
                       } catch (err) {
                         // Optionally handle error (e.g., show a message)
-                        console.error('Feedback submission failed', err);
+                        console.error("Feedback submission failed", err);
                       }
                     }}
                   />
