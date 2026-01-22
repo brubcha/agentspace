@@ -1,4 +1,3 @@
-import { saveAs } from "file-saver";
 import {
   Document,
   Packer,
@@ -9,11 +8,53 @@ import {
   TableRow,
   TableCell,
   WidthType,
-  AlignmentType
+  BorderStyle,
+  AlignmentType,
+  VerticalAlign
 } from "docx";
 import { designTokens } from "./designTokens";
+import { saveAs } from "file-saver";
 
-// Add any other needed imports (e.g. parseBold)
+// Simple markdown parser for headings and bold
+function parseMarkdownToRuns(text: string): TextRun[] {
+  const runs = [];
+  // Headings: ##, ###, ####, etc. at start of line
+  const headingMatch = text.match(/^(#{2,6})\s+(.*)$/);
+  if (headingMatch) {
+    const level = headingMatch[1].length;
+    const content = headingMatch[2];
+    let size = designTokens.fontSize.heading2;
+    let color = designTokens.colors.heading2;
+    let font = "Open Sans";
+    if (level === 2) { size = 30; color = "#111827"; } // H2
+    if (level === 3) { size = 20; color = "#111827"; }
+    if (level === 4) { size = 18; color = "#1F2937"; }
+    if (level === 5) { size = 16; color = "#374151"; }
+    runs.push(new TextRun({ text: content, bold: true, size, color, font }));
+    return runs;
+  }
+  // Inline bold: **text**
+  let lastIndex = 0;
+  const boldRegex = /\*\*(.+?)\*\*/g;
+  let match;
+  while ((match = boldRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      runs.push(new TextRun({ text: text.slice(lastIndex, match.index), font: "Roboto", color: designTokens.colors.primaryText, size: designTokens.fontSize.base }));
+    }
+    runs.push(new TextRun({ text: match[1], bold: true, font: "Roboto", color: designTokens.colors.primaryText, size: designTokens.fontSize.base }));
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    runs.push(new TextRun({ text: text.slice(lastIndex), font: "Roboto", color: designTokens.colors.primaryText, size: designTokens.fontSize.base }));
+  }
+  if (runs.length === 0) {
+    runs.push(new TextRun({ text, font: "Roboto", color: designTokens.colors.primaryText, size: designTokens.fontSize.base }));
+  }
+  return runs;
+}
+
+
+// ...existing code...
 
 export function downloadKitDoc(arr: any[], filename: string) {
   const children: any[] = [];
@@ -89,15 +130,10 @@ export function downloadKitDoc(arr: any[], filename: string) {
 
                               // Paragraph block (rich text)
                               if (block.type === "Paragraph" && block.text) {
+                                const cleanText = block.text.replace('[REVIEW]','').trim();
+                                const runs = parseMarkdownToRuns(cleanText);
                                 children.push(new Paragraph({
-                                  children: [
-                                    new TextRun({
-                                      text: block.text.replace('[REVIEW]','').trim(),
-                                      color: designTokens.colors.primaryText,
-                                      font: "Roboto",
-                                      size: designTokens.fontSize.base,
-                                    }),
-                                  ],
+                                  children: runs,
                                   spacing: { after: designTokens.spacing.paragraphAfter },
                                 }));
                                 return;
@@ -135,26 +171,19 @@ export function downloadKitDoc(arr: any[], filename: string) {
                         // Bullets block (rich text)
                         if (block.type === "Bullets" && Array.isArray(block.items)) {
                           block.items.forEach((item: any) => {
-                            let runs = [];
+                            let runs: TextRun[] = [];
                             if (Array.isArray(item)) {
                               item.forEach((part: any) => {
-                                runs.push(new TextRun({
-                                  text: part.text || part,
-                                  bold: !!part.bold,
-                                  italics: !!part.italic,
-                                  color: "000000", // Black bullets
-                                  font: "Roboto",
-                                  size: designTokens.fontSize.base,
-                                  underline: part.underline ? { type: "single", color: "000000" } : undefined,
-                                }));
+                                if (typeof part.text === "string") {
+                                  runs = runs.concat(parseMarkdownToRuns(part.text));
+                                } else {
+                                  runs.push(new TextRun({ text: part.text || part, bold: !!part.bold, italics: !!part.italic, color: "000000", font: "Roboto", size: designTokens.fontSize.base, underline: part.underline ? { type: "single", color: "000000" } : undefined }));
+                                }
                               });
+                            } else if (typeof item === "string") {
+                              runs = parseMarkdownToRuns(item);
                             } else {
-                              runs.push(new TextRun({
-                                text: item,
-                                color: "000000", // Black bullets
-                                font: "Roboto",
-                                size: designTokens.fontSize.base,
-                              }));
+                              runs.push(new TextRun({ text: item, color: "000000", font: "Roboto", size: designTokens.fontSize.base }));
                             }
                             children.push(new Paragraph({
                               children: runs,
