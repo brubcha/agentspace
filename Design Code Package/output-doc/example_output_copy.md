@@ -8,7 +8,6 @@ _Generated on January 21, 2026_
 
 Swift Innovation is more than a services company, it is a connected system of disciplines designed to build momentum for businesses. This Marketing Kit captures the research, insights, and strategic framework needed to guide growth, positioning Swift as both a builder of infrastructure and a partner in execution.
 
-
 - Clarify Swift's position in the Support + Products + Platform market.
 - Define target audiences and their challenges.
 - Document Swift's voice, archetypes, and identity.

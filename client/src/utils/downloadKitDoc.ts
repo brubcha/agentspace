@@ -356,22 +356,9 @@ export function downloadKitDoc(
         return;
       }
 
-      // Info block
+      // Info block: skip rendering
       if (block.type === "INFO" && block.text) {
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: block.text.replace("[REVIEW]", "").trim(),
-                color: designTokens.colors.infoText,
-                font: "Roboto",
-                size: designTokens.fontSize.base,
-              }),
-            ],
-            shading: { fill: designTokens.colors.infoBg },
-            spacing: { after: designTokens.spacing.paragraphAfter },
-          }),
-        );
+        // Do not render INFO blocks in output doc
         return;
       }
 
@@ -379,43 +366,6 @@ export function downloadKitDoc(
       if (block.type === "Paragraph" && block.text) {
         const cleanText = block.text.replace("[REVIEW]", "").trim();
         const runs = parseMarkdownToRuns(cleanText);
-        children.push(
-          new Paragraph({
-            children: runs,
-            spacing: { after: designTokens.spacing.paragraphAfter },
-          }),
-        );
-        return;
-      }
-      // Paragraph block (rich text)
-      if (block.type === "Paragraph" && block.content) {
-        let runs = [];
-        if (Array.isArray(block.content)) {
-          block.content.forEach((part: any) => {
-            runs.push(
-              new TextRun({
-                text: part.text || part,
-                bold: !!part.bold,
-                italics: !!part.italic,
-                color: designTokens.colors.primaryText,
-                font: "Roboto",
-                size: designTokens.fontSize.base,
-                underline: part.underline
-                  ? { type: "single", color: designTokens.colors.primaryText }
-                  : undefined,
-              }),
-            );
-          });
-        } else {
-          runs.push(
-            new TextRun({
-              text: block.content,
-              color: designTokens.colors.primaryText,
-              font: "Roboto",
-              size: designTokens.fontSize.base,
-            }),
-          );
-        }
         children.push(
           new Paragraph({
             children: runs,
@@ -1359,14 +1309,14 @@ export function downloadKitDoc(
     .then((blob) => {
       try {
         saveAs(blob, filename);
-        console.log('Word document generated and saved:', filename);
+        console.log("Word document generated and saved:", filename);
       } catch (saveErr) {
-        console.error('Error saving Word document:', saveErr);
-        alert('Error saving Word document. See console for details.');
+        console.error("Error saving Word document:", saveErr);
+        alert("Error saving Word document. See console for details.");
       }
     })
     .catch((err) => {
-      console.error('Error generating Word document:', err);
-      alert('Error generating Word document. See console for details.');
+      console.error("Error generating Word document:", err);
+      alert("Error generating Word document. See console for details.");
     });
 }
