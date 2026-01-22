@@ -72,6 +72,102 @@ export function downloadKitDoc(arr: any[], filename: string) {
       console.warn("downloadKitDoc: section missing or blocks not array", section);
       return;
     }
+    // Debug: Log all block titles and types in this section
+    section.blocks.forEach((block: any, bIdx: number) => {
+      if (block && block.title) {
+        console.log(`DEBUG: Section[${idx}] Block[${bIdx}] Title: '${block.title}', Type: '${block.type}'`, block);
+      } else {
+        console.log(`DEBUG: Section[${idx}] Block[${bIdx}] (no title), Type: '${block?.type}'`, block);
+      }
+    });
+
+    // Special handling for Engagement Index section if present
+    if (
+      section.id && section.id.toLowerCase() === "engagement_index" &&
+      Array.isArray(section.blocks) && section.blocks.length === 1
+    ) {
+      const block = section.blocks[0];
+      if (block && Array.isArray(block.columns) && Array.isArray(block.rows)) {
+        // Render the Engagement Index table regardless of block type/title
+        children.push(new Paragraph({
+          children: [
+            new TextRun({
+              text: section.title || "Engagement Index",
+              color: designTokens.colors.heading3,
+              size: designTokens.fontSize.heading3,
+              font: "Open Sans",
+            }),
+          ],
+          spacing: { after: designTokens.spacing.heading3After },
+        }));
+        const headerRow = new TableRow({
+          children: block.columns.map((col: string) =>
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: col,
+                      color: designTokens.colors.tableCellText,
+                      size: designTokens.fontSize.tableHeader,
+                      font: "Roboto",
+                    }),
+                  ],
+                  spacing: { after: designTokens.spacing.tableCellPadding },
+                }),
+              ],
+              shading: {
+                fill: designTokens.colors.tableHeaderBg,
+              },
+              borders: {
+                top: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                bottom: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                left: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+                right: { color: designTokens.colors.tableBorder, size: 4, style: "single" },
+              },
+              width: { size: 1000, type: WidthType.DXA },
+            })
+          ),
+        });
+        const bodyRows = block.rows.map((row: string[], rIdx: number) =>
+          new TableRow({
+            children: row.map((cell: string) =>
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: cell,
+                        color: designTokens.colors.tableCellText,
+                        size: designTokens.fontSize.tableCell,
+                        font: "Roboto",
+                      }),
+                    ],
+                    spacing: { after: designTokens.spacing.tableCellPadding },
+                  }),
+                ],
+                shading: {
+                  fill: rIdx % 2 === 0 ? designTokens.colors.tableRow : designTokens.colors.tableRowAlt,
+                },
+                borders: {
+                  top: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                  bottom: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                  left: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                  right: { color: designTokens.colors.tableBorder, size: 2, style: "single" },
+                },
+                width: { size: 1000, type: WidthType.DXA },
+              })
+            ),
+          })
+        );
+        children.push(new Table({
+          rows: [headerRow, ...bodyRows],
+          width: { size: 10000, type: WidthType.DXA },
+          alignment: AlignmentType.CENTER,
+        }));
+        return;
+      }
+    }
     // Section title as heading
     children.push(
       new Paragraph({
