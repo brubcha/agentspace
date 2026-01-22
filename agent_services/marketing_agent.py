@@ -202,10 +202,6 @@ def build_marketing_kit(data):
             "blocks": validated_blocks
         })
 
-    # Always append Engagement Index section from example
-    engagement_index_section = example_sections.get("engagement_index")
-    if engagement_index_section:
-        kit["document"]["sections"].append(engagement_index_section)
 
     # Always append Engagement Index section from example
     engagement_index_section = example_sections.get("engagement_index")
