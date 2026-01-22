@@ -26,6 +26,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
   const [website, setWebsite] = useState("");
   const [offering, setOffering] = useState("");
   const [targetMarkets, setTargetMarkets] = useState("");
+  const [brandStory, setBrandStory] = useState("");
   const [competitors, setCompetitors] = useState("");
   const [additionalDetails, setAdditionalDetails] = useState("");
   // Store files as { filename, content } objects
@@ -61,7 +62,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                 required
               />
             </Tooltip>
-            <Tooltip title="Describe the offering (product/service).">
+            <Tooltip title="Describe the offering (product/service). Example: 'At-home intolerance test kits for food, environment, and skin sensitivities.'">
               <TextField
                 label="Offering"
                 value={offering}
@@ -70,13 +71,24 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
                 margin="normal"
               />
             </Tooltip>
-            <Tooltip title="List the target markets.">
+            <Tooltip title="List the target markets. Example: 'Pet owners, health-conscious adults, families with allergies.'">
               <TextField
                 label="Target Markets"
                 value={targetMarkets}
                 onChange={(e) => setTargetMarkets(e.target.value)}
                 fullWidth
                 margin="normal"
+              />
+            </Tooltip>
+            <Tooltip title="Describe the brand story or mission. Example: 'UCARI empowers people and pets to live their best lives by identifying intolerances and sensitivities through non-invasive testing.'">
+              <TextField
+                label="Brand Story / Mission"
+                value={brandStory}
+                onChange={(e) => setBrandStory(e.target.value)}
+                fullWidth
+                margin="normal"
+                multiline
+                minRows={2}
               />
             </Tooltip>
             <Tooltip title="List competitors (comma separated or one per line).">
@@ -204,6 +216,7 @@ const RequestForm: React.FC<{ onSubmit: (data: any) => void }> = ({
       website: website, // for compatibility
       offering,
       target_markets: targetMarkets,
+      brand_story: brandStory,
       competitors,
       additional_details: additionalDetails,
       files, // Now array of File objects

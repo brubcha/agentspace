@@ -102,22 +102,23 @@ export function downloadKitDoc(
   requestType?: string,
   clientName?: string,
 ) {
-  const children: any[] = [];
-  const dividerAfter = [
-    /* section titles to add divider after */
-  ];
+  try {
+    if (!Array.isArray(arr) || arr.length === 0) {
+      console.error("downloadKitDoc: arr is not a valid non-empty array", arr);
+      alert("Error: No valid content to generate document. The input data is empty or malformed.");
+      return;
+    }
+    const children: any[] = [];
+    const dividerAfter = [
+      /* section titles to add divider after */
+    ];
+    console.log("downloadKitDoc: sections input", arr);
 
-  if (!Array.isArray(arr)) {
-    console.warn("downloadKitDoc: arr is not an array", arr);
-    return;
-  }
-  console.log("downloadKitDoc: sections input", arr);
-
-  let engagementIndexRendered = false;
-  arr.forEach((section, idx) => {
-    // Insert Request Type and Client Name before Overview section
-    if (
-      section &&
+    let engagementIndexRendered = false;
+    arr.forEach((section, idx) => {
+      // Insert Request Type and Client Name before Overview section
+      if (
+        section &&
       (section.id?.toLowerCase() === "overview" ||
         section.title?.toLowerCase().includes("overview"))
     ) {
@@ -1288,35 +1289,39 @@ export function downloadKitDoc(
     // ...existing code...
   });
 
-  const doc = new Document({
-    sections: [
-      {
-        properties: {
-          page: {
-            margin: {
-              top: 720, // 0.5 inch
-              right: 720,
-              bottom: 720,
-              left: 720,
+    const doc = new Document({
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: 720, // 0.5 inch
+                right: 720,
+                bottom: 720,
+                left: 720,
+              },
             },
           },
+          children,
         },
-        children,
-      },
-    ],
-  });
-  Packer.toBlob(doc)
-    .then((blob) => {
-      try {
-        saveAs(blob, filename);
-        console.log("Word document generated and saved:", filename);
-      } catch (saveErr) {
-        console.error("Error saving Word document:", saveErr);
-        alert("Error saving Word document. See console for details.");
-      }
-    })
-    .catch((err) => {
-      console.error("Error generating Word document:", err);
-      alert("Error generating Word document. See console for details.");
+      ],
     });
+    Packer.toBlob(doc)
+      .then((blob) => {
+        try {
+          saveAs(blob, filename);
+          console.log("Word document generated and saved:", filename);
+        } catch (saveErr) {
+          console.error("Error saving Word document:", saveErr);
+          alert("Error saving Word document. See console for details.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error generating Word document:", err);
+        alert("Error generating Word document. See console for details.");
+      });
+  } catch (fatalErr) {
+    console.error("Fatal error in downloadKitDoc:", fatalErr);
+    alert("Fatal error generating Word document. See console for details.");
+  }
 }
