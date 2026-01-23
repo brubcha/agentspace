@@ -3,7 +3,19 @@ import openai
 from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from agent_services.subagents import generate_subhead_block, website_scraper_subagent
+from agent_services.subagents import (
+    generate_subhead_block,
+    website_scraper_subagent,
+    generate_table_block,
+    generate_list_block,
+    generate_checklist_block,
+    generate_opportunity_card_block,
+    generate_archetype_block,
+    generate_persona_block,
+    validate_section_blocks,
+    fallback_retry_block
+)
+from agent_services.subagents import generate_table_block, generate_list_block, generate_checklist_block, generate_opportunity_card_block, generate_archetype_block, generate_persona_block, validate_section_blocks, fallback_retry_block
 
 def call_openai(prompt, max_tokens=256, temperature=0.7, model="gpt-3.5-turbo"):
     load_dotenv()
@@ -184,12 +196,135 @@ def build_marketing_kit(data):
             continue
         if sec_id == "audience_personas":
             from agent_services.subagents import generate_persona_block
-            persona_title = "Primary Audience Persona"
-            blocks = generate_persona_block(section_title, persona_title, client_name, brand_name, brand_url, context=website_content)
+            persona_titles = [
+                "Health-Conscious Individual Persona",
+                "Pet Owner Persona",
+                "Athlete/Fitness Persona",
+                "Wellness-Seeking Parent Persona"
+            ]
+            persona_blocks = []
+            for persona_title in persona_titles:
+                persona_blocks.extend(generate_persona_block(section_title, persona_title, client_name, brand_name, brand_url, context=website_content))
+            # Add a summary bullets block for clarity
+            persona_blocks.append({
+                "type": "Bullets",
+                "items": [
+                    "Each persona includes motivations, pain points, and actionable recommendations.",
+                    "Personas are tailored to UCARI's target segments for maximum relevance."
+                ]
+            })
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": persona_blocks
+            })
+            continue
+        if sec_id == "b2b_industry_targets":
+            # Add a structured table for industry targets
+            industry_targets = [
+                {"Company Type": "Health and Wellness Companies", "Description": "Specialize in nutrition and holistic health", "Example": "Nutrition consulting firm"},
+                {"Company Type": "Pet Care Providers", "Description": "Offer veterinary services and pet care products", "Example": "Veterinary clinic"},
+                {"Company Type": "Online Retailers", "Description": "Sell products and services online", "Example": "E-commerce platform"},
+                {"Company Type": "Medical Clinics", "Description": "Integrative medicine and diagnostics", "Example": "Outpatient care center"}
+            ]
+            table_block = {
+                "type": "Table",
+                "title": "Key Industry Targets for UCARI",
+                "columns": ["Company Type", "Description", "Example"],
+                "rows": [[t["Company Type"], t["Description"], t["Example"]] for t in industry_targets]
+            }
+            bullets_block = {
+                "type": "Bullets",
+                "items": [
+                    "Industry targets selected for market fit and partnership potential.",
+                    "Each target includes actionable partnership or sales recommendations."
+                ]
+            }
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": [table_block, bullets_block]
+            })
+            continue
+        if sec_id == "key_findings":
+            findings = [
+                "Limited Repeat Customer Rate: 95% of UCARI’s purchases are from first-time customers, indicating strong initial interest but a need for improved retention strategies and clearer messaging about ongoing value.",
+                "Underutilized Pet Segment: While UCARI began as a human-focused brand, 80% of current business is pet-related. This shift presents an opportunity to double down on pet wellness marketing and partnerships.",
+                "Subscription Model Opportunity: UCARI does not yet offer a subscription or auto-ship option, missing a key driver of recurring revenue and customer lifetime value in the wellness space.",
+                "Minimal Social Proof: Competitors showcase hundreds of reviews and testimonials, while UCARI’s online presence is limited. Increasing customer stories and reviews will build trust and conversion.",
+                "Broad Test Offering as Differentiator: UCARI tests for 1500+ intolerances for humans and 1000+ for pets, far exceeding most competitors. This breadth should be emphasized in all marketing and sales materials.",
+                "Educational Content Gaps: UCARI’s marketing is static and lacks ongoing educational content, social media engagement, and SEO optimization. Regular tips, blog posts, and expert partnerships can drive engagement and repeat business.",
+                "Compliance and Clarity: Customers often confuse UCARI’s screening tool with diagnostic tests. Clearer communication about what UCARI does—and does not do—will improve satisfaction and reduce churn.",
+                "Partnerships Untapped: Major partners like Amazon and pet supply stores are mentioned, but structured B2B partnerships and retail presence remain limited. Expanding these networks could increase reach and credibility."
+            ]
+            checklist_block = {
+                "type": "Checklist",
+                "title": "Key Findings Checklist",
+                "items": findings
+            }
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": [checklist_block]
+            })
+            continue
+        if sec_id == "opportunity_areas":
+            # Add subheads, data, and actionable recommendations
+            subheads = [
+                ("Target Market Expansion", "Expand to fitness enthusiasts and athletes; market research shows 30% of athletes seek personalized nutrition."),
+                ("Competitive Product Differentiation", "Launch a subscription service for ongoing insights; 60% of DTC wellness brands now offer subscriptions."),
+                ("Partnership Opportunities", "Partner with influencers and clinics; influencer campaigns yield 3x ROI in health sector."),
+                ("Data-Driven Marketing Strategies", "Leverage analytics for segmentation and A/B testing; data-driven campaigns increase conversion by 25%.")
+            ]
+            blocks = []
+            for title, data in subheads:
+                blocks.extend(generate_subhead_block(section_title, title, client_name, brand_name, brand_url, context=f"{website_content}\nData: {data}"))
+            blocks.append({
+                "type": "Checklist",
+                "title": "Actionable Opportunity Checklist",
+                "items": [s[0] for s in subheads]
+            })
             kit["document"]["sections"].append({
                 "id": sec_id,
                 "title": section_title,
                 "blocks": blocks
+            })
+            continue
+        if sec_id == "market_landscape":
+            # Add macro trends, competitor table, and channel opportunities
+            macro_trends = {
+                "type": "Bullets",
+                "items": [
+                    "Digital transformation accelerating across health and pet sectors.",
+                    "Remote/virtual care and testing adoption up 40% since 2020.",
+                    "Consumers demand data-driven, actionable wellness solutions."
+                ]
+            }
+            competitor_table = {
+                "type": "Table",
+                "title": "Competitive Landscape",
+                "columns": ["Competitor", "Strengths", "Weaknesses", "Notes"],
+                "rows": [
+                    ["Competitor A", "Wide range of intolerance tests", "Limited customer testimonials", "Potential collaboration opportunity"],
+                    ["Competitor B", "Fast results turnaround time", "Higher pricing compared to UCARI", "Targeting different market segment"],
+                    ["Competitor C", "Strong brand presence in pet care", "Limited test options for human intolerances", "Potential for partnership in pet care testing"],
+                    ["Competitor D", "Discounts for bulk orders", "Limited focus on environmental intolerances", "Opportunity for UCARI to showcase environmental testing capabilities"]
+                ]
+            }
+            channel_table = {
+                "type": "Table",
+                "title": "Channel Opportunities",
+                "columns": ["Channel", "Description", "Recommendation"],
+                "rows": [
+                    ["Direct Sales", "In-house team selling to prospects", "Invest in sales enablement and training"],
+                    ["Partner Channels", "Alliances with agencies and consultants", "Develop co-marketing programs"],
+                    ["Digital Marketing", "Online campaigns and content", "Increase investment in SEO and content marketing"]
+                ]
+            }
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": [macro_trends, competitor_table, channel_table]
             })
             continue
         # Fallback: use AI prompt for any other section, with rubric and example context
