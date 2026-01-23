@@ -1,3 +1,154 @@
+
+import sys, os
+import openai
+from dotenv import load_dotenv
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from agent_services.subagents import (
+    generate_subhead_block,
+    website_scraper_subagent,
+    generate_table_block,
+    generate_list_block,
+    generate_checklist_block,
+    generate_opportunity_card_block,
+    generate_archetype_block,
+    generate_persona_block,
+    validate_section_blocks,
+    fallback_retry_block
+)
+from agent_services.subagents import generate_table_block, generate_list_block, generate_checklist_block, generate_opportunity_card_block, generate_archetype_block, generate_persona_block, validate_section_blocks, fallback_retry_block
+
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import os
+import json
+from kit_templates import load_example_kit
+
+
+app = Flask(__name__)
+CORS(app)
+print(f"[DIAGNOSTIC] TOP OF marketing_agent.py loaded from: {__file__} | app id: {id(app)}")
+
+
+
+
+# --- Ensure endpoint is at the end of the file, not indented, and unique ---
+print(f"[DIAGNOSTIC] Registering /agent/test-audit-docx endpoint (final placement) | app id: {id(app)}")
+from audit_docx import audit_to_docx
+@app.route('/agent/test-audit-docx', methods=['POST'])
+def test_audit_docx_final():
+    print(f"[DIAGNOSTIC] In /agent/test-audit-docx endpoint function | app id: {id(app)}")
+    try:
+        if request.is_json:
+            data = request.get_json()
+        else:
+            data = request.form.to_dict()
+            if 'files' in request.files:
+                data['files'] = [
+                    {
+                        'filename': f.filename,
+                        'mimetype': f.mimetype,
+                        'size': len(f.read())
+                    }
+                    for f in request.files.getlist('files')
+                ]
+
+        kit = build_marketing_kit(data)
+        expected_sections = [
+            "overview", "goal", "opportunity_areas", "key_findings", "market_landscape",
+            "audience_personas", "b2b_industry_targets", "brand_archetypes", "brand_voice",
+            "content", "social_strategy", "engagement_framework", "references", "engagement_index"
+        ]
+        rendered_sections = [s["id"] for s in kit["document"]["sections"]]
+        missing_sections = [sec for sec in expected_sections if sec not in rendered_sections]
+        audit_details = []
+        section_audits = []
+        for sec in expected_sections:
+            section_audit = {"section": sec}
+            rendered = next((s for s in kit["document"]["sections"] if s["id"] == sec), None)
+            if not rendered:
+                section_audit["status"] = "missing"
+                section_audit["reason"] = "Section not present in output."
+                section_audit["blocks"] = []
+            else:
+                blocks = rendered.get("blocks", [])
+                if not blocks:
+                    section_audit["status"] = "empty"
+                    section_audit["reason"] = "Section present but contains no blocks."
+                    section_audit["blocks"] = []
+                else:
+                    section_audit["status"] = "ok"
+                    section_audit["reason"] = "Section present with blocks."
+                    block_audits = []
+                    findings_present = True
+                    # Special check for key_findings section
+                    if sec == "key_findings":
+                        findings_blocks = [b for b in blocks if b.get("type") in ["NumberedFindingsList", "Bullets", "Paragraph"]]
+                        findings_present = any(
+                            (b.get("type") == "NumberedFindingsList" and b.get("items")) or
+                            (b.get("type") == "Bullets" and b.get("items")) or
+                            (b.get("type") == "Paragraph" and b.get("text"))
+                            for b in findings_blocks
+                        )
+                        if not findings_present:
+                            section_audit["status"] = "missing_findings"
+                            section_audit["reason"] = "Key Findings section present but no findings detected."
+                    for idx, block in enumerate(blocks):
+                        block_status = "ok"
+                        issues = []
+                        # Check for empty text/content
+                        if block.get("type") == "Paragraph" and not block.get("text"):
+                            block_status = "empty"
+                            issues.append("Paragraph block is empty.")
+                        if block.get("type") == "Bullets" and not block.get("items"):
+                            block_status = "empty"
+                            issues.append("Bullets block is empty.")
+                        if block.get("type") == "Table" and not block.get("rows"):
+                            block_status = "empty"
+                            issues.append("Table block is empty.")
+                        # Check for [REVIEW] tag
+                        block_text = block.get("text", "")
+                        if "[REVIEW]" in block_text:
+                            block_status = "review"
+                            issues.append("Block contains [REVIEW] tag (AI uncertainty).")
+                        # Check for generic/placeholder content
+                        if block_text.strip().lower() in ["tbd", "to be added", "placeholder"]:
+                            block_status = "placeholder"
+                            issues.append("Block contains placeholder content.")
+                        block_audits.append({
+                            "index": idx,
+                            "type": block.get("type"),
+                            "status": block_status,
+                            "issues": issues,
+                            "text": block_text,
+                        })
+                    section_audit["blocks"] = block_audits
+                    # Example: check for rubric criteria (can be expanded)
+                    section_audit["rubric"] = []
+            section_audits.append(section_audit)
+        audit = {
+            "expected_sections": expected_sections,
+            "rendered_sections": rendered_sections,
+            "missing_sections": missing_sections,
+            "details": audit_details,
+            "section_audits": section_audits
+        }
+        # --- Generate docx ---
+        docx_bytes = audit_to_docx(audit)
+        from flask import send_file
+        import io
+        response = send_file(
+            io.BytesIO(docx_bytes),
+            mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            as_attachment=True,
+            download_name="marketing_kit_audit.docx"
+        )
+        response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
+        return response
+    except Exception as e:
+        print(f"[ERROR] Exception in /agent/test-audit-docx: {e}")
+        from flask import jsonify
+        return jsonify({'error': str(e)}), 500
 import sys, os
 import openai
 from dotenv import load_dotenv
@@ -406,11 +557,7 @@ def build_marketing_kit(data):
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
-import json
-from kit_templates import load_example_kit
 
-app = Flask(__name__)
-CORS(app)
 
 
 
@@ -437,10 +584,129 @@ def marketing_kit():
         print(f"[DEBUG] Received /agent/marketing-kit (Marketing Kit) request: {json.dumps(data, indent=2)}")
         kit = build_marketing_kit(data)
         print(f"[DEBUG] Responding with kit: {json.dumps(kit, indent=2)[:1000]}... (truncated)")
+
+        # Audit logic: compare expected vs. rendered sections
+        expected_sections = [
+            "overview", "goal", "opportunity_areas", "key_findings", "market_landscape",
+            "audience_personas", "b2b_industry_targets", "brand_archetypes", "brand_voice",
+            "content", "social_strategy", "engagement_framework", "references", "engagement_index"
+        ]
+        rendered_sections = [s["id"] for s in kit["document"]["sections"]]
+        missing_sections = [sec for sec in expected_sections if sec not in rendered_sections]
+
+        # For each rendered section, check if blocks are empty or missing expected block types
+        audit_details = []
+        for sec in expected_sections:
+            rendered = next((s for s in kit["document"]["sections"] if s["id"] == sec), None)
+            if not rendered:
+                audit_details.append({
+                    "section": sec,
+                    "status": "missing",
+                    "reason": "Section not present in output."
+                })
+            else:
+                if not rendered.get("blocks"):
+                    audit_details.append({
+                        "section": sec,
+                        "status": "empty",
+                        "reason": "Section present but contains no blocks."
+                    })
+                else:
+                    # Example: check for Key Findings block type
+                    if sec == "key_findings":
+                        has_numbered = any(b.get("type") == "NumberedFindingsList" for b in rendered["blocks"])
+                        if not has_numbered:
+                            audit_details.append({
+                                "section": sec,
+                                "status": "incorrect",
+                                "reason": "Key Findings section does not contain NumberedFindingsList block."
+                            })
+        # Enhanced audit logic (reuse from test_audit_docx_final)
+        section_audits = []
+        for sec in expected_sections:
+            section_audit = {"section": sec}
+            rendered = next((s for s in kit["document"]["sections"] if s["id"] == sec), None)
+            if not rendered:
+                section_audit["status"] = "missing"
+                section_audit["reason"] = "Section not present in output."
+                section_audit["blocks"] = []
+            else:
+                blocks = rendered.get("blocks", [])
+                if not blocks:
+                    section_audit["status"] = "empty"
+                    section_audit["reason"] = "Section present but contains no blocks."
+                    section_audit["blocks"] = []
+                else:
+                    section_audit["status"] = "ok"
+                    section_audit["reason"] = "Section present with blocks."
+                    block_audits = []
+                    for idx, block in enumerate(blocks):
+                        block_status = "ok"
+                        issues = []
+                        if block.get("type") == "Paragraph" and not block.get("text"):
+                            block_status = "empty"
+                            issues.append("Paragraph block is empty.")
+                        if block.get("type") == "Bullets" and not block.get("items"):
+                            block_status = "empty"
+                            issues.append("Bullets block is empty.")
+                        if block.get("type") == "Table" and not block.get("rows"):
+                            block_status = "empty"
+                            issues.append("Table block is empty.")
+                        block_text = block.get("text", "")
+                        if "[REVIEW]" in block_text:
+                            block_status = "review"
+                            issues.append("Block contains [REVIEW] tag (AI uncertainty).")
+                        if block_text.strip().lower() in ["tbd", "to be added", "placeholder"]:
+                            block_status = "placeholder"
+                            issues.append("Block contains placeholder content.")
+                        block_audits.append({
+                            "index": idx,
+                            "type": block.get("type"),
+                            "status": block_status,
+                            "issues": issues,
+                            "text": block_text,
+                        })
+                    section_audit["blocks"] = block_audits
+            section_audits.append(section_audit)
+        audit = {
+            "expected_sections": expected_sections,
+            "rendered_sections": rendered_sections,
+            "missing_sections": missing_sections,
+            "details": audit_details,
+            "section_audits": section_audits
+        }
+
+        # Generate and store audit docx to disk for later download
+        from audit_docx import audit_to_docx
+        import io
+        audit_docx_bytes = audit_to_docx(audit)
+        audit_docx_path = os.path.join(os.getcwd(), "marketing_kit_audit.docx")
+        with open(audit_docx_path, "wb") as f:
+            f.write(audit_docx_bytes)
+
+        if request.args.get("download_audit") == "1":
+            import io
+            from flask import send_file, make_response
+            audit_bytes = io.BytesIO(json.dumps(audit, indent=2).encode("utf-8"))
+            audit_bytes.seek(0)
+            response = send_file(
+                audit_bytes,
+                mimetype="application/json",
+                as_attachment=True,
+                download_name="marketing_kit_audit.json"
+            )
+            response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
+            return response
+
+        # Otherwise, return kit as usual
         return jsonify(kit)
     except Exception as e:
         print(f"[ERROR] Exception in /agent/marketing-kit: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+    print(f"[STARTUP] Running marketing_agent.py from: {__file__} | app id: {id(app)}")
+    print("[DIAGNOSTIC] Registered Flask routes:")
+    for rule in app.url_map.iter_rules():
+        print(f"[ROUTE] {rule}")
     app.run(port=7000, debug=True)
