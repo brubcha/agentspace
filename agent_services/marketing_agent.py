@@ -1,6 +1,9 @@
-import os
-from dotenv import load_dotenv
+import sys, os
 import openai
+from dotenv import load_dotenv
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from agent_services.subagents import generate_subhead_block, website_scraper_subagent
 
 def call_openai(prompt, max_tokens=256, temperature=0.7, model="gpt-3.5-turbo"):
     load_dotenv()
@@ -40,6 +43,9 @@ def build_marketing_kit(data):
     target_markets = data.get("target_markets") or data.get("targetMarkets") or ""
     competitors = data.get("competitors", "")
     website_content = data.get("website_content", "")
+    # Use website scraper subagent if website_content is not provided and brand_url is available
+    if not website_content and brand_url:
+        website_content = website_scraper_subagent(brand_url)
     brand_story = data.get("brand_story", "")
     additional_details = data.get("additional_details") or data.get("extraInfo") or ""
     request_type = data.get("request_type") or data.get("requestType") or ""
@@ -86,6 +92,78 @@ def build_marketing_kit(data):
     # Load the example markdown and split into sections
     import re
     example_md = load_example_markdown()
+
+    for sec_id in required_sections:
+        if sec_id == "engagement_index":
+            continue
+        section_title = sec_id.replace('_', ' ').title()
+        user_blocks = []
+        if sec_id == "overview":
+            from agent_services.subagents import fallback_retry_block
+            # Modular subagent demo for 'Overview' section
+            intro_block = {
+                "type": "Paragraph",
+                "text": f"{brand_name} is a unique platform. This Marketing Kit provides a strategic foundation for growth, positioning, and execution."
+            }
+            user_blocks.append(intro_block)
+            overview_subheads = [
+                "Purpose of the Kit",
+                "How to Use It",
+                "What’s Inside"
+            ]
+            for subhead in overview_subheads:
+                blocks = fallback_retry_block(generate_subhead_block, section_title, subhead, client_name, brand_name, brand_url, context=website_content)
+                user_blocks.extend(blocks)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": user_blocks
+            })
+            continue
+        # Use Checklist Generator Subagent for a checklist-based section (e.g., 'launch_checklist')
+        if sec_id == "launch_checklist":
+            from agent_services.subagents import generate_checklist_block
+            checklist_title = "Launch Checklist"
+            blocks = generate_checklist_block(section_title, checklist_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        # Use Opportunity Card Generator Subagent for an opportunity card-based section (e.g., 'opportunity_cards')
+        if sec_id == "opportunity_cards":
+            from agent_services.subagents import generate_opportunity_card_block
+            card_title = "Key Opportunity Card"
+            blocks = generate_opportunity_card_block(section_title, card_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        # Use Archetype Generator Subagent for an archetype-based section (e.g., 'brand_archetype')
+        if sec_id == "brand_archetype":
+            from agent_services.subagents import generate_archetype_block
+            archetype_title = "Brand Archetype"
+            blocks = generate_archetype_block(section_title, archetype_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        # Use Persona Generator Subagent for a persona-based section (e.g., 'audience_personas')
+        if sec_id == "audience_personas":
+            from agent_services.subagents import generate_persona_block
+            persona_title = "Primary Audience Persona"
+            blocks = generate_persona_block(section_title, persona_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
     # Build a dict: section_name (lowercase, no punctuation) -> section text
     section_pattern = re.compile(r'^# (.+)$', re.MULTILINE)
     md_sections = {}
@@ -96,12 +174,58 @@ def build_marketing_kit(data):
         end = matches[i+1].start() if i+1 < len(matches) else len(example_md)
         md_sections[section_name] = example_md[start:end].strip()
 
+
     for sec_id in required_sections:
         if sec_id == "engagement_index":
             continue
-        user_blocks = []
-        # Compose a prompt for OpenAI based on section and user data
         section_title = sec_id.replace('_', ' ').title()
+        user_blocks = []
+        if sec_id == "overview":
+            from agent_services.subagents import fallback_retry_block
+            # Modular subagent demo for 'Overview' section
+            intro_block = {
+                "type": "Paragraph",
+                "text": f"{brand_name} is a unique platform. This Marketing Kit provides a strategic foundation for growth, positioning, and execution."
+            }
+            user_blocks.append(intro_block)
+            overview_subheads = [
+                "Purpose of the Kit",
+                "How to Use It",
+                "What’s Inside"
+            ]
+            for subhead in overview_subheads:
+                blocks = fallback_retry_block(generate_subhead_block, section_title, subhead, client_name, brand_name, brand_url)
+                user_blocks.extend(blocks)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": user_blocks
+            })
+            continue
+        # Use Table Generator Subagent for the first table-based section (e.g., 'market_landscape')
+        if sec_id == "market_landscape":
+            from agent_services.subagents import generate_table_block
+            table_title = "Competitive Landscape"
+            columns = ["Competitor", "Strengths", "Weaknesses", "Notes"]
+            blocks = generate_table_block(section_title, table_title, client_name, brand_name, brand_url, columns, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        # Use List Generator Subagent for a list-based section (e.g., 'key_opportunities')
+        if sec_id == "key_opportunities":
+            from agent_services.subagents import generate_list_block
+            list_title = "Key Opportunities"
+            blocks = generate_list_block(section_title, list_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        # ...existing code for other sections...
         prompt = f"Generate the '{section_title}' section for a marketing kit.\n"
         prompt += f"Request Type: {request_type}\n"
         prompt += f"Client Name: {client_name}\n"
@@ -111,20 +235,18 @@ def build_marketing_kit(data):
         prompt += f"Target Markets: {target_markets}\n"
         prompt += f"Competitors: {competitors}\n"
         if website_content:
-            prompt += f"Website Content: {website_content[:1000]}\n"  # Limit to 1000 chars for prompt size
+            prompt += f"Website Content: {website_content[:1000]}\n"
         if brand_story:
-            prompt += f"Brand Story: {brand_story[:500]}\n"  # Limit to 500 chars
+            prompt += f"Brand Story: {brand_story[:500]}\n"
         if additional_details:
             prompt += f"Additional Details: {additional_details[:1000]}\n"
         if file_contents:
-            prompt += f"Attached Files: {' | '.join(file_contents)[:2000]}\n"  # Limit total file content for prompt size
+            prompt += f"Attached Files: {' | '.join(file_contents)[:2000]}\n"
         prompt += f"Section: {section_title}\n"
         prompt += ("\nIMPORTANT: For this section, use specific examples, data, and actionable recommendations relevant to the client's industry and context. Avoid generic or vague language. Every paragraph should reference the client or their market context. If you cannot provide a concrete example or recommendation, leave a [REVIEW] tag for human review.\n")
-        # Add a few-shot example from the markdown if available
         md_key = sec_id.lower().replace('&', 'and').replace(' ', '_').replace('-', '_')
         if md_key in md_sections:
             prompt += f"\nExample Section Copy (for reference, do not copy verbatim):\n{md_sections[md_key][:1200]}\n"
-        # Add rubric criteria for this section
         rubric_key = section_title.lower()
         section_criteria = rubric_sections.get(rubric_key, [])
         if section_criteria:
@@ -146,8 +268,6 @@ def build_marketing_kit(data):
             "Do not include any explanation or prose outside the JSON."
         )
 
-
-        # DEBUG: Print the prompt to verify file content is included
         print("\n--- AI PROMPT START ---\n" + prompt + "\n--- AI PROMPT END ---\n")
         try:
             ai_response = call_openai(prompt, max_tokens=1024)
@@ -158,7 +278,6 @@ def build_marketing_kit(data):
                 {"type": "Paragraph", "text": f"[AI generation failed: {e}]"}
             ]
 
-        # Validation: Check for generic content and missing richness elements
         def is_generic(text):
             generic_phrases = [
                 "in today's world", "businesses should", "it is important to", "companies can benefit", "in conclusion", "overall", "as a result", "the following", "this section", "the company", "organization should", "industry leaders", "market trends", "key takeaway", "best practices"
@@ -172,14 +291,16 @@ def build_marketing_kit(data):
         def has_example(text):
             return "for example" in text.lower() or "such as" in text.lower() or "e.g." in text.lower()
 
-        validated_blocks = []
-        for block in user_blocks:
-            if block.get("type") == "Paragraph":
-                text = block.get("text", "")
-                if is_generic(text) or not has_actionable(text) or not has_example(text):
-                    block["text"] = f"[REVIEW] {text}"
-            validated_blocks.append(block)
-
+        from agent_services.subagents import validate_section_blocks
+        validated_blocks = validate_section_blocks(
+            section_title,
+            user_blocks,
+            client_name,
+            brand_name,
+            brand_url,
+            rubric_criteria=section_criteria,
+            general_criteria=general_criteria
+        )
         kit["document"]["sections"].append({
             "id": sec_id,
             "title": example_sections.get(sec_id, {}).get("title", sec_id.title()),
