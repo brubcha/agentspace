@@ -248,24 +248,23 @@ def build_marketing_kit(data):
             continue
         if sec_id == "key_findings":
             findings = [
-                "Limited Repeat Customer Rate: 95% of UCARI’s purchases are from first-time customers, indicating strong initial interest but a need for improved retention strategies and clearer messaging about ongoing value.",
-                "Underutilized Pet Segment: While UCARI began as a human-focused brand, 80% of current business is pet-related. This shift presents an opportunity to double down on pet wellness marketing and partnerships.",
-                "Subscription Model Opportunity: UCARI does not yet offer a subscription or auto-ship option, missing a key driver of recurring revenue and customer lifetime value in the wellness space.",
-                "Minimal Social Proof: Competitors showcase hundreds of reviews and testimonials, while UCARI’s online presence is limited. Increasing customer stories and reviews will build trust and conversion.",
-                "Broad Test Offering as Differentiator: UCARI tests for 1500+ intolerances for humans and 1000+ for pets, far exceeding most competitors. This breadth should be emphasized in all marketing and sales materials.",
-                "Educational Content Gaps: UCARI’s marketing is static and lacks ongoing educational content, social media engagement, and SEO optimization. Regular tips, blog posts, and expert partnerships can drive engagement and repeat business.",
-                "Compliance and Clarity: Customers often confuse UCARI’s screening tool with diagnostic tests. Clearer communication about what UCARI does—and does not do—will improve satisfaction and reduce churn.",
-                "Partnerships Untapped: Major partners like Amazon and pet supply stores are mentioned, but structured B2B partnerships and retail presence remain limited. Expanding these networks could increase reach and credibility."
+                {"text": "Limited Repeat Customer Rate: 95% of UCARI’s purchases are from first-time customers, indicating strong initial interest but a need for improved retention strategies and clearer messaging about ongoing value."},
+                {"text": "Underutilized Pet Segment: While UCARI began as a human-focused brand, 80% of current business is pet-related. This shift presents an opportunity to double down on pet wellness marketing and partnerships."},
+                {"text": "Subscription Model Opportunity: UCARI does not yet offer a subscription or auto-ship option, missing a key driver of recurring revenue and customer lifetime value in the wellness space."},
+                {"text": "Minimal Social Proof: Competitors showcase hundreds of reviews and testimonials, while UCARI’s online presence is limited. Increasing customer stories and reviews will build trust and conversion."},
+                {"text": "Broad Test Offering as Differentiator: UCARI tests for 1500+ intolerances for humans and 1000+ for pets, far exceeding most competitors. This breadth should be emphasized in all marketing and sales materials."},
+                {"text": "Educational Content Gaps: UCARI’s marketing is static and lacks ongoing educational content, social media engagement, and SEO optimization. Regular tips, blog posts, and expert partnerships can drive engagement and repeat business."},
+                {"text": "Compliance and Clarity: Customers often confuse UCARI’s screening tool with diagnostic tests. Clearer communication about what UCARI does—and does not do—will improve satisfaction and reduce churn."},
+                {"text": "Partnerships Untapped: Major partners like Amazon and pet supply stores are mentioned, but structured B2B partnerships and retail presence remain limited. Expanding these networks could increase reach and credibility."}
             ]
-            checklist_block = {
-                "type": "Checklist",
-                "title": "Key Findings Checklist",
+            numbered_findings_block = {
+                "type": "NumberedFindingsList",
                 "items": findings
             }
             kit["document"]["sections"].append({
                 "id": sec_id,
                 "title": section_title,
-                "blocks": [checklist_block]
+                "blocks": [numbered_findings_block]
             })
             continue
         if sec_id == "opportunity_areas":
