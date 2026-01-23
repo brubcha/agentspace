@@ -93,14 +93,25 @@ def build_marketing_kit(data):
     import re
     example_md = load_example_markdown()
 
+    # Build a dict: section_name (lowercase, no punctuation) -> section text
+    section_pattern = re.compile(r'^# (.+)$', re.MULTILINE)
+    md_sections = {}
+    matches = list(section_pattern.finditer(example_md))
+    for i, match in enumerate(matches):
+        section_name = match.group(1).strip().lower().replace('&', 'and').replace(' ', '_').replace('-', '_')
+        start = match.end()
+        end = matches[i+1].start() if i+1 < len(matches) else len(example_md)
+        md_sections[section_name] = example_md[start:end].strip()
+
+    # Only loop ONCE over required_sections, in order, and append each section only once
     for sec_id in required_sections:
         if sec_id == "engagement_index":
             continue
         section_title = sec_id.replace('_', ' ').title()
         user_blocks = []
+        # Use subagents and structured blocks for each section
         if sec_id == "overview":
             from agent_services.subagents import fallback_retry_block
-            # Modular subagent demo for 'Overview' section
             intro_block = {
                 "type": "Paragraph",
                 "text": f"{brand_name} is a unique platform. This Marketing Kit provides a strategic foundation for growth, positioning, and execution."
@@ -120,89 +131,6 @@ def build_marketing_kit(data):
                 "blocks": user_blocks
             })
             continue
-        # Use Checklist Generator Subagent for a checklist-based section (e.g., 'launch_checklist')
-        if sec_id == "launch_checklist":
-            from agent_services.subagents import generate_checklist_block
-            checklist_title = "Launch Checklist"
-            blocks = generate_checklist_block(section_title, checklist_title, client_name, brand_name, brand_url, context=website_content)
-            kit["document"]["sections"].append({
-                "id": sec_id,
-                "title": section_title,
-                "blocks": blocks
-            })
-            continue
-        # Use Opportunity Card Generator Subagent for an opportunity card-based section (e.g., 'opportunity_cards')
-        if sec_id == "opportunity_cards":
-            from agent_services.subagents import generate_opportunity_card_block
-            card_title = "Key Opportunity Card"
-            blocks = generate_opportunity_card_block(section_title, card_title, client_name, brand_name, brand_url, context=website_content)
-            kit["document"]["sections"].append({
-                "id": sec_id,
-                "title": section_title,
-                "blocks": blocks
-            })
-            continue
-        # Use Archetype Generator Subagent for an archetype-based section (e.g., 'brand_archetype')
-        if sec_id == "brand_archetype":
-            from agent_services.subagents import generate_archetype_block
-            archetype_title = "Brand Archetype"
-            blocks = generate_archetype_block(section_title, archetype_title, client_name, brand_name, brand_url, context=website_content)
-            kit["document"]["sections"].append({
-                "id": sec_id,
-                "title": section_title,
-                "blocks": blocks
-            })
-            continue
-        # Use Persona Generator Subagent for a persona-based section (e.g., 'audience_personas')
-        if sec_id == "audience_personas":
-            from agent_services.subagents import generate_persona_block
-            persona_title = "Primary Audience Persona"
-            blocks = generate_persona_block(section_title, persona_title, client_name, brand_name, brand_url, context=website_content)
-            kit["document"]["sections"].append({
-                "id": sec_id,
-                "title": section_title,
-                "blocks": blocks
-            })
-            continue
-    # Build a dict: section_name (lowercase, no punctuation) -> section text
-    section_pattern = re.compile(r'^# (.+)$', re.MULTILINE)
-    md_sections = {}
-    matches = list(section_pattern.finditer(example_md))
-    for i, match in enumerate(matches):
-        section_name = match.group(1).strip().lower().replace('&', 'and').replace(' ', '_').replace('-', '_')
-        start = match.end()
-        end = matches[i+1].start() if i+1 < len(matches) else len(example_md)
-        md_sections[section_name] = example_md[start:end].strip()
-
-
-    for sec_id in required_sections:
-        if sec_id == "engagement_index":
-            continue
-        section_title = sec_id.replace('_', ' ').title()
-        user_blocks = []
-        if sec_id == "overview":
-            from agent_services.subagents import fallback_retry_block
-            # Modular subagent demo for 'Overview' section
-            intro_block = {
-                "type": "Paragraph",
-                "text": f"{brand_name} is a unique platform. This Marketing Kit provides a strategic foundation for growth, positioning, and execution."
-            }
-            user_blocks.append(intro_block)
-            overview_subheads = [
-                "Purpose of the Kit",
-                "How to Use It",
-                "What’s Inside"
-            ]
-            for subhead in overview_subheads:
-                blocks = fallback_retry_block(generate_subhead_block, section_title, subhead, client_name, brand_name, brand_url)
-                user_blocks.extend(blocks)
-            kit["document"]["sections"].append({
-                "id": sec_id,
-                "title": section_title,
-                "blocks": user_blocks
-            })
-            continue
-        # Use Table Generator Subagent for the first table-based section (e.g., 'market_landscape')
         if sec_id == "market_landscape":
             from agent_services.subagents import generate_table_block
             table_title = "Competitive Landscape"
@@ -214,7 +142,6 @@ def build_marketing_kit(data):
                 "blocks": blocks
             })
             continue
-        # Use List Generator Subagent for a list-based section (e.g., 'key_opportunities')
         if sec_id == "key_opportunities":
             from agent_services.subagents import generate_list_block
             list_title = "Key Opportunities"
@@ -225,7 +152,47 @@ def build_marketing_kit(data):
                 "blocks": blocks
             })
             continue
-        # ...existing code for other sections...
+        if sec_id == "launch_checklist":
+            from agent_services.subagents import generate_checklist_block
+            checklist_title = "Launch Checklist"
+            blocks = generate_checklist_block(section_title, checklist_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        if sec_id == "opportunity_cards":
+            from agent_services.subagents import generate_opportunity_card_block
+            card_title = "Key Opportunity Card"
+            blocks = generate_opportunity_card_block(section_title, card_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        if sec_id == "brand_archetype":
+            from agent_services.subagents import generate_archetype_block
+            archetype_title = "Brand Archetype"
+            blocks = generate_archetype_block(section_title, archetype_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        if sec_id == "audience_personas":
+            from agent_services.subagents import generate_persona_block
+            persona_title = "Primary Audience Persona"
+            blocks = generate_persona_block(section_title, persona_title, client_name, brand_name, brand_url, context=website_content)
+            kit["document"]["sections"].append({
+                "id": sec_id,
+                "title": section_title,
+                "blocks": blocks
+            })
+            continue
+        # Fallback: use AI prompt for any other section, with rubric and example context
         prompt = f"Generate the '{section_title}' section for a marketing kit.\n"
         prompt += f"Request Type: {request_type}\n"
         prompt += f"Client Name: {client_name}\n"
@@ -277,20 +244,6 @@ def build_marketing_kit(data):
             user_blocks = [
                 {"type": "Paragraph", "text": f"[AI generation failed: {e}]"}
             ]
-
-        def is_generic(text):
-            generic_phrases = [
-                "in today's world", "businesses should", "it is important to", "companies can benefit", "in conclusion", "overall", "as a result", "the following", "this section", "the company", "organization should", "industry leaders", "market trends", "key takeaway", "best practices"
-            ]
-            return any(phrase in text.lower() for phrase in generic_phrases)
-
-        def has_actionable(text):
-            actionable_phrases = ["should", "recommend", "next step", "action", "implement", "consider", "strategy", "plan", "suggest"]
-            return any(phrase in text.lower() for phrase in actionable_phrases)
-
-        def has_example(text):
-            return "for example" in text.lower() or "such as" in text.lower() or "e.g." in text.lower()
-
         from agent_services.subagents import validate_section_blocks
         validated_blocks = validate_section_blocks(
             section_title,
@@ -307,12 +260,7 @@ def build_marketing_kit(data):
             "blocks": validated_blocks
         })
 
-    # Always append Engagement Index section from example
-    engagement_index_section = example_sections.get("engagement_index")
-    if engagement_index_section:
-        kit["document"]["sections"].append(engagement_index_section)
-
-    # Always append Engagement Index section from example
+    # Always append Engagement Index section from example (once, at the end)
     engagement_index_section = example_sections.get("engagement_index")
     if engagement_index_section:
         kit["document"]["sections"].append(engagement_index_section)
