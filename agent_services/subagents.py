@@ -1,8 +1,12 @@
 # Website Scraper Subagent
-def website_scraper_subagent(brand_url, max_length=2000):
+def website_scraper_subagent(brand_url: str, max_length: int = 2000) -> str:
     """
     Fetches and summarizes content from the provided client website.
-    Returns a string summary for use in prompt construction or downstream subagents.
+    Args:
+        brand_url (str): The URL of the brand website to scrape.
+        max_length (int): Maximum length of summary to return.
+    Returns:
+        str: Summary of website content or error message.
     """
     import requests
     from bs4 import BeautifulSoup
@@ -19,9 +23,15 @@ def website_scraper_subagent(brand_url, max_length=2000):
     except Exception as e:
         return f"[Website scrape failed: {e}]"
 # Fallback/Retry Subagent
-def fallback_retry_block(generator_func, *args, max_retries=2, **kwargs):
+from typing import Callable, Any, List, Dict
+def fallback_retry_block(generator_func: Callable, *args, max_retries: int = 2, **kwargs) -> List[Dict[str, Any]]:
     """
     Attempts to call a subagent generator function with retries on failure.
+    Args:
+        generator_func (Callable): The subagent function to call.
+        max_retries (int): Number of retry attempts.
+    Returns:
+        List[Dict]: List of blocks, possibly with error/review notes.
     """
     last_result = None
     for attempt in range(max_retries):

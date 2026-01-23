@@ -1,8 +1,18 @@
 
-import sys, os
+import sys
+import os
 import openai
 from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+"""
+marketing_agent.py
+------------------
+Main Flask microservice for the Marketing Agent. Handles requests for marketing kit generation, audit, and document output.
+Endpoints:
+    /agent/marketing-kit
+    /agent/test-audit-docx
+"""
 
 from agent_services.subagents import (
     generate_subhead_block,
@@ -16,7 +26,6 @@ from agent_services.subagents import (
     validate_section_blocks,
     fallback_retry_block
 )
-from agent_services.subagents import generate_table_block, generate_list_block, generate_checklist_block, generate_opportunity_card_block, generate_archetype_block, generate_persona_block, validate_section_blocks, fallback_retry_block
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -25,7 +34,8 @@ import json
 from kit_templates import load_example_kit
 
 
-app = Flask(__name__)
+
+app: Flask = Flask(__name__)
 CORS(app)
 print(f"[DIAGNOSTIC] TOP OF marketing_agent.py loaded from: {__file__} | app id: {id(app)}")
 
@@ -35,8 +45,13 @@ print(f"[DIAGNOSTIC] TOP OF marketing_agent.py loaded from: {__file__} | app id:
 # --- Ensure endpoint is at the end of the file, not indented, and unique ---
 print(f"[DIAGNOSTIC] Registering /agent/test-audit-docx endpoint (final placement) | app id: {id(app)}")
 from audit_docx import audit_to_docx
+
 @app.route('/agent/test-audit-docx', methods=['POST'])
-def test_audit_docx_final():
+def test_audit_docx_final() -> 'Response':
+    """
+    Endpoint to audit the generated marketing kit and return a DOCX report.
+    Accepts POST requests with kit data.
+    """
     print(f"[DIAGNOSTIC] In /agent/test-audit-docx endpoint function | app id: {id(app)}")
     try:
         if request.is_json:
@@ -185,6 +200,13 @@ def call_openai(prompt, max_tokens=256, temperature=0.7, model="gpt-3.5-turbo"):
 
 def build_marketing_kit(data):
     """
+    Build a marketing kit document from input data.
+    Args:
+        data (dict): Input data from request.
+    Returns:
+        dict: Generated marketing kit document.
+    """
+    """
     Build a canonical marketing kit from a blank template, filling all required fields and sections
     using user input and AI-generated copy, and appending the Engagement Index from the example.
     """
@@ -273,6 +295,7 @@ def build_marketing_kit(data):
         section_title = sec_id.replace('_', ' ').title()
         user_blocks = []
         # Use subagents and structured blocks for each section
+        import time
         if sec_id == "overview":
             from agent_services.subagents import fallback_retry_block
             intro_block = {
@@ -286,7 +309,10 @@ def build_marketing_kit(data):
                 "What’s Inside"
             ]
             for subhead in overview_subheads:
+                print(f"[TIMING] Starting AI call for overview subhead: {subhead}")
+                t0 = time.time()
                 blocks = fallback_retry_block(generate_subhead_block, section_title, subhead, client_name, brand_name, brand_url, context=website_content)
+                print(f"[TIMING] Finished AI call for overview subhead: {subhead} in {time.time() - t0:.2f} seconds")
                 user_blocks.extend(blocks)
             kit["document"]["sections"].append({
                 "id": sec_id,
@@ -295,7 +321,10 @@ def build_marketing_kit(data):
             })
             continue
         if sec_id == "market_landscape":
+            import time
             from agent_services.subagents import generate_table_block
+            print(f"[TIMING] Starting AI call for market_landscape table block")
+            t0 = time.time()
             table_title = "Competitive Landscape"
             columns = ["Competitor", "Strengths", "Weaknesses", "Notes"]
             blocks = generate_table_block(section_title, table_title, client_name, brand_name, brand_url, columns, context=website_content)
