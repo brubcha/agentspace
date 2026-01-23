@@ -275,19 +275,23 @@
           {
             "type": "ArchetypeBlock",
             "label": "Primary: Architect (System Builder)",
-            "paragraph": "Swift exists to design and connect the systems that power growth, aligning disciplines under one roof.",
+            "paragraph": "As the Architect, Swift Innovation is on a mission to design and connect the systems that power business growth. Knowledge, clarity, and momentum are at the core of our identity. We unify disciplines under one roof, demystifying complexity and building scalable solutions. Our voice is confident, clear, and supportive—serving as both a trusted advisor and a catalyst for innovation. This is the embodiment of our promise: 'You’re building with purpose and clarity.'",
             "fields": {
-              "Essence": "System Builder",
-              "Purpose": "Design and connect growth systems"
+              "Mission": "Design and connect growth systems for clients who value momentum.",
+              "Voice": "Confident, clear, supportive, never condescending.",
+              "Values": "Clarity, momentum, integrity.",
+              "Emotional Promise": "You’re building with purpose and clarity."
             }
           },
           {
             "type": "ArchetypeBlock",
             "label": "Secondary: Collective (Community Builder)",
-            "paragraph": "Swift proves independence is strongest when it moves together, unifying teams and partners into shared progress.",
+            "paragraph": "Embracing the Collective, Swift Innovation unifies teams and partners into shared progress. Our mission is to foster collaboration and mutual growth, building a community where independence is strongest when it moves together. Our voice is warm, thoughtful, and inclusive, showing empathy and care for every stakeholder. For clients and partners, the message is clear—we succeed together.",
             "fields": {
-              "Essence": "Community Builder",
-              "Purpose": "Unify teams and partners"
+              "Mission": "Unify teams and partners for shared progress.",
+              "Voice": "Warm, thoughtful, inclusive, collaborative.",
+              "Values": "Collaboration, responsibility, progress.",
+              "Emotional Promise": "We care as much about your success as you do."
             }
           }
         ]
@@ -307,24 +311,56 @@
               { "label": "Purpose", "text": "Growth without fragmentation." },
               {
                 "label": "Personality",
-                "text": "Confident, clear, and collaborative."
+                "text": "Confident, clear, collaborative, and supportive."
               }
             ]
           },
-          { "type": "Subhead", "text": "Tone & Voice Examples" },
+          { "type": "Subhead", "text": "Factual Foundations" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Support + Products + Platform model.",
+              "Embedded cross-functional teams.",
+              "CRM and analytics backbone.",
+              "Proof points: client results, speed, and clarity."
+            ]
+          },
+          { "type": "Subhead", "text": "Taglines (Evaluated)" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Momentum without micromanagement.",
+              "Growth without fragmentation.",
+              "Strategy and execution, unified.",
+              "Clarity, speed, results.",
+              "(Off-brand) 'No more silos.' (too generic)",
+              "(Off-brand) 'Revolutionizing business.' (overhyped)"
+            ]
+          },
+          { "type": "Subhead", "text": "Voice in Action" },
           {
             "type": "QuoteList",
             "items": [
               { "quote": "We build momentum for your business." },
-              { "quote": "Strategy and execution, unified." }
+              { "quote": "Strategy and execution, unified." },
+              { "quote": "Your growth, our system." },
+              { "quote": "Clarity at every step." }
             ]
           },
           { "type": "Subhead", "text": "Client Do’s & Don’ts" },
           {
             "type": "Bullets",
             "items": [
-              "Do: Keep messaging clear and actionable.",
-              "Don’t: Use jargon or buzzwords."
+              "Do: Lead with clarity and actionable recommendations.",
+              "Do: Emphasize system-building and collaboration.",
+              "Do: Use confident, educational statements.",
+              "Do: Highlight CRM, analytics, and cross-functional teamwork.",
+              "Do: Use visuals of workflow, team collaboration, and results.",
+              "Do: Be intentional with word choice: clear, confident, credible.",
+              "Don’t: Use jargon, buzzwords, or hype.",
+              "Don’t: Make overpromising claims.",
+              "Don’t: Use defensive or negative phrasing.",
+              "Don’t: Undermine credibility with casual slang or hypey language."
             ]
           }
         ]
@@ -337,38 +373,113 @@
           { "type": "Subhead", "text": "Keyword Opportunities" },
           {
             "type": "Paragraph",
-            "text": "Keyword strategy focuses on mid-market B2B intent across outsourcing, embedded teams, CRM and analytics, and growth strategy."
+            "text": "Swift Innovation’s keyword strategy focuses on shifting B2B buyer behavior toward integrated solutions, while positioning the brand as the trusted choice for growth-focused, tech-enabled businesses."
           },
           {
             "type": "KeywordLists",
             "groups": [
               {
-                "category": "Outsourcing",
-                "keywords": ["outsourced marketing", "embedded teams"]
+                "category": "Core Service",
+                "keywords": [
+                  "cross-functional teams",
+                  "business momentum",
+                  "system integration"
+                ]
               },
               {
-                "category": "CRM & Analytics",
-                "keywords": ["crm analytics", "growth analytics"]
+                "category": "Use Case",
+                "keywords": [
+                  "workflow automation",
+                  "CRM analytics",
+                  "growth strategy"
+                ]
+              },
+              {
+                "category": "Trust & Differentiation",
+                "keywords": [
+                  "embedded teams",
+                  "platform licensing",
+                  "support retainers"
+                ]
+              },
+              {
+                "category": "B2B/Channel",
+                "keywords": [
+                  "partner enablement",
+                  "channel marketing",
+                  "co-marketing programs"
+                ]
               }
             ]
           },
+          { "type": "Subhead", "text": "Keyword Opportunity Analysis" },
           {
-            "type": "Subhead",
-            "text": "Blog Strategy (Priority Ranking Topics)"
+            "type": "Bullets",
+            "items": [
+              "Phase 1: Brand Establishment (Ownable terms: Swift Innovation, cross-functional teams, business momentum)",
+              "Phase 2: Category Expansion (Compete on workflow automation, CRM analytics, partner enablement)",
+              "Phase 3: High-Volume Capture (Go after business growth, digital transformation, B2B marketing)"
+            ]
           },
+          { "type": "Subhead", "text": "Blog Strategy (Hub/Spoke Model)" },
           {
             "type": "HubSpokeList",
             "hubs": [
               {
+                "hub": "System Integration",
+                "spokes": [
+                  "Why Integration Drives Growth",
+                  "How to Break Down Silos",
+                  "Unified Data for Better Decisions"
+                ]
+              },
+              {
                 "hub": "Growth Strategy",
-                "spokes": ["Scaling operations", "Market expansion"]
+                "spokes": [
+                  "Scaling Operations with Cross-Functional Teams",
+                  "Market Expansion Tactics",
+                  "Speed to Value: Reducing Time to Results"
+                ]
+              },
+              {
+                "hub": "Channel Enablement",
+                "spokes": [
+                  "Building Effective Partner Programs",
+                  "Co-Marketing Best Practices",
+                  "Channel Analytics"
+                ]
+              },
+              {
+                "hub": "Platform & Analytics",
+                "spokes": [
+                  "Leveraging CRM for Growth",
+                  "Analytics-Driven Decision Making",
+                  "Automating Workflows"
+                ]
               }
             ]
           },
           { "type": "Subhead", "text": "Blog Structure" },
           {
             "type": "Bullets",
-            "items": ["Introduction", "Key points", "Conclusion"]
+            "items": [
+              "Title",
+              "Introduction",
+              "Context",
+              "Core Insights",
+              "Proof/Evidence",
+              "Practical Applications",
+              "Trends & Predictions",
+              "Internal Links",
+              "External Sources",
+              "Call To Action",
+              "About the Company"
+            ]
+          },
+          { "type": "Subhead", "text": "Blog Minimum Word Count" },
+          {
+            "type": "Paragraph",
+            "text": "Each blog must meet a minimum of 750 words and follow the above structure for SEO and conversion."
           }
         ]
       },
@@ -377,28 +488,111 @@
         "id": "social_strategy",
         "title": "Social Strategy",
         "blocks": [
-          { "type": "Subhead", "text": "Content preferences" },
+          { "type": "Subhead", "text": "Purpose and Use" },
           {
-            "type": "Bullets",
-            "items": ["Short, actionable posts", "Visual storytelling"]
+            "type": "Paragraph",
+            "text": "This strategy gives Swift Innovation’s team a fast, on-brand way to plan, write, and design social content that educates on integrated solutions, builds trust through proof and transparency, and drives B2B engagement and partnerships."
           },
-          { "type": "Subhead", "text": "Primary Post Types" },
-          {
-            "type": "Table",
-            "title": "Primary Post Types",
-            "columns": ["Type", "Description", "Cadence"],
-            "rows": [
-              ["Announcement", "Company news and updates", "Monthly"],
-              ["Case Study", "Client success stories", "Quarterly"]
-            ]
-          },
-          { "type": "Subhead", "text": "Landing Page Strategy" },
+          { "type": "Subhead", "text": "Content Preferences" },
           {
             "type": "Bullets",
             "items": [
-              "Dedicated landing pages for campaigns",
-              "Clear calls to action"
+              "Lead with education, not hype; use confident, clear statements about system integration, momentum, and results.",
+              "Show cross-functional teamwork, workflow visuals, and data-driven outcomes.",
+              "Prioritize real client stories, expert insights, and behind-the-scenes process.",
+              "Avoid fear-based or overpromising claims and dated phrases.",
+              "Use 'Swift Innovation', 'business momentum', 'system integration', 'growth strategy'."
             ]
+          },
+          { "type": "Subhead", "text": "Required Content Mix" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Static: Educational carousels, product explainers, quotes, UGC stills.",
+              "Dynamic: Reels or short-form videos, stories for polls and Q&A, YouTube mini-lessons.",
+              "Community: Testimonial highlights, partner spotlights, team features, webinar clips."
+            ]
+          },
+          { "type": "Subhead", "text": "Creative Emphases" },
+          {
+            "type": "Bullets",
+            "items": [
+              "System integration and workflow clarity.",
+              "Cross-functional teams and collaboration.",
+              "Data-driven results and proof points.",
+              "Brand visuals: blue/green palette, clean layouts, workflow/process icons."
+            ]
+          },
+          { "type": "Subhead", "text": "Production Checklist" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Content sources: brand imagery, workflow/process visuals, client results, team interviews, partner features.",
+              "UGC: Client testimonials and stories with permission.",
+              "Design tips: clean layouts, readable type, clear data visuals, consistent color palette."
+            ]
+          },
+          { "type": "Subhead", "text": "Copy Guidelines" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Voice: Confident, clear, supportive, collaborative.",
+              "Do: Lead with education, define terms plainly, use soft CTAs like 'Learn more' or 'See how it works.'",
+              "Don’t: Use hype, fear, or dated phrases.",
+              "Length: 1–2 sentences for captions, concise hooks for video.",
+              "Emoji policy: Minimal or none unless specified.",
+              "Claims: Use supportable language, add citations only when provided."
+            ]
+          },
+          { "type": "Subhead", "text": "Idea Starters" },
+          {
+            "type": "Bullets",
+            "items": [
+              "'Integration in Action': quick video showing a workflow improvement.",
+              "'Team Spotlight': highlight a cross-functional team and their impact.",
+              "'Client Success': carousel or video with before/after results.",
+              "'Partner Feature': showcase a co-marketing win.",
+              "'Process Explained': infographic or video breaking down a key workflow.",
+              "'Weekly Momentum': recurring post on progress or results."
+            ]
+          },
+          { "type": "Subhead", "text": "Cadence & Governance" },
+          {
+            "type": "Paragraph",
+            "text": "Weekly rhythm: 3–5 posts on LinkedIn and Twitter, 2–3 short-form videos per month, one monthly team spotlight, 2–3 partner features per quarter."
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "landing_page_strategy",
+        "title": "Landing Page Strategy",
+        "blocks": [
+          { "type": "Subhead", "text": "Landing Page Structure" },
+          {
+            "type": "Bullets",
+            "items": [
+              "Hero Section (headline + subheadline + CTA)",
+              "Features/Benefits Section (value breakdown)",
+              "Problem → Solution Section (storytelling)",
+              "Visual/Offer Section (mockup/product image or explainer)",
+              "Testimonials/Social Proof Section",
+              "FAQ Section (optional but powerful)",
+              "Final CTA Section (close strong, repeat offer)"
+            ]
+          },
+          { "type": "Subhead", "text": "Landing Page Types" },
+          {
+            "type": "Bullets",
+            "items": [
+              "CRM Landing Page: CTA = Book Appointment",
+              "CRM Funnel Page (Event or Webinar): CTA = Register for Event (multi-step)",
+              "Website Landing Page: CTA = Contact Us"
+            ]
+          },
+          {
+            "type": "Paragraph",
+            "text": "Each campaign should include: 1 landing page or funnel page (built in either CRM or Website) with structure and CTA matched to the campaign goal."
           }
         ]
       },
