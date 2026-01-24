@@ -28,11 +28,11 @@ def load_kit(path):
     return kit
 
 def check_kit_against_rubric(kit, sections, section_criteria):
-    found_sections = {s['title'].strip().lower(): s for s in kit['document']['sections']}
+    found_sections = {s['title'].strip(): s for s in kit['document']['sections']}
     results = []
     for section in sections:
-        sec_key = section.strip().lower()
-        present = any(sec_key in k for k in found_sections)
+        sec_key = section.strip()
+        present = sec_key in found_sections
         criteria = section_criteria.get(section, [])
         sec_result = {'section': section, 'present': present, 'criteria': []}
         if present:
@@ -53,22 +53,46 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(description='Check marketing kit JSON against rubric.')
     parser.add_argument('kit_json', help='Path to generated marketing kit JSON')
+    parser.add_argument('--json', action='store_true', help='Output results as JSON for CI integration')
     args = parser.parse_args()
     sections, section_criteria = load_rubric()
     kit = load_kit(args.kit_json)
     results = check_kit_against_rubric(kit, sections, section_criteria)
-    for sec in results:
-        print(f"Section: {sec['section']} - Present: {sec['present']}")
-        for crit in sec['criteria']:
-            print(f"  - {crit['criterion']}: {'✔' if crit['met'] else '✘'}")
-        print()
-    # Optionally, fail if any must-have is missing
     missing = [sec for sec in results if not sec['present'] or not all(c['met'] for c in sec['criteria'])]
-    if missing:
-        print(f"\nFAIL: {len(missing)} sections/criteria not met.")
-        exit(1)
+    if args.json:
+        # Output machine-readable JSON for CI
+        output = {
+            'pass': len(missing) == 0,
+            'missing_sections': [sec['section'] for sec in results if not sec['present']],
+            'failed_criteria': [
+                {
+                    'section': sec['section'],
+                    'criteria': [c['criterion'] for c in sec['criteria'] if not c['met']]
+                }
+                for sec in results if any(not c['met'] for c in sec['criteria'])
+            ],
+            'results': results
+        }
+        print(json.dumps(output, indent=2, ensure_ascii=False))
+        exit(0 if len(missing) == 0 else 1)
     else:
-        print("\nPASS: All rubric criteria met.")
+        for sec in results:
+            print(f"Section: {sec['section']} - Present: {sec['present']}")
+            for crit in sec['criteria']:
+                print(f"  - {crit['criterion']}: {'✔' if crit['met'] else '✘'}")
+            print()
+        if missing:
+            print(f"\nFAIL: {len(missing)} sections/criteria not met.")
+            # Print summary of missing/failed
+            for sec in results:
+                if not sec['present']:
+                    print(f"  MISSING SECTION: {sec['section']}")
+                for crit in sec['criteria']:
+                    if not crit['met']:
+                        print(f"    Unmet: {crit['criterion']}")
+            exit(1)
+        else:
+            print("\nPASS: All rubric criteria met.")
 
 if __name__ == '__main__':
     main()

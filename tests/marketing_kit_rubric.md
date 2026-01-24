@@ -28,186 +28,213 @@
     - Each row must be client-specific and actionable.
     - Include both a short, vision-level goal statement (e.g., “To establish [Brand] as the trusted leader in [category/market] by delivering measurable value and innovation to [target audience].”) and a measurable, time-bound objective (e.g., “Increase revenue by 25% annually through digital growth, diversified revenue streams, and expanded brand visibility while staying rooted in the brand’s mission.”).
 
-### 3. Key Findings / Opportunities & Challenges
+### 3. Audience Archetypes
+
+    - Table with the following columns: Archetype | Description | Needs | Pain Points | Messaging
+    - At least 2-3 archetypes, each fully described and client-specific.
+
+### 4. Key Messaging
+
+    - Table with the following columns: Message Pillar | Supporting Points | Proof/Example
+    - At least 3 message pillars, each with supporting points and proof/examples.
+
+### 5. Product/Service Overview
+
+    - Concise, client-specific summary of the product/service.
+    - 1-2 paragraphs, no generic or placeholder content.
+
+### 6. Feature/Benefit Table
+
+    - Table with the following columns: Feature | Benefit | Proof Point
+    - At least 5 features, each with a clear benefit and proof point.
+
+### 7. Competitive Differentiation
+
+    - Table with the following columns: Competitor | Differentiator | Why It Matters
+    - At least 3 competitors, each with a unique differentiator and explanation.
+
+### 8. Go-to-Market Checklist
+
+    - Markdown checklist (using - [ ] syntax) of actionable steps for launch/readiness.
+    - At least 8-10 items, each clear and specific.
+
+### 9. Sample Campaign Concepts
+
+    - Table with the following columns: Concept Name | Description | Channel(s) | KPI/Goal
+    - At least 2-3 campaign concepts, each with all columns filled.
+
+### 10. Website/Content Audit Summary
+
+    - Table with the following columns: Page/Asset | Strengths | Gaps | Recommendations
+    - At least 3-5 pages/assets, each with strengths, gaps, and actionable recommendations.
+
+### 11. Attachments/References
+
+    - List of all files, links, or resources referenced or used in the kit.
+    - Each item must be relevant and clearly described.
+
+### 12. Key Findings / Opportunities & Challenges
 
     - At least five enumerated, insight-driven findings, each named, explained, and tied to actionable implications.
     - Each finding includes a recommended action or implication.
     - Include an “Opportunity Areas” table with columns: Icon/Image, Opportunity Area, Description. Sample rows should cover Workflow Efficiency, Digital Tools, Market Trends, and Revenue Streams. The table should be visually segmented and actionable, reflecting the gold standard structure.
 
-### 4. Market Landscape
+### 13. Market Landscape
 
     - Macro trends with data points, projections, and references.
     - Competitor landscape and buying behavior, including local vs. national dynamics and category momentum.
     - At least one data visualization (chart/table).
     - Explicit competitor mapping.
 
-### 5. Channel Opportunities
+### 14. Channel Opportunities
 
     - Table mapping at least five channels to “Opportunity Insight” and “Recommendation.”
     - Rationale for deprioritizing channels, not just recommendations.
 
-### 6. Audience & User Personas
+### 15. Audience & User Personas
 
     - At least three (preferably five) richly described personas (B2C or B2B), each with: Name/title, Motivation, Needs, Messaging, Demographic, Psychographic, and Buying Behavior.
     - At least one “edge case” persona.
     - Summary persona table for quick reference.
 
-### 7. B2B Industry Targets
+### 16. B2B Industry Targets
 
     - Section with at least three categories and subtypes, each with rationale.
     - Visual segmentation map or matrix.
 
-### 8. Industry Codes & Data Broker Research
+### 17. Industry Codes & Data Broker Research
 
-    - NAICS or equivalent codes table for industry segmentation.
-    - Market sizing/data broker research table with global/USA company counts and descriptions.
-    - Summary of “white space” or market gaps based on the data.
+    # Marketing Kit Rubric
 
-### 9. Brand Archetypes
+    ## 1. Product Overview
+    ### Criteria
+    - Clear, concise overview of the product, its purpose, and value proposition
+    - Key differentiators and target audience are identified
 
-    - Primary and secondary archetypes, each with: Name/title, Mission, Voice, Values, Emotional Promise, Rich, declarative language and positioning.
-    - Visual or icon for each archetype.
-    - “Voice in action” example for each.
+    ## 2. Brand Mission, Vision, and Values
+    ### Criteria
+    - Brand mission, vision, and values are articulated
+    - Brand personality and tone are defined
 
-### 10. Brand Voice
+    ## 3. Brand Personality and Tone
+    ### Criteria
+    - Brand personality and tone are described
+    - Example phrases and do's/don'ts are included
 
-    - Brand essence, purpose, and personality (adjectives, expression).
-    - “Voice in action” table mapping voice to channel (site, social, ads, email, etc.).
-    - Tone & voice examples for multiple channels.
-    - Factual foundations: product claims, founder credentials, service features.
-    - Tagline evaluation: approved and rejected taglines, with rationale.
+    ## 4. Visual Identity Guidelines
+    ### Criteria
+    - Logo, color palette, typography, and imagery guidelines are included
+    - Visual examples and usage rules are provided
 
-### 11. Client Do’s & Don’ts
+    ## 5. Product Features and Benefits
+    ### Criteria
+    - Detailed feature descriptions and user benefits are provided
+    - Feature comparison tables or visuals are included
 
-    - At least 8 on-brand and 8 off-brand points, tailored to the brand’s positioning.
-    - At least one example for each do/don’t.
-    - “Most common pitfalls” callout.
+    ## 6. Use Cases and Scenarios
+    ### Criteria
+    - Realistic use cases and user scenarios are described
+    - Industry-specific examples are included
 
-### 12. Content & Keyword Strategy
+    ## 7. Customer Stories and Testimonials
+    ### Criteria
+    - Authentic customer stories, testimonials, or case studies are included
+    - Quantitative results or quotes are provided
 
-    - Keyword opportunities: at least four categories (core, use case, trust/differentiation, B2B/channel).
-    - Prioritized keyword list with search volume/intent.
-    - Phased keyword analysis (e.g., local/category/high-volume).
-    - Blog strategy: hub/spoke model, pillar pages, cluster topics, sample titles.
-    - Blog calendar template.
-    - Blog structure: required word count (e.g., 750 words), consistent framework (Title, Introduction, Context, Core Insights, Proof/Evidence, Practical Applications, Trends, Internal/External Links, CTA, About).
+    ## 8. Market Analysis
+    ### Criteria
+    - Market size, trends, and growth opportunities are analyzed
+    - Key competitors and differentiators are identified
 
-### 13. Social Strategy
+    ## 9. Target Audience
+    ### Criteria
+    - Primary and secondary audiences are described
+    - Audience needs, pain points, and motivations are detailed
 
-    - Actionable framework for content creation, post types, and creative emphases.
-    - Content preferences: real images, local/team focus, clear/practical language, avoid jargon/fear tactics.
-    - Required content mix: static, carousels, dynamic (Reels/Shorts), community posts.
-    - Creative emphases: local roots, product quality, customer relief, transparent simplicity, human-first service.
-    - Primary goals: brand establishment, bookings/inquiries, trust-building.
-    - Primary post types: static feed, carousel, stories, reels, videos, UGC.
-    - For each post type: summary, copy, hashtags, design goal, frequency.
-    - “Content calendar” template.
-    - “Best-performing post” example.
+    ## 10. Positioning and Messaging
+    ### Criteria
+    - Unique value proposition and positioning statement are clear
+    - Key messages and proof points are provided
 
-### 14. Social Production Checklist
+    ## 11. Pricing and Packaging
+    ### Criteria
+    - Pricing tiers, packages, and value justification are clear
+    - Comparison to alternatives is provided
 
-    - Content sources, design tips, copy guidelines.
-    - “Pre-publish QA” checklist.
-    - “Content approval workflow” diagram.
-    - Idea starters for post inspiration.
+    ## 12. Sales Enablement
+    ### Criteria
+    - Objection handling, FAQs, and competitive talking points are included
+    - Sales scripts or demo flows are provided
 
-### 15. Campaign Structure
+    ## 13. Go-to-Market Plan
+    ### Criteria
+    - Launch strategy, channels, and key milestones are outlined
+    - Roles, responsibilities, and success metrics are defined
 
-    - Each campaign includes: 3-6 emails, 3-10 social posts, 1-3 blogs, 0-2 press releases, 1 landing/funnel page.
-    - Sample campaign timeline.
-    - “Minimum viable campaign” checklist.
+    ## 14. Content and Campaigns
+    ### Criteria
+    - Content themes, campaign ideas, and sample assets are included
+    - Editorial calendar or content plan is provided
 
-### 16. Landing Page Strategy
+    ## 15. Digital and Web
+    ### Criteria
+    - Website structure, key pages, and messaging are defined
+    - SEO, analytics, and digital best practices are included
 
-    - Required structure: hero, features/benefits, problem→solution, visual/offer, testimonials/social proof, FAQ (optional), final CTA.
-    - Types: CRM (Book Appointment), Funnel (Register), Website (Contact Us).
-    - Annotated wireframes or sample layouts.
+    ## 16. Social Media
+    ### Criteria
+    - Social channel strategy, content types, and posting guidelines are included
+    - Sample posts and engagement tactics are provided
 
-### 17. Engagement Framework
+    ## 17. Events and Experiential
+    ### Criteria
+    - Event strategy, types, and sample activations are described
+    - Event assets and measurement plans are included
 
-    - Hierarchical planning: Initiatives → Projects → Deliverables → Tasks.
-    - At least four detailed Initiatives, each with alignment points and target audiences.
-    - RACI (Responsible, Accountable, Consulted, Informed) matrix for initiatives/projects.
+    ## 18. Partnerships and Ecosystem
+    ### Criteria
+    - Partner types, value propositions, and co-marketing ideas are included
+    - Integration or ecosystem diagrams are provided
 
-### 18. References
+    ## 19. Legal and Compliance
+    ### Criteria
+    - Disclaimers, terms, and compliance requirements are listed
+    - Review/approval process is described
 
-    - Comprehensive, properly formatted references for all data, trends, and claims.
-    - “Source quality” or “recency” check for all references.
+    ## 20. Internal Enablement
+    ### Criteria
+    - Training materials, onboarding guides, and internal comms are included
+    - Internal FAQ and support resources are provided
 
----
+    ## 21. Measurement and Optimization
+    ### Criteria
+    - KPIs, measurement plan, and reporting cadence are defined
+    - Optimization and feedback loops are described
 
-## SECTION REQUIREMENTS
+    ## 22. Attachments/References
+    ### Criteria
+    - All referenced documents, links, and assets are included
+    - File names and access instructions are provided
 
-### 1. Executive Summary
+    ## 23. Accessibility and Inclusion
+    ### Criteria
+    - Accessibility standards and inclusive design practices are addressed
+    - Examples of accessible content and features are provided
 
-- Brief, high-level overview of the marketing kit’s purpose and value.
-- 2-4 sentences, client-specific, no generic statements.
+    ## 24. Data Privacy and Security
+    ### Criteria
+    - Data privacy policies, security practices, and compliance are described
+    - Sensitive data handling and user consent are addressed
 
-### 2. Brand Framework
+    ## 25. Upgrade and Migration
+    ### Criteria
+    - Upgrade paths, migration strategies, and versioning are described
+    - Backward compatibility and support plans are included
 
-- Table with the following columns: Attribute | Description | Example
-- Must include at least: Brand Purpose, Brand Promise, Brand Personality, Brand Values, Brand Voice, Brand Positioning.
-- Each row must be client-specific and actionable.
-
-### 3. Audience Archetypes
-
-- Table with the following columns: Archetype | Description | Needs | Pain Points | Messaging
-- At least 2-3 archetypes, each fully described and client-specific.
-
-### 4. Key Messaging
-
-- Table with the following columns: Message Pillar | Supporting Points | Proof/Example
-- At least 3 message pillars, each with supporting points and proof/examples.
-
-### 5. Product/Service Overview
-
-- Concise, client-specific summary of the product/service.
-- 1-2 paragraphs, no generic or placeholder content.
-
-### 6. Feature/Benefit Table
-
-- Table with the following columns: Feature | Benefit | Proof Point
-- At least 5 features, each with a clear benefit and proof point.
-
-### 7. Competitive Differentiation
-
-- Table with the following columns: Competitor | Differentiator | Why It Matters
-- At least 3 competitors, each with a unique differentiator and explanation.
-
-### 8. Go-to-Market Checklist
-
-- Markdown checklist (using - [ ] syntax) of actionable steps for launch/readiness.
-- At least 8-10 items, each clear and specific.
-
-### 9. Sample Campaign Concepts
-
-- Table with the following columns: Concept Name | Description | Channel(s) | KPI/Goal
-- At least 2-3 campaign concepts, each with all columns filled.
-
-### 10. Website/Content Audit Summary
-
-- Table with the following columns: Page/Asset | Strengths | Gaps | Recommendations
-- At least 3-5 pages/assets, each with strengths, gaps, and actionable recommendations.
-
-### 11. Attachments/References
-
-- List of all files, links, or resources referenced or used in the kit.
-- Each item must be relevant and clearly described.
-
----
-
-## FORMATTING & STRUCTURE
-
-- All tables must use Markdown table syntax (| Header | Header | ... |) and match the gold standard structure.
-- All checklists must use Markdown checkbox syntax (- [ ] Item) and match the gold standard structure.
-- All sections must be present, in the order above, with clear section headings (## or ### as appropriate).
-- No extra or missing sections.
-- No generic, placeholder, or boilerplate content.
-- All content must be client-specific, actionable, and rubric-compliant.
-
----
-
-## VALIDATION CRITERIA
+    ## 26. Additional Sections (if any)
+    ### Criteria
+    - Any extra sections are clearly titled and relevant
+    - Content is rubric-compliant and valuable
 
 - Kit output must match the gold standard structure and formatting exactly.
 - All required sections, tables, and checklists must be present and complete.

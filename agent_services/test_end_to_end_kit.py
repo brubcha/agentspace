@@ -4,7 +4,7 @@ import pytest
 
 def test_end_to_end_kit_generation():
     # Load a sample payload (can be replaced with more comprehensive test cases)
-    with open('agent_services/test_payload.json', 'r') as f:
+    with open('tests/test_payload.json', 'r') as f:
         payload = json.load(f)
     # Assume the backend is running locally on port 7000
     url = 'http://localhost:7000/agent/marketing-kit'
@@ -19,17 +19,32 @@ def test_end_to_end_kit_generation():
     assert len(kit['document']['sections']) > 0
     # Map of expected block types per section (based on subagent usage)
     expected_block_types = {
-        'overview': ['Paragraph', 'Subhead'],
-        'market_landscape': ['Table', 'Bullets'],
-        'key_opportunities': ['Bullets', 'Paragraph', 'Checklist'],
-        'launch_checklist': ['Checklist'],
-        'opportunity_cards': ['OpportunityCard'],
-        'brand_archetype': ['Archetype'],
+        'executive_summary_overview_purpose': ['Paragraph', 'Subhead'],
+        'brand_framework_goal': ['Table'],
+        'audience_archetypes': ['Archetype'],
+        'key_messaging': ['Table'],
+        'product_service_overview': ['Paragraph', 'Subhead'],
+        'feature_benefit_table': ['Table'],
+        'competitive_differentiation': ['Table'],
+        'go_to_market_checklist': ['Checklist'],
+        'sample_campaign_concepts': ['Table'],
+        'website_content_audit_summary': ['Table'],
+        'attachments_references': ['Bullets', 'Paragraph', 'List'],
+        'key_findings': ['NumberedFindingsList', 'Bullets', 'Paragraph'],
+        'market_landscape': ['Paragraph', 'Subhead', 'Table', 'Bullets'],
+        'channel_opportunities': ['Table'],
         'audience_personas': ['Persona', 'Bullets'],
-        'b2b_industry_targets': ['Table', 'Bullets'],
-        'key_findings': ['NumberedFindingsList', 'Bullets'],
-        'opportunity_areas': ['Subhead', 'Checklist'],
-        # Add other sections as needed
+        'b2b_industry_targets': ['Table'],
+        'industry_codes_data_broker_research': ['Table'],
+        'brand_archetypes': ['Archetype'],
+        'brand_voice': ['Paragraph', 'Subhead', 'Table'],
+        'client_dos_donts': ['Table'],
+        'content_keyword_strategy': ['Table'],
+        'social_strategy': ['Paragraph', 'Subhead'],
+        'social_production_checklist': ['Checklist'],
+        'campaign_structure': ['Table'],
+        'landing_page_strategy': ['Table'],
+        'engagement_framework': ['Checklist']
     }
     # Check each section for expected block types and fallback/QA logic
     for section in kit['document']['sections']:

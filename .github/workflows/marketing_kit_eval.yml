@@ -1,0 +1,50 @@
+name: Marketing Kit Evaluation CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r agent_services/requirements.txt
+          pip install pytest
+
+      - name: Run end-to-end and subagent tests
+        run: |
+          pytest agent_services/test_end_to_end_kit.py
+          pytest agent_services/test_subagents.py
+
+      - name: Run rubric compliance check on all generated kits
+        run: |
+          python tests/check_kit_against_rubric.py gold_standard_marketing_kit.json --json
+
+      - name: Evaluate outputs with OpenAI (if applicable)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -f tests/evaluate_outputs.py ]; then python tests/evaluate_outputs.py --jsonl tests/test_payloads.jsonl; fi
+
+      - name: Archive logs and feedback
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-logs-and-feedback
+          path: |
+            agent_services/agent_trace.log
+            agent_services/subagent_trace.log
+            tests/test_feedback.json

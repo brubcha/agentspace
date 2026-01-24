@@ -1,10 +1,60 @@
 from agent_services.kit_templates import load_example_kit
 
+
 import sys
 import os
 import openai
 from dotenv import load_dotenv
+import logging
+from logging.handlers import RotatingFileHandler
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# --- Structured Logging Setup ---
+LOG_PATH = os.path.join(os.path.dirname(__file__), 'agent_trace.log')
+logger = logging.getLogger("agent_services")
+logger.setLevel(logging.INFO)
+handler = RotatingFileHandler(LOG_PATH, maxBytes=2*1024*1024, backupCount=3)
+formatter = logging.Formatter('%(message)s')
+handler.setFormatter(formatter)
+if not logger.hasHandlers():
+    logger.addHandler(handler)
+
+import re
+class RedactSecretsFilter(logging.Filter):
+    def __init__(self):
+        super().__init__()
+        self.patterns = [
+            re.escape(os.environ.get('SECRET', 'SECRET1234')),
+            re.escape(os.environ.get('BRAND_NAME', 'SECRET1234')),
+            re.escape(os.environ.get('BRAND_URL', 'SECRET1234')),
+            r'SECRET[0-9A-Za-z]*',
+        ]
+        self.patterns = [p for p in self.patterns if p]
+    def filter(self, record):
+        msg = record.getMessage()
+        for pat in self.patterns:
+            msg = re.sub(pat, '[REDACTED]', msg)
+        record.msg = msg
+        return True
+
+# Add the filter to all handlers of the root logger, agent_services logger, Flask, and Werkzeug loggers
+for log_name in (None, "agent_services", "flask.app", "werkzeug"):
+    log = logging.getLogger(log_name) if log_name else logging.getLogger()
+    for h in log.handlers:
+        h.addFilter(RedactSecretsFilter())
+
+def redact_secrets(s):
+    # For any direct string redaction
+    patterns = [
+        re.escape(os.environ.get('SECRET', 'SECRET1234')),
+        re.escape(os.environ.get('BRAND_NAME', 'SECRET1234')),
+        re.escape(os.environ.get('BRAND_URL', 'SECRET1234')),
+        r'SECRET[0-9A-Za-z]*',
+    ]
+    for pat in patterns:
+        s = re.sub(pat, '[REDACTED]', s)
+    return s
+
 
 """
 marketing_agent.py
@@ -38,13 +88,52 @@ from agent_services.kit_templates import load_example_kit
 
 app: Flask = Flask(__name__)
 CORS(app)
-print(f"[DIAGNOSTIC] TOP OF marketing_agent.py loaded from: {__file__} | app id: {id(app)}")
+
+import re
+class RedactSecretsFilter(logging.Filter):
+    def __init__(self):
+        super().__init__()
+        self.patterns = [
+            re.escape(os.environ.get('SECRET', 'SECRET1234')),
+            re.escape(os.environ.get('BRAND_NAME', 'SECRET1234')),
+            re.escape(os.environ.get('BRAND_URL', 'SECRET1234')),
+            r'SECRET[0-9A-Za-z]*',
+        ]
+        self.patterns = [p for p in self.patterns if p]
+    def filter(self, record):
+        msg = record.getMessage()
+        for pat in self.patterns:
+            msg = re.sub(pat, '[REDACTED]', msg)
+        record.msg = msg
+        return True
+
+
+# Add the filter to all handlers of the root logger, agent_services logger, Flask, and Werkzeug loggers
+for log_name in (None, "agent_services", "flask.app", "werkzeug"):
+    log = logging.getLogger(log_name) if log_name else logging.getLogger()
+    for h in log.handlers:
+        h.addFilter(RedactSecretsFilter())
+
+
+def redact_secrets(s):
+    # For any direct string redaction
+    patterns = [
+        re.escape(os.environ.get('SECRET', 'SECRET1234')),
+        re.escape(os.environ.get('BRAND_NAME', 'SECRET1234')),
+        re.escape(os.environ.get('BRAND_URL', 'SECRET1234')),
+        r'SECRET[0-9A-Za-z]*',
+    ]
+    for pat in patterns:
+        s = re.sub(pat, '[REDACTED]', s)
+    return s
+
+logger.info(redact_secrets('{"event": "startup", "file": "%s", "app_id": %d}' % (__file__, id(app))))
 
 
 
 
 # --- Ensure endpoint is at the end of the file, not indented, and unique ---
-print(f"[DIAGNOSTIC] Registering /agent/test-audit-docx endpoint (final placement) | app id: {id(app)}")
+logger.info(redact_secrets('{"event": "register_endpoint", "endpoint": "/agent/test-audit-docx", "app_id": %d}' % id(app)))
 from agent_services.audit_docx import audit_to_docx
 
 @app.route('/agent/test-audit-docx', methods=['POST'])
@@ -53,7 +142,7 @@ def test_audit_docx_final() -> 'Response':
     Endpoint to audit the generated marketing kit and return a DOCX report.
     Accepts POST requests with kit data.
     """
-    print(f"[DIAGNOSTIC] In /agent/test-audit-docx endpoint function | app id: {id(app)}")
+    logger.info(redact_secrets('{"event": "endpoint_call", "endpoint": "/agent/test-audit-docx", "app_id": %d}' % id(app)))
     try:
         if request.is_json:
             data = request.get_json()
@@ -162,7 +251,7 @@ def test_audit_docx_final() -> 'Response':
         response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
         return response
     except Exception as e:
-        print(f"[ERROR] Exception in /agent/test-audit-docx: {e}")
+        logger.error(redact_secrets('{"event": "error", "endpoint": "/agent/test-audit-docx", "error": "%s"}' % str(e).replace('"', "'")))
         from flask import jsonify
         return jsonify({'error': str(e)}), 500
 import sys, os
@@ -201,9 +290,32 @@ def build_marketing_kit(data):
     # Real section generation: only include sections with real, generated content
     import concurrent.futures
     required_sections = [
-        "overview", "goal", "opportunity_areas", "key_findings", "market_landscape",
-        "audience_personas", "b2b_industry_targets", "brand_archetypes", "brand_voice",
-        "content", "social_strategy", "engagement_framework", "references", "engagement_index"
+        ("executive_summary_overview_purpose", "Executive Summary / Overview & Purpose"),
+        ("brand_framework_goal", "Brand Framework / The Goal"),
+        ("audience_archetypes", "Audience Archetypes"),
+        ("key_messaging", "Key Messaging"),
+        ("product_service_overview", "Product/Service Overview"),
+        ("feature_benefit_table", "Feature/Benefit Table"),
+        ("competitive_differentiation", "Competitive Differentiation"),
+        ("go_to_market_checklist", "Go-to-Market Checklist"),
+        ("sample_campaign_concepts", "Sample Campaign Concepts"),
+        ("website_content_audit_summary", "Website/Content Audit Summary"),
+        ("attachments_references", "Attachments/References"),
+        ("key_findings", "Key Findings / Opportunities & Challenges"),
+        ("market_landscape", "Market Landscape"),
+        ("channel_opportunities", "Channel Opportunities"),
+        ("audience_personas", "Audience & User Personas"),
+        ("b2b_industry_targets", "B2B Industry Targets"),
+        ("industry_codes_data_broker_research", "Industry Codes & Data Broker Research"),
+        ("brand_archetypes", "Brand Archetypes"),
+        ("brand_voice", "Brand Voice"),
+        ("client_dos_donts", "Client Do’s & Don’ts"),
+        ("content_keyword_strategy", "Content & Keyword Strategy"),
+        ("social_strategy", "Social Strategy"),
+        ("social_production_checklist", "Social Production Checklist"),
+        ("campaign_structure", "Campaign Structure"),
+        ("landing_page_strategy", "Landing Page Strategy"),
+        ("engagement_framework", "Engagement Framework")
     ]
     warnings = []
     # Scrape website content if brand_url is provided
@@ -228,228 +340,260 @@ def build_marketing_kit(data):
             except Exception as e:
                 file_contents.append(f"[File read failed: {f['filename']}: {e}]")
 
-    def generate_section(sec_id):
+
+    def generate_section(sec_id, sec_title):
         try:
             brand = data.get("brand_name", "[FILL]")
             url = data.get("brand_url", "[FILL]")
             offering = data.get("offering", "[FILL]")
             target_markets = data.get("target_markets", "[FILL]")
             competitors = data.get("competitors", "[FILL]")
-            # Compose context for all section prompts
             context_parts = []
             if website_content:
                 context_parts.append(f"Website Content: {website_content}")
             if file_contents:
                 context_parts.append(f"Attached Files: {' | '.join(file_contents)}")
-            # Optionally, you could add OpenAI web search here if your API plan supports it (e.g., Bing Search or OpenAI's web-enabled models)
-            # For now, only use scraped and attached content
             base_context = "\n".join(context_parts)
-            # Overview
-            if sec_id == "overview":
+
+            # Map each section to the appropriate block generator(s)
+            if sec_id == "executive_summary_overview_purpose":
                 return {
                     "id": sec_id,
-                    "title": "Overview",
+                    "title": sec_title,
                     "blocks": generate_subhead_block(
-                        "Overview", "Overview", brand, brand, url,
-                        context=(
-                            f"Purpose and use of the kit for {brand}. Offering: {offering}. Target markets: {target_markets}. "
-                            "You may use general industry context and best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, sec_title, brand, brand, url,
+                        context=(f"Purpose and use of the kit for {brand}. Offering: {offering}. Target markets: {target_markets}.\n" + base_context)
                     )
                 }
-            # The Goal
-            if sec_id == "goal":
+            if sec_id == "brand_framework_goal":
                 return {
                     "id": sec_id,
-                    "title": "The Goal",
-                    "blocks": generate_subhead_block(
-                        "The Goal", "The Goal", brand, brand, url,
-                        context=(
-                            f"Primary business/marketing goal for {brand}. Target market: {target_markets}. Offering: {offering}. "
-                            "You may use general industry context and best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Brand Framework Table", brand, brand, url, ["Attribute", "Description", "Example"],
+                        context=(f"Brand purpose, promise, personality, values, voice, positioning for {brand}.\n" + base_context)
                     )
                 }
-            # Opportunity Areas
-            if sec_id == "opportunity_areas":
+            if sec_id == "audience_archetypes":
                 return {
                     "id": sec_id,
-                    "title": "Opportunity Areas",
-                    "blocks": generate_subhead_block(
-                        "Opportunity Areas", "Opportunity Areas", brand, brand, url,
-                        context=(
-                            f"3-4 opportunity areas for {brand}. Use provided offering: {offering} and target markets: {target_markets}. "
-                            "You may use general industry trends and best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                    "title": sec_title,
+                    "blocks": generate_archetype_block(
+                        sec_title, "Audience Archetype", brand, brand, url,
+                        context=(f"Audience archetypes for {brand}.\n" + base_context)
                     )
                 }
-            # Key Findings
+            if sec_id == "key_messaging":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Key Messaging Table", brand, brand, url, ["Message Pillar", "Supporting Points", "Proof/Example"],
+                        context=(f"Key messaging pillars for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "product_service_overview":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_subhead_block(
+                        sec_title, sec_title, brand, brand, url,
+                        context=(f"Product/service overview for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "feature_benefit_table":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Feature/Benefit Table", brand, brand, url, ["Feature", "Benefit", "Proof Point"],
+                        context=(f"Feature/benefit mapping for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "competitive_differentiation":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Competitive Differentiation Table", brand, brand, url, ["Competitor", "Differentiator", "Why It Matters"],
+                        context=(f"Competitive differentiation for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "go_to_market_checklist":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_checklist_block(
+                        sec_title, "Go-to-Market Checklist", brand, brand, url,
+                        context=(f"Go-to-market checklist for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "sample_campaign_concepts":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Sample Campaign Concepts Table", brand, brand, url, ["Concept Name", "Description", "Channel(s)", "KPI/Goal"],
+                        context=(f"Sample campaign concepts for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "website_content_audit_summary":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Website/Content Audit Summary Table", brand, brand, url, ["Page/Asset", "Strengths", "Gaps", "Recommendations"],
+                        context=(f"Website/content audit summary for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "attachments_references":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_list_block(
+                        sec_title, "Attachments/References", brand, brand, url,
+                        context=(f"List of all files, links, or resources referenced or used in the kit for {brand}.\n" + base_context)
+                    )
+                }
             if sec_id == "key_findings":
                 return {
                     "id": sec_id,
-                    "title": "Key Findings",
+                    "title": sec_title,
                     "blocks": generate_list_block(
-                        "Key Findings",
-                        "Key Findings",
-                        brand,
-                        brand,
-                        url,
-                        context=(
-                            f"5-6 key findings for {brand}. Use provided competitors: {competitors} and offering: {offering}. "
-                            "You may use general industry benchmarks, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, sec_title, brand, brand, url,
+                        context=(f"Key findings, opportunities, and challenges for {brand}.\n" + base_context)
                     )
                 }
-            # Market Landscape
             if sec_id == "market_landscape":
                 return {
                     "id": sec_id,
-                    "title": "Market Landscape",
-                    "blocks": [
-                        *generate_subhead_block(
-                            "Market Landscape", "Market Landscape", brand, brand, url,
-                            context=(
-                                f"Macro trends, competitor landscape, and channel opportunities for {brand}. Use provided offering: {offering}, competitors: {competitors}, and target markets: {target_markets}. "
-                                "You may use general industry research, but do not invent any client-specific facts or numbers.\n" + base_context
-                            )
-                        ),
-                        *generate_list_block(
-                            "Market Landscape",
-                            "Key Market Trends and Opportunities",
-                            brand,
-                            brand,
-                            url,
-                            context=(
-                                f"List 3-5 key market trends, competitor patterns, and channel opportunities for {brand}. Use provided offering: {offering}, competitors: {competitors}, and target markets: {target_markets}. "
-                                "You may use general industry research, but do not invent any client-specific facts or numbers.\n" + base_context
-                            )
-                        )
-                    ]
+                    "title": sec_title,
+                    "blocks": generate_subhead_block(
+                        sec_title, sec_title, brand, brand, url,
+                        context=(f"Market landscape for {brand}.\n" + base_context)
+                    )
                 }
-            # Audience & User Personas
+            if sec_id == "channel_opportunities":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Channel Opportunities Table", brand, brand, url, ["Channel", "Opportunity Insight", "Recommendation", "Rationale for Deprioritizing"],
+                        context=(f"Channel opportunities for {brand}.\n" + base_context)
+                    )
+                }
             if sec_id == "audience_personas":
                 personas = []
                 for i in range(3):
                     personas.extend(generate_persona_block(
-                        "Audience & User Personas", f"Persona {i+1}", brand, brand, url,
-                        context=(
-                            f"Target markets: {target_markets}. Offering: {offering}. "
-                            "You may use general persona research for the industry, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, f"Persona {i+1}", brand, brand, url,
+                        context=(f"Audience/user personas for {brand}.\n" + base_context)
                     ))
                 return {
                     "id": sec_id,
-                    "title": "Audience & User Personas",
+                    "title": sec_title,
                     "blocks": personas
                 }
-            # B2B Industry Targets
             if sec_id == "b2b_industry_targets":
                 return {
                     "id": sec_id,
-                    "title": "B2B Industry Targets",
+                    "title": sec_title,
                     "blocks": generate_table_block(
-                        "B2B Industry Targets", "Key Industry Targets", brand, brand, url, ["Company Type", "Description", "Example"],
-                        context=(
-                            f"Offering: {offering}. Target markets: {target_markets}. "
-                            "You may use general industry research, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, "B2B Industry Targets Table", brand, brand, url, ["Category", "Subtype", "Rationale"],
+                        context=(f"B2B industry targets for {brand}.\n" + base_context)
                     )
                 }
-            # Brand Archetypes
+            if sec_id == "industry_codes_data_broker_research":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Industry Codes Table", brand, brand, url, ["Industry", "NAICS Code", "Description"],
+                        context=(f"Industry codes and data broker research for {brand}.\n" + base_context)
+                    )
+                }
             if sec_id == "brand_archetypes":
                 return {
                     "id": sec_id,
-                    "title": "Brand Archetypes",
+                    "title": sec_title,
                     "blocks": generate_archetype_block(
-                        "Brand Archetypes", "Primary Archetype", brand, brand, url,
-                        context=(
-                            f"Offering: {offering}. Target markets: {target_markets}. "
-                            "You may use general archetype research, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, "Primary Archetype", brand, brand, url,
+                        context=(f"Brand archetypes for {brand}.\n" + base_context)
                     ) + generate_archetype_block(
-                        "Brand Archetypes", "Secondary Archetype", brand, brand, url,
-                        context=(
-                            f"Offering: {offering}. Target markets: {target_markets}. "
-                            "You may use general archetype research, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, "Secondary Archetype", brand, brand, url,
+                        context=(f"Brand archetypes for {brand}.\n" + base_context)
                     )
                 }
-            # Brand Voice
             if sec_id == "brand_voice":
                 return {
                     "id": sec_id,
-                    "title": "Brand Voice",
+                    "title": sec_title,
                     "blocks": generate_subhead_block(
-                        "Brand Voice", "Brand Voice", brand, brand, url,
-                        context=(
-                            f"Voice, tone, and messaging for {brand}. Offering: {offering}. "
-                            "You may use general brand voice best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, sec_title, brand, brand, url,
+                        context=(f"Brand voice for {brand}.\n" + base_context)
                     )
                 }
-            # Content
-            if sec_id == "content":
+            if sec_id == "client_dos_donts":
                 return {
                     "id": sec_id,
-                    "title": "Content",
-                    "blocks": generate_subhead_block(
-                        "Content", "Content", brand, brand, url,
-                        context=(
-                            f"Content strategy and topics for {brand}. Offering: {offering}. "
-                            "You may use general content strategy best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Client Do’s & Don’ts Table", brand, brand, url, ["Do", "Example", "Don't", "Example"],
+                        context=(f"Client do’s and don’ts for {brand}.\n" + base_context)
                     )
                 }
-            # Social Strategy
+            if sec_id == "content_keyword_strategy":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Content & Keyword Strategy Table", brand, brand, url, ["Category", "Keyword", "Search Volume", "Intent"],
+                        context=(f"Content and keyword strategy for {brand}.\n" + base_context)
+                    )
+                }
             if sec_id == "social_strategy":
                 return {
                     "id": sec_id,
-                    "title": "Social Strategy",
+                    "title": sec_title,
                     "blocks": generate_subhead_block(
-                        "Social Strategy", "Social Strategy", brand, brand, url,
-                        context=(
-                            f"Social content and campaign strategy for {brand}. Offering: {offering}. "
-                            "You may use general social strategy best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, sec_title, brand, brand, url,
+                        context=(f"Social strategy for {brand}.\n" + base_context)
                     )
                 }
-            # Engagement Framework
+            if sec_id == "social_production_checklist":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_checklist_block(
+                        sec_title, "Social Production Checklist", brand, brand, url,
+                        context=(f"Social production checklist for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "campaign_structure":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Campaign Structure Table", brand, brand, url, ["Deliverable", "Count"],
+                        context=(f"Campaign structure for {brand}.\n" + base_context)
+                    )
+                }
+            if sec_id == "landing_page_strategy":
+                return {
+                    "id": sec_id,
+                    "title": sec_title,
+                    "blocks": generate_table_block(
+                        sec_title, "Landing Page Strategy Table", brand, brand, url, ["Section", "Description"],
+                        context=(f"Landing page strategy for {brand}.\n" + base_context)
+                    )
+                }
             if sec_id == "engagement_framework":
                 return {
                     "id": sec_id,
-                    "title": "Engagement Framework",
+                    "title": sec_title,
                     "blocks": generate_checklist_block(
-                        "Engagement Framework", "Engagement Framework Checklist", brand, brand, url,
-                        context=(
-                            f"Offering: {offering}. Target markets: {target_markets}. "
-                            "You may use general engagement best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
-                    )
-                }
-            # References
-            if sec_id == "references":
-                return {
-                    "id": sec_id,
-                    "title": "References",
-                    "blocks": generate_list_block(
-                        "References", "References", brand, brand, url,
-                        context=(
-                            f"Offering: {offering}. Competitors: {competitors}. "
-                            "You may use general reference list best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
-                    )
-                }
-            # Engagement Index
-            if sec_id == "engagement_index":
-                return {
-                    "id": sec_id,
-                    "title": "Engagement Index",
-                    "blocks": generate_table_block(
-                        "Engagement Index", "Engagement Index Table", brand, brand, url, ["Metric", "Score", "Notes"],
-                        context=(
-                            f"Offering: {offering}. Target markets: {target_markets}. "
-                            "You may use general engagement index best practices, but do not invent any client-specific facts or numbers.\n" + base_context
-                        )
+                        sec_title, "Engagement Framework Checklist", brand, brand, url,
+                        context=(f"Engagement framework for {brand}.\n" + base_context)
                     )
                 }
         except Exception as e:
@@ -458,7 +602,7 @@ def build_marketing_kit(data):
         return None
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        future_to_sec = {executor.submit(generate_section, sec_id): sec_id for sec_id in required_sections}
+        future_to_sec = {executor.submit(generate_section, sec_id, sec_title): (sec_id, sec_title) for sec_id, sec_title in required_sections}
         for future in concurrent.futures.as_completed(future_to_sec):
             section = future.result()
             if section and section.get("blocks"):
@@ -497,7 +641,12 @@ def marketing_kit():
                     for f in request.files.getlist('files')
                 ]
 
-        print(f"[DEBUG] Received /agent/marketing-kit (Marketing Kit) request: {json.dumps(data, indent=2)}")
+        # Redact sensitive fields before logging
+        redacted_data = dict(data)
+        for sensitive in ["brand_name", "brand_url"]:
+            if sensitive in redacted_data:
+                redacted_data[sensitive] = "[REDACTED]"
+        logger.info(redact_secrets('{"event": "request_received", "endpoint": "/agent/marketing-kit", "data": %s}' % json.dumps(redacted_data).replace('"', "'")))
         # Input validation: check for required fields
 
         # Only require brand_name and brand_url
@@ -515,7 +664,7 @@ def marketing_kit():
                 data[opt_field] = "Not provided"
 
         kit = build_marketing_kit(data)
-        print(f"[DEBUG] Responding with kit: {json.dumps(kit, indent=2)[:1000]}... (truncated)")
+        logger.info(redact_secrets('{"event": "response_ready", "endpoint": "/agent/marketing-kit", "kit_preview": "%s"}' % json.dumps(kit)[:500].replace('"', "'")))
 
         # Audit logic: compare expected vs. rendered sections
         expected_sections = [
@@ -633,12 +782,12 @@ def marketing_kit():
         # Otherwise, return kit as usual
         return jsonify(kit)
     except Exception as e:
-        print(f"[ERROR] Exception in /agent/marketing-kit: {e}")
+        logger.error(redact_secrets('{"event": "error", "endpoint": "/agent/marketing-kit", "error": "%s"}' % str(e).replace('"', "'")))
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    print(f"[STARTUP] Running marketing_agent.py from: {__file__} | app id: {id(app)}")
-    print("[DIAGNOSTIC] Registered Flask routes:")
+    logger.info(redact_secrets('{"event": "startup", "file": "%s", "app_id": %d}' % (__file__, id(app))))
+    logger.info(redact_secrets('{"event": "registered_routes", "routes": %s}' % [str(rule) for rule in app.url_map.iter_rules()]))
     for rule in app.url_map.iter_rules():
-        print(f"[ROUTE] {rule}")
-    app.run(port=7000, debug=True)
+        logger.info(redact_secrets('{"event": "route", "route": "%s"}' % str(rule)))
+    app.run(port=7000, debug=False)

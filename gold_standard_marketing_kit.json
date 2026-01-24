@@ -22,8 +22,8 @@
     "sections": [
       {
         "type": "Section",
-        "id": "executive_summary",
-        "title": "Executive Summary",
+        "id": "executive_summary_overview_purpose",
+        "title": "Executive Summary / Overview & Purpose",
         "blocks": [
           {
             "type": "Paragraph",
@@ -38,9 +38,9 @@
           {
             "type": "ListOfSections",
             "section_titles": [
-              "Executive Summary",
-              "Brand Framework",
-              "Key Findings",
+              "Executive Summary / Overview & Purpose",
+              "Brand Framework / The Goal",
+              "Key Findings / Opportunities & Challenges",
               "Market Landscape",
               "Channel Opportunities",
               "Audience & User Personas",
@@ -55,15 +55,15 @@
               "Campaign Structure",
               "Landing Page Strategy",
               "Engagement Framework",
-              "References"
+              "Attachments/References"
             ]
           }
         ]
       },
       {
         "type": "Section",
-        "id": "brand_framework",
-        "title": "Brand Framework",
+        "id": "brand_framework_goal",
+        "title": "Brand Framework / The Goal",
         "blocks": [
           {
             "type": "Table",
@@ -108,6 +108,167 @@
           {
             "type": "Paragraph",
             "text": "Measurable Objective: Increase revenue by 25% annually through digital growth, diversified revenue streams, and expanded brand visibility while staying rooted in [BRAND]'s mission."
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "audience_archetypes",
+        "title": "Audience Archetypes",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": [
+              "Name/Title",
+              "Mission",
+              "Voice",
+              "Values",
+              "Emotional Promise",
+              "Icon",
+              "Voice in Action"
+            ],
+            "rows": [
+              [
+                "The Guide",
+                "Empower through knowledge",
+                "Supportive",
+                "Science, care",
+                "You’re not alone",
+                "🧭",
+                "Here’s what your results mean…"
+              ],
+              [
+                "The Innovator",
+                "Advance wellness with new solutions",
+                "Inspiring",
+                "Innovation",
+                "You can do more",
+                "💡",
+                "Discover new ways to thrive"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "key_messaging",
+        "title": "Key Messaging",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "Empowering, compassionate, results-driven messaging that helps people and pets feel their best by identifying and addressing root causes of intolerances."
+          },
+          {
+            "type": "Table",
+            "columns": ["Channel", "Voice in Action"],
+            "rows": [
+              ["Site", "Take control of your wellness today."],
+              ["Social", "Share your [BRAND] story!"],
+              ["Ads", "Unlock your best self."],
+              ["Email", "Your results are ready—here’s what’s next."]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "product_service_overview",
+        "title": "Product/Service Overview",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "[BRAND] offers advanced at-home intolerance testing for people and pets, providing fast, comprehensive, and actionable results to empower better health decisions."
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "feature_benefit_table",
+        "title": "Feature/Benefit Table",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": ["Feature", "Benefit"],
+            "rows": [
+              ["Tests for 1500+ intolerances", "Comprehensive health insights"],
+              [
+                "Developed by wellness experts",
+                "Trusted, science-backed results"
+              ],
+              ["Fast, actionable results", "Immediate next steps for wellness"],
+              ["Pet-safe testing", "Covers furry family members"]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "competitive_differentiation",
+        "title": "Competitive Differentiation",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "[BRAND] stands out through science-backed, customer-first values, pet and people coverage, and a unique blend of digital and B2B channel strategies."
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "go_to_market_checklist",
+        "title": "Go-to-Market Checklist",
+        "blocks": [
+          {
+            "type": "Bullets",
+            "items": [
+              "Invest in content and technical SEO",
+              "Targeted campaigns and influencer collaborations",
+              "Explore retail pilots",
+              "Build segmented email campaigns",
+              "Use paid ads for launches",
+              "Analytics setup"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "sample_campaign_concepts",
+        "title": "Sample Campaign Concepts",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "1. 'Meet the [BRAND] Pet of the Month!' social campaign. 2. Educational blog series: 'How to Read Your [BRAND] Results.' 3. Influencer collaboration: 'Pet Wellness Challenge.'"
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "website_content_audit_summary",
+        "title": "Website/Content Audit Summary",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "Website is strong in brand voice and testimonials but can improve in SEO, content depth, and pet-specific landing pages."
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "attachments_references",
+        "title": "Attachments/References",
+        "blocks": [
+          {
+            "type": "Bullets",
+            "items": [
+              "Global At-Home Testing Market Report 2023",
+              "Pet Wellness Trends 2025",
+              "[BRAND] Customer Survey 2025"
+            ]
+          },
+          {
+            "type": "Paragraph",
+            "text": "Source Quality/Recency Check: All references are from 2023-2025, peer-reviewed or industry-validated."
           }
         ]
       },
@@ -717,25 +878,6 @@
               "- Consulted: Product, Customer Support",
               "- Informed: All staff"
             ]
-          }
-        ]
-      },
-      {
-        "type": "Section",
-        "id": "references",
-        "title": "References",
-        "blocks": [
-          {
-            "type": "Bullets",
-            "items": [
-              "Global At-Home Testing Market Report 2023",
-              "Pet Wellness Trends 2025",
-              "[BRAND] Customer Survey 2025"
-            ]
-          },
-          {
-            "type": "Paragraph",
-            "text": "Source Quality/Recency Check: All references are from 2023-2025, peer-reviewed or industry-validated."
           }
         ]
       }

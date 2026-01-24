@@ -1,0 +1,21 @@
+{
+  "request_type": "marketing_kit",
+  "clientName": "Acme Corp",
+  "brand_name": "Acme Corp",
+  "brand_url": "https://acme.com",
+  "website": "https://acme.com",
+  "offering": "Widgets",
+  "targetMarkets": "Retail, Manufacturing",
+  "competitors": "WidgetCo, MegaWidgets",
+  "additionalDetails": "Acme Corp is launching a new eco-friendly widget line in Q2. Focus on B2B and sustainability messaging.",
+  "files": [
+    {
+      "filename": "Acme_Brand_Story.pdf",
+      "content": "[PDF content or extracted text here, or leave as placeholder if not available]"
+    },
+    {
+      "filename": "Acme_Product_Overview.docx",
+      "content": "[DOCX content or extracted text here, or leave as placeholder if not available]"
+    }
+  ]
+}

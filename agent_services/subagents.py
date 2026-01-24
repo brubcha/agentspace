@@ -1,5 +1,18 @@
+
 import os
 import re
+import logging
+from logging.handlers import RotatingFileHandler
+
+# --- Structured Logging Setup ---
+LOG_PATH = os.path.join(os.path.dirname(__file__), 'subagent_trace.log')
+logger = logging.getLogger("subagents")
+logger.setLevel(logging.INFO)
+handler = RotatingFileHandler(LOG_PATH, maxBytes=2*1024*1024, backupCount=3)
+formatter = logging.Formatter('%(message)s')
+handler.setFormatter(formatter)
+if not logger.hasHandlers():
+    logger.addHandler(handler)
 
 # Rubric loader (shared for all subagents)
 def load_rubric_criteria(section_title, rubric_path=None):
@@ -32,13 +45,13 @@ def website_scraper_subagent(brand_url: str, max_length: int = 2000) -> str:
         resp = requests.get(brand_url, timeout=10)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'html.parser')
-        # Extract visible text from the main body
         texts = soup.stripped_strings
         content = ' '.join(texts)
-        # Truncate to max_length characters
         summary = content[:max_length]
+        logger.info('{"event": "website_scrape", "url": "%s", "status": "success"}' % brand_url)
         return summary
     except Exception as e:
+        logger.error('{"event": "website_scrape", "url": "%s", "status": "fail", "error": "%s"}' % (brand_url, str(e).replace('"', "'")))
         return f"[Website scrape failed: {e}]"
 # Fallback/Retry Subagent
 from typing import Callable, Any, List, Dict
@@ -54,14 +67,14 @@ def fallback_retry_block(generator_func: Callable, *args, max_retries: int = 2, 
     last_result = None
     for attempt in range(max_retries):
         result = generator_func(*args, **kwargs)
-        # If no error in result, return immediately
+        logger.info('{"event": "subagent_call", "func": "%s", "attempt": %d, "result": "%s"}' % (generator_func.__name__, attempt+1, "success" if result else "fail"))
         if result and not any('error' in block for block in result):
             return result
         last_result = result
-    # If still failing after retries, append a review note
     for block in last_result or []:
         if 'error' in block:
             block['review'] = '[Fallback/Retry] Block failed after retries.'
+    logger.warning('{"event": "subagent_fallback", "func": "%s", "result": "fail_after_retries"}' % generator_func.__name__)
     return last_result or []
 # QA/Validation Subagent
 def validate_section_blocks(section_title, blocks, client_name, brand_name, brand_url, rubric_criteria=None, general_criteria=None):
@@ -87,11 +100,12 @@ Rubric Criteria: {rubric_criteria}
     try:
         ai_response = call_openai_subagent(prompt, max_tokens=1024)
         validated_blocks = _json.loads(ai_response)
+        logger.info('{"event": "validate_section", "section": "%s", "result": "success"}' % section_title)
         return validated_blocks
     except Exception as e:
-        # Fallback: mark all blocks for review
         for block in blocks:
             block['review'] = f"[QA validation failed: {e}]"
+        logger.error('{"event": "validate_section", "section": "%s", "result": "fail", "error": "%s"}' % (section_title, str(e).replace('"', "'")))
         return blocks
 # Checklist Generator Subagent
 def generate_checklist_block(section_title, checklist_title, client_name, brand_name, brand_url, context=None):
