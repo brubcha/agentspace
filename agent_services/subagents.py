@@ -1,3 +1,21 @@
+import os
+import re
+
+# Rubric loader (shared for all subagents)
+def load_rubric_criteria(section_title, rubric_path=None):
+    rubric_path = rubric_path or os.path.join(os.path.dirname(__file__), '../tests/marketing_kit_rubric.md')
+    SECTION_HEADER_RE = re.compile(r'^### \d+\. (.+)$', re.MULTILINE)
+    with open(rubric_path, encoding='utf-8') as f:
+        rubric = f.read()
+    sections = SECTION_HEADER_RE.findall(rubric)
+    # Find criteria for the given section
+    pattern = rf'### \d+\. {re.escape(section_title)}\n((?:- .+\n)+)'
+    match = re.search(pattern, rubric)
+    if match:
+        criteria = [c.strip('- ').strip() for c in match.group(1).splitlines() if c.strip().startswith('-')]
+        return criteria
+    return []
+
 # Website Scraper Subagent
 def website_scraper_subagent(brand_url: str, max_length: int = 2000) -> str:
     """
@@ -51,15 +69,16 @@ def validate_section_blocks(section_title, blocks, client_name, brand_name, bran
     Validates section blocks for richness, specificity, and rubric compliance using a focused prompt.
     """
     import json as _json
+    if rubric_criteria is None:
+        rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
 You are a marketing kit QA validator. Review the following section blocks for the '{section_title}' section.
 Client Name: {client_name}
 Brand: {brand_name}
 Website: {brand_url}
 Blocks: {_json.dumps(blocks)}
+Rubric Criteria: {rubric_criteria}
 """
-    if rubric_criteria:
-        prompt += f"Rubric Criteria: {rubric_criteria}\n"
     if general_criteria:
         prompt += f"General Richness Criteria: {general_criteria}\n"
     prompt += (
@@ -79,11 +98,13 @@ def generate_checklist_block(section_title, checklist_title, client_name, brand_
     """
     Generates a checklist block for a given section using a focused prompt.
     """
+    rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
 Generate a checklist titled '{checklist_title}' for the '{section_title}' section of a marketing kit.
 Client Name: {client_name}
 Brand: {brand_name}
 Website: {brand_url}
+Rubric Criteria: {rubric_criteria}
 """
     if context:
         prompt += f"Context: {context}\n"
@@ -110,11 +131,13 @@ def generate_opportunity_card_block(section_title, card_title, client_name, bran
     """
     Generates an opportunity card block for a given section using a focused prompt.
     """
+    rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
 Generate an opportunity card titled '{card_title}' for the '{section_title}' section of a marketing kit.
 Client Name: {client_name}
 Brand: {brand_name}
 Website: {brand_url}
+Rubric Criteria: {rubric_criteria}
 """
     if context:
         prompt += f"Context: {context}\n"
@@ -141,11 +164,13 @@ def generate_archetype_block(section_title, archetype_title, client_name, brand_
     """
     Generates a brand archetype block for a given section using a focused prompt.
     """
+    rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
 Generate a brand archetype card titled '{archetype_title}' for the '{section_title}' section of a marketing kit.
 Client Name: {client_name}
 Brand: {brand_name}
 Website: {brand_url}
+Rubric Criteria: {rubric_criteria}
 """
     if context:
         prompt += f"Context: {context}\n"
@@ -172,11 +197,13 @@ def generate_persona_block(section_title, persona_title, client_name, brand_name
     """
     Generates a persona block for a given section using a focused prompt.
     """
+    rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
 Generate a persona card titled '{persona_title}' for the '{section_title}' section of a marketing kit.
 Client Name: {client_name}
 Brand: {brand_name}
 Website: {brand_url}
+Rubric Criteria: {rubric_criteria}
 """
     if context:
         prompt += f"Context: {context}\n"
@@ -203,11 +230,13 @@ def generate_list_block(section_title, list_title, client_name, brand_name, bran
     """
     Generates a list block for a given section using a focused prompt.
     """
+    rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
 Generate a bullet list titled '{list_title}' for the '{section_title}' section of a marketing kit.
 Client Name: {client_name}
 Brand: {brand_name}
 Website: {brand_url}
+Rubric Criteria: {rubric_criteria}
 """
     if context:
         prompt += f"Context: {context}\n"
@@ -234,12 +263,14 @@ def generate_table_block(section_title, table_title, client_name, brand_name, br
     """
     Generates a table block for a given section using a focused prompt.
     """
+    rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
 Generate a table titled '{table_title}' for the '{section_title}' section of a marketing kit.
 Client Name: {client_name}
 Brand: {brand_name}
 Website: {brand_url}
 Columns: {', '.join(columns)}
+Rubric Criteria: {rubric_criteria}
 """
     if context:
         prompt += f"Context: {context}\n"
