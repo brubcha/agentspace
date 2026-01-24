@@ -27,7 +27,7 @@ def test_end_to_end_kit_generation():
         'brand_archetype': ['Archetype'],
         'audience_personas': ['Persona', 'Bullets'],
         'b2b_industry_targets': ['Table', 'Bullets'],
-        'key_findings': ['NumberedFindingsList'],
+        'key_findings': ['NumberedFindingsList', 'Bullets'],
         'opportunity_areas': ['Subhead', 'Checklist'],
         # Add other sections as needed
     }

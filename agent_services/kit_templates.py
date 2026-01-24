@@ -14,8 +14,9 @@ def load_example_markdown():
     with open(EXAMPLE_MD_PATH, 'r', encoding='utf-8') as f:
         return f.read()
 
-# Load the example and spec files (paths can be adjusted as needed)
-EXAMPLE_PATH = os.path.join(os.path.dirname(__file__), '../swift_marketing_kit_example_content_v1_5.json')
+
+# Use the gold standard as the primary example kit
+EXAMPLE_PATH = os.path.join(os.path.dirname(__file__), '../gold_standard_marketing_kit.json')
 SPEC_PATH = os.path.join(os.path.dirname(__file__), '../marketing_kit_template_spec_v1_5.json')
 
 def load_example_kit():
