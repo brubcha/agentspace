@@ -1,0 +1,744 @@
+{
+  "template_id": "gold_standard_marketing_kit_v3_maximally_rich",
+  "client": {
+    "brand_name": "[Brand Name]",
+    "brand_region": "[Region]",
+    "brand_phone": "[Phone]",
+    "brand_url": "[Website URL]"
+  },
+  "assets": {
+    "hero_image": "[hero_image_path]",
+    "logo_image": "[logo_image_path]",
+    "card_images": {}
+  },
+  "front_matter": [],
+  "document": {
+    "cover": {
+      "type": "CoverHero",
+      "hero_image": "{assets.hero_image}",
+      "logo_image": "{assets.logo_image}",
+      "doc_title": "Marketing Kit"
+    },
+    "sections": [
+      {
+        "type": "Section",
+        "id": "executive_summary",
+        "title": "Executive Summary",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "[BRAND] is redefining proactive wellness for people and pets through advanced intolerance testing. This kit clarifies the brand’s market position, defines target audiences and challenges, documents brand voice and archetypes, and provides actionable insights for campaigns, partnerships, and digital initiatives."
+          },
+          { "type": "Subhead", "text": "How to Use It" },
+          {
+            "type": "Paragraph",
+            "text": "This kit is the foundation for all [BRAND] brand, marketing, sales, and communications activity. Every message—whether a campaign, website headline, or client response—should reflect [BRAND]'s empowering promise and evidence-based expertise. Use this kit for campaigns, creative assets, sales outreach, partnerships, and internal training."
+          },
+          { "type": "Subhead", "text": "What’s Inside" },
+          {
+            "type": "ListOfSections",
+            "section_titles": [
+              "Executive Summary",
+              "Brand Framework",
+              "Key Findings",
+              "Market Landscape",
+              "Channel Opportunities",
+              "Audience & User Personas",
+              "B2B Industry Targets",
+              "Industry Codes & Data Broker Research",
+              "Brand Archetypes",
+              "Brand Voice",
+              "Client Do’s & Don’ts",
+              "Content & Keyword Strategy",
+              "Social Strategy",
+              "Social Production Checklist",
+              "Campaign Structure",
+              "Landing Page Strategy",
+              "Engagement Framework",
+              "References"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "brand_framework",
+        "title": "Brand Framework",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": ["Attribute", "Description", "Example"],
+            "rows": [
+              [
+                "Brand Purpose",
+                "Empower people and pets to live healthier lives by identifying intolerances.",
+                "Empowering wellness for all."
+              ],
+              [
+                "Brand Promise",
+                "Fast, comprehensive, actionable results for better health decisions.",
+                "Results you can act on, for life."
+              ],
+              [
+                "Brand Personality",
+                "Compassionate, scientific, empowering, innovative.",
+                "Supportive, clear, and forward-thinking"
+              ],
+              [
+                "Brand Values",
+                "Science-backed, customer-first, transparency, inclusivity.",
+                "Evidence-based, accessible to everyone"
+              ],
+              [
+                "Brand Voice",
+                "Empowering, compassionate, results-driven.",
+                "You can take control of your health."
+              ],
+              [
+                "Brand Positioning",
+                "The trusted leader in at-home intolerance testing for people and pets.",
+                "[BRAND]: The gold standard in wellness."
+              ]
+            ]
+          },
+          {
+            "type": "Paragraph",
+            "text": "Vision-level Goal: To establish [BRAND] as the trusted leader in at-home intolerance testing, delivering measurable value and innovation to health-conscious individuals and pet owners."
+          },
+          {
+            "type": "Paragraph",
+            "text": "Measurable Objective: Increase revenue by 25% annually through digital growth, diversified revenue streams, and expanded brand visibility while staying rooted in [BRAND]'s mission."
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "key_findings",
+        "title": "Key Findings / Opportunities & Challenges",
+        "blocks": [
+          {
+            "type": "Bullets",
+            "items": [
+              "Limited Digital Presence: Online visibility is strong but can be expanded through SEO, content, and partnerships. Action: Invest in digital marketing and content strategy.",
+              "Untapped B2B Partnerships: Opportunities exist with veterinary clinics, wellness brands, and nutritionists. Action: Develop co-branded programs and referral pipelines.",
+              "Education Gap: Many consumers are unaware of the difference between allergies and intolerances. Action: Launch educational campaigns and resources.",
+              "Subscription Revenue Potential: Recurring revenue models (e.g., annual retesting, pet plans) are underdeveloped. Action: Introduce subscription and loyalty programs.",
+              "Pet Market Growth: Pet wellness is a booming segment. Action: Target pet owners with tailored messaging and products."
+            ]
+          },
+          {
+            "type": "Table",
+            "columns": ["Icon", "Opportunity Area", "Description"],
+            "rows": [
+              [
+                "🛠️",
+                "Workflow Efficiency",
+                "Streamline operations with CRM integration, automated follow-ups, and standardized workflows."
+              ],
+              [
+                "💻",
+                "Digital Tools",
+                "Boost engagement with SEO, content, and digital assets (videos, guides, webinars)."
+              ],
+              [
+                "📈",
+                "Market Trends",
+                "Capitalize on the rise of personalized wellness and pet health."
+              ],
+              [
+                "💰",
+                "Revenue Streams",
+                "Expand income via subscriptions, B2B partnerships, and new product lines."
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "market_landscape",
+        "title": "Market Landscape",
+        "blocks": [
+          {
+            "type": "Bullets",
+            "items": [
+              "Macro Trends: Personalized health and pet wellness are growing rapidly. The global at-home testing market is projected to reach $10B by 2028. Pet wellness spending is up 15% YoY.",
+              "Competitor Mapping:",
+              "- Everlywell: DTC, health-conscious adults, High category momentum.",
+              "- 23andMe: DTC, tech-savvy consumers, Moderate category momentum.",
+              "- Embark: Pet owners, online shoppers, High (pet segment).",
+              "- CheckMyBody: Budget-focused, online buyers, Low category momentum."
+            ]
+          },
+          {
+            "type": "Image",
+            "src": "market_share.png",
+            "alt": "Market Share Pie Chart"
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "channel_opportunities",
+        "title": "Channel Opportunities",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": [
+              "Channel",
+              "Opportunity Insight",
+              "Recommendation",
+              "Rationale for Deprioritizing"
+            ],
+            "rows": [
+              [
+                "SEO",
+                "High search volume for ‘food intolerance test’",
+                "Invest in content and technical SEO",
+                "N/A"
+              ],
+              [
+                "Social Media",
+                "Engaged pet/health communities",
+                "Targeted campaigns, influencer collabs",
+                "N/A"
+              ],
+              [
+                "Retail Partners",
+                "Access to new customer segments",
+                "Explore retail pilots",
+                "High cost, slower feedback"
+              ],
+              [
+                "Email",
+                "High conversion for retargeting",
+                "Build segmented campaigns",
+                "N/A"
+              ],
+              [
+                "Paid Ads",
+                "Quick awareness, but expensive",
+                "Use for launches only",
+                "Deprioritize for ongoing acquisition"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "audience_personas",
+        "title": "Audience & User Personas",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": [
+              "Name/Title",
+              "Motivation",
+              "Needs",
+              "Messaging",
+              "Demographic",
+              "Psychographic",
+              "Buying Behavior"
+            ],
+            "rows": [
+              [
+                "Health Seeker",
+                "Improve wellness",
+                "Fast, actionable info",
+                "Take control of health",
+                "25-45, urban",
+                "Proactive, curious",
+                "Researches, compares"
+              ],
+              [
+                "Pet Parent",
+                "Pet’s health, prevention",
+                "Easy, pet-safe tests",
+                "Keep your pet healthy",
+                "30-60, suburban",
+                "Caring, loyal",
+                "Seeks vet recommendations"
+              ],
+              [
+                "Fitness Enthusiast",
+                "Optimize performance",
+                "Detailed results",
+                "Unlock your potential",
+                "18-40, active",
+                "Driven, analytical",
+                "Buys bundles, repeats"
+              ],
+              [
+                "Allergy Sufferer",
+                "Symptom relief",
+                "Clear next steps",
+                "Find what’s holding you back",
+                "20-60, mixed",
+                "Frustrated, hopeful",
+                "Seeks quick solutions"
+              ],
+              [
+                "Edge Case: Senior",
+                "Maintain independence",
+                "Simple, affordable",
+                "Stay active, stay well",
+                "60+, mixed",
+                "Value-conscious",
+                "Needs support, repeats"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "b2b_industry_targets",
+        "title": "B2B Industry Targets",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": ["Category", "Subtype", "Rationale"],
+            "rows": [
+              [
+                "Health & Wellness",
+                "Supplement brands",
+                "Synergy with wellness products"
+              ],
+              [
+                "Pet Care",
+                "Veterinary clinics",
+                "Trusted by pet owners, referral opportunities"
+              ],
+              [
+                "Nutrition & Diet",
+                "Meal delivery services",
+                "Integrate test results into meal planning"
+              ],
+              [
+                "Beauty & Personal Care",
+                "Skincare brands",
+                "Address ingredient sensitivities"
+              ],
+              [
+                "Environmental Health",
+                "Eco orgs, non-profits",
+                "Align with sustainability, health messaging"
+              ]
+            ]
+          },
+          {
+            "type": "Image",
+            "src": "segmentation_map.png",
+            "alt": "Segmentation Map"
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "industry_codes_data_broker_research",
+        "title": "Industry Codes & Data Broker Research",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": ["Industry", "NAICS Code", "Description"],
+            "rows": [
+              ["Health Testing", "621511", "Medical labs, diagnostic testing"],
+              ["Pet Care", "812910", "Pet care services"],
+              ["Nutrition", "541720", "Research & development in biotech"]
+            ]
+          },
+          {
+            "type": "Table",
+            "columns": [
+              "Data Broker",
+              "Global Companies",
+              "USA Companies",
+              "Description"
+            ],
+            "rows": [
+              ["Acxiom", "50+", "20+", "Consumer/health data aggregation"],
+              ["Experian", "40+", "15+", "Credit/health data, analytics"],
+              ["PetData", "10+", "5+", "Pet registration, health data"]
+            ]
+          },
+          {
+            "type": "Paragraph",
+            "text": "White Space Summary: Few data brokers focus on pet wellness; opportunity for [BRAND] to lead in this niche."
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "brand_archetypes",
+        "title": "Brand Archetypes",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": [
+              "Name/Title",
+              "Mission",
+              "Voice",
+              "Values",
+              "Emotional Promise",
+              "Icon",
+              "Voice in Action"
+            ],
+            "rows": [
+              [
+                "The Guide",
+                "Empower through knowledge",
+                "Supportive",
+                "Science, care",
+                "You’re not alone",
+                "🧭",
+                "Here’s what your results mean…"
+              ],
+              [
+                "The Innovator",
+                "Advance wellness with new solutions",
+                "Inspiring",
+                "Innovation",
+                "You can do more",
+                "💡",
+                "Discover new ways to thrive"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "brand_voice",
+        "title": "Brand Voice",
+        "blocks": [
+          {
+            "type": "Paragraph",
+            "text": "[BRAND]'s brand voice is empowering, compassionate, and results-driven. We help people and pets feel their best by identifying and addressing root causes of intolerances."
+          },
+          {
+            "type": "Table",
+            "columns": ["Channel", "Voice in Action"],
+            "rows": [
+              ["Site", "Take control of your wellness today."],
+              ["Social", "Share your [BRAND] story!"],
+              ["Ads", "Unlock your best self."],
+              ["Email", "Your results are ready—here’s what’s next."]
+            ]
+          },
+          {
+            "type": "Table",
+            "columns": ["Factual Foundation", "Example"],
+            "rows": [
+              ["Product Claims", "Tests for 1500+ intolerances"],
+              ["Founder Credentials", "Developed by wellness experts"],
+              ["Service Features", "Fast, actionable results"]
+            ]
+          },
+          {
+            "type": "Table",
+            "columns": ["Tagline", "Status", "Rationale"],
+            "rows": [
+              [
+                "Empower Your Wellness",
+                "Approved",
+                "Clear, actionable, on-brand"
+              ],
+              ["Test, Don’t Guess", "Approved", "Memorable, direct"],
+              ["Know More, Live More", "Rejected", "Too generic"]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "client_dos_donts",
+        "title": "Client Do’s & Don’ts",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": ["Do", "Example"],
+            "rows": [
+              [
+                "Use clear, empowering language",
+                "You can take control of your health."
+              ],
+              [
+                "Highlight science-backed results",
+                "Tests for 1500+ intolerances."
+              ],
+              [
+                "Show compassion for pet owners",
+                "We care for your furry family."
+              ],
+              [
+                "Provide actionable next steps",
+                "Here’s what to do after your results."
+              ],
+              ["Use testimonials", "UCARI changed my life!"],
+              [
+                "Educate about intolerances",
+                "Learn the difference between allergy and intolerance."
+              ],
+              ["Offer support resources", "Contact our wellness coaches."],
+              ["Celebrate customer success", "Share your [BRAND] story!"]
+            ]
+          },
+          {
+            "type": "Table",
+            "columns": ["Don’t", "Example"],
+            "rows": [
+              ["Make medical claims", "Cures all symptoms"],
+              ["Use fear-based messaging", "Don’t risk your health!"],
+              ["Overpromise results", "Guaranteed to fix everything"],
+              ["Ignore pet wellness", "Just for people"],
+              ["Use jargon", "Immunoglobulin E reactivity"],
+              ["Dismiss customer concerns", "It’s probably nothing"],
+              ["Forget follow-up", "You’re on your own"],
+              ["Use generic stock images", "Smiling family with salad"]
+            ]
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "Most Common Pitfalls:",
+              "- Overpromising results",
+              "- Using jargon or unclear language",
+              "- Neglecting pet owner needs"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "content_keyword_strategy",
+        "title": "Content & Keyword Strategy",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": ["Category", "Keyword", "Search Volume", "Intent"],
+            "rows": [
+              ["Core", "food intolerance test", "12,000", "Informational"],
+              ["Use Case", "pet allergy test", "3,500", "Transactional"],
+              [
+                "Trust/Differentiation",
+                "science-backed wellness",
+                "1,200",
+                "Trust"
+              ],
+              ["B2B/Channel", "vet partnership", "800", "B2B"]
+            ]
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "Phased Keyword Analysis:",
+              "- Phase 1: Local/brand keywords",
+              "- Phase 2: Category/high-volume",
+              "- Phase 3: Long-tail, B2B"
+            ]
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "Blog Strategy:",
+              "- Hub/spoke model, pillar pages, cluster topics",
+              "- Sample titles: ‘How to Read Your [BRAND] Results,’ ‘Pet Wellness: Beyond Allergies’",
+              "- Blog calendar template: 2 posts/month, rotating topics"
+            ]
+          },
+          {
+            "type": "Table",
+            "columns": ["Blog Structure"],
+            "rows": [
+              ["Title"],
+              ["Introduction"],
+              ["Context"],
+              ["Core Insights"],
+              ["Proof/Evidence"],
+              ["Practical Applications"],
+              ["Trends"],
+              ["Internal Links"],
+              ["External Links"],
+              ["CTA"],
+              ["About"]
+            ]
+          },
+          {
+            "type": "Paragraph",
+            "text": "Required Word Count: 750+ words per post"
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "social_strategy",
+        "title": "Social Strategy",
+        "blocks": [
+          {
+            "type": "Bullets",
+            "items": [
+              "Framework:",
+              "- Content mix: static, carousels, reels, community posts",
+              "- Emphasis: real images, customer stories, pet focus",
+              "- Primary goals: brand trust, bookings, education",
+              "- Post types: static feed, carousel, stories, reels, UGC",
+              "- Content calendar: 3 posts/week, rotating formats",
+              "- Best-performing post example: ‘Meet the [BRAND] Pet of the Month!’"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "social_production_checklist",
+        "title": "Social Production Checklist",
+        "blocks": [
+          {
+            "type": "Bullets",
+            "items": [
+              "Content sources: testimonials, FAQs, pet owner stories",
+              "Design tips: use brand colors, real photos",
+              "Copy guidelines: clear, compassionate, actionable",
+              "Pre-publish QA: spelling, brand voice, image rights",
+              "Content approval workflow: draft → review → approval → schedule",
+              "Idea starters: ‘Customer success story,’ ‘Behind the scenes,’ ‘Pet wellness tips’"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "campaign_structure",
+        "title": "Campaign Structure",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": ["Deliverable", "Count"],
+            "rows": [
+              ["Emails", "3-6"],
+              ["Social Posts", "3-10"],
+              ["Blogs", "1-3"],
+              ["Press Releases", "0-2"],
+              ["Landing/Funnel Page", "1"]
+            ]
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "Sample Campaign Timeline:",
+              "- Week 1: Launch email, social teaser",
+              "- Week 2: Blog post, influencer collab",
+              "- Week 3: Customer story, retargeting ads"
+            ]
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "Minimum Viable Campaign Checklist:",
+              "- Email sequence",
+              "- Social content",
+              "- Blog post",
+              "- Landing page",
+              "- Analytics setup"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "landing_page_strategy",
+        "title": "Landing Page Strategy",
+        "blocks": [
+          {
+            "type": "Table",
+            "columns": ["Section", "Description"],
+            "rows": [
+              ["Hero", "Headline + subheadline + CTA"],
+              ["Features/Benefits", "Value breakdown"],
+              ["Problem→Solution", "Storytelling"],
+              ["Visual/Offer", "Product image or explainer"],
+              ["Testimonials/Social Proof", "Customer stories, reviews"],
+              ["FAQ", "Optional but powerful"],
+              ["Final CTA", "Close strong, repeat offer"]
+            ]
+          },
+          {
+            "type": "Table",
+            "columns": ["Type", "CTA"],
+            "rows": [
+              ["CRM Landing Page", "Book Appointment"],
+              ["Funnel Page", "Register"],
+              ["Website Landing Page", "Contact Us"]
+            ]
+          },
+          {
+            "type": "Image",
+            "src": "landing_wireframe.png",
+            "alt": "Landing Page Wireframe"
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "engagement_framework",
+        "title": "Engagement Framework",
+        "blocks": [
+          {
+            "type": "Bullets",
+            "items": [
+              "Hierarchical Planning: Initiatives → Projects → Deliverables → Tasks"
+            ]
+          },
+          {
+            "type": "Table",
+            "columns": ["Initiative", "Alignment Points", "Target Audiences"],
+            "rows": [
+              [
+                "Digital Expansion",
+                "Brand trust, reach",
+                "Health seekers, pet owners"
+              ],
+              [
+                "B2B Partnerships",
+                "Vet/brand synergy",
+                "Clinics, wellness brands"
+              ],
+              ["Content Leadership", "Education, SEO", "All segments"],
+              ["Customer Success", "Retention, loyalty", "Repeat buyers"]
+            ]
+          },
+          {
+            "type": "Bullets",
+            "items": [
+              "RACI Matrix:",
+              "- Responsible: Marketing Manager",
+              "- Accountable: Head of Growth",
+              "- Consulted: Product, Customer Support",
+              "- Informed: All staff"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Section",
+        "id": "references",
+        "title": "References",
+        "blocks": [
+          {
+            "type": "Bullets",
+            "items": [
+              "Global At-Home Testing Market Report 2023",
+              "Pet Wellness Trends 2025",
+              "[BRAND] Customer Survey 2025"
+            ]
+          },
+          {
+            "type": "Paragraph",
+            "text": "Source Quality/Recency Check: All references are from 2023-2025, peer-reviewed or industry-validated."
+          }
+        ]
+      }
+    ]
+  }
+}

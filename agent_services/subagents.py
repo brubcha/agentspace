@@ -88,7 +88,10 @@ Website: {brand_url}
     if context:
         prompt += f"Context: {context}\n"
     prompt += (
-        "IMPORTANT: Make the checklist actionable and specific to the client. Return a JSON block: {\"type\": \"Checklist\", \"title\": \"...\", \"items\": [ ... ]} only."
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Make the checklist actionable and specific to the client. "
+        "Return a JSON block: {\"type\": \"Checklist\", \"title\": \"...\", \"items\": [ ... ]} only."
     )
     try:
         import json as _json
@@ -116,7 +119,10 @@ Website: {brand_url}
     if context:
         prompt += f"Context: {context}\n"
     prompt += (
-        "IMPORTANT: Make the opportunity card vivid, actionable, and specific to the client. Return a JSON block: {\"type\": \"OpportunityCard\", \"title\": \"...\", \"description\": \"...\", \"actions\": [ ... ]} only."
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Make the opportunity card vivid, actionable, and specific to the client. "
+        "Return a JSON block: {\"type\": \"OpportunityCard\", \"title\": \"...\", \"description\": \"...\", \"actions\": [ ... ]} only."
     )
     try:
         import json as _json
@@ -144,7 +150,10 @@ Website: {brand_url}
     if context:
         prompt += f"Context: {context}\n"
     prompt += (
-        "IMPORTANT: Make the archetype vivid, actionable, and specific to the client. Return a JSON block: {\"type\": \"Archetype\", \"title\": \"...\", \"description\": \"...\", \"attributes\": { ... }} only."
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Make the archetype vivid, actionable, and specific to the client. "
+        "Return a JSON block: {\"type\": \"Archetype\", \"title\": \"...\", \"description\": \"...\", \"attributes\": { ... }} only."
     )
     try:
         import json as _json
@@ -172,7 +181,10 @@ Website: {brand_url}
     if context:
         prompt += f"Context: {context}\n"
     prompt += (
-        "IMPORTANT: Make the persona vivid, actionable, and specific to the client. Return a JSON block: {\"type\": \"Persona\", \"title\": \"...\", \"description\": \"...\", \"attributes\": { ... }} only."
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Make the persona vivid, actionable, and specific to the client. "
+        "Return a JSON block: {\"type\": \"Persona\", \"title\": \"...\", \"description\": \"...\", \"attributes\": { ... }} only."
     )
     try:
         import json as _json
@@ -200,7 +212,10 @@ Website: {brand_url}
     if context:
         prompt += f"Context: {context}\n"
     prompt += (
-        "IMPORTANT: Make the list actionable and specific to the client. Return a JSON block: {\"type\": \"Bullets\", \"title\": \"...\", \"items\": [ ... ]} only."
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Make the list actionable and specific to the client. "
+        "Return a JSON block: {\"type\": \"Bullets\", \"title\": \"...\", \"items\": [ ... ]} only."
     )
     try:
         import json as _json
@@ -229,7 +244,10 @@ Columns: {', '.join(columns)}
     if context:
         prompt += f"Context: {context}\n"
     prompt += (
-        "IMPORTANT: Make the table actionable and specific to the client. Return a JSON block: {\"type\": \"Table\", \"title\": \"...\", \"columns\": [...], \"rows\": [[...], ...]} only."
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Make the table actionable and specific to the client. "
+        "Return a JSON block: {\"type\": \"Table\", \"title\": \"...\", \"columns\": [...], \"rows\": [[...], ...]} only."
     )
     try:
         import json as _json
@@ -274,7 +292,10 @@ Website: {brand_url}
     if context:
         prompt += f"Context: {context}\n"
     prompt += (
-        "IMPORTANT: Be vivid, actionable, and specific to the client. Do not use generic content. Return a JSON block: {\"type\": \"Subhead\", \"text\": \"...\"} followed by a {\"type\": \"Paragraph\", \"text\": \"...\"}."
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Be vivid, actionable, and specific to the client. "
+        "Return a JSON block: {\"type\": \"Subhead\", \"text\": \"...\"} followed by a {\"type\": \"Paragraph\", \"text\": \"...\"}."
     )
     try:
         import json as _json
