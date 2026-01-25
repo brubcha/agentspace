@@ -1,4 +1,9 @@
 
+import os
+import openai
+from dotenv import load_dotenv
+load_dotenv()
+
 import flask
 from flask import Flask, request, jsonify
 from agent_services import subagents
@@ -10,7 +15,6 @@ app = Flask(__name__)
 def build_marketing_kit(data):
     website = data.get("website", "[FILL]")
     brand_url = data.get("brand_url", website)
-    brand_name = data.get("brand_name", "[BRAND]")
     client_name = data.get("client_name", "[CLIENT]")
     required_sections = [
         ("executive_summary_overview_purpose", "Executive Summary / Overview & Purpose"),
@@ -41,90 +45,125 @@ def build_marketing_kit(data):
         ("engagement_framework", "Engagement Framework")
     ]
     kit = {"document": {"sections": []}}
+    # Load gold standard for block type and order
+    import json as _json
+    with open('y:/Code/agentspace/gold_standard_marketing_kit.json', encoding='utf-8') as f:
+        gold = _json.load(f)
+    gold_sections = {s['id']: s for s in gold['document']['sections']}
+
+    def replace_placeholders(text):
+        if not isinstance(text, str):
+            return text
+        return text.replace("[BRAND]", client_name).replace("[CLIENT]", client_name)
+
+    # Helper to call OpenAI for dynamic copy
+    def generate_dynamic_copy(section_title, gold_block, user_data):
+        prompt = f"""
+You are a marketing expert. Write a rich, detailed, and creative section for a marketing kit.
+Section: {section_title}
+Client Name: {client_name}
+Website: {user_data.get('website', '')}
+Offering: {user_data.get('offering', '')}
+Target Markets: {user_data.get('target_markets', '')}
+Competitors: {user_data.get('competitors', '')}
+Additional Details: {user_data.get('additional_details', '')}
+
+Use the following as a structural guide, but do NOT copy verbatim. Instead, generate new, original copy that is tailored to the client and context:
+---
+{gold_block.get('text', '') or gold_block.get('items', '') or gold_block.get('section_titles', '') or gold_block.get('columns', '')}
+---
+Respond in the appropriate format for the block type: {gold_block.get('type')}. For tables or lists, generate realistic, relevant content.
+"""
+        client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful marketing copywriter."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=600
+        )
+        return response.choices[0].message.content.strip()
+
     for sec_id, sec_title in required_sections:
         blocks = []
-        # Example: Use subagents for dynamic content generation
-        if sec_id == "executive_summary_overview_purpose":
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Executive Summary", client_name, brand_name, brand_url))
-        elif sec_id == "brand_framework_goal":
-            blocks.extend(subagents.generate_table_block(sec_title, "Brand Framework Table", client_name, brand_name, brand_url, ["Attribute", "Description", "Example"]))
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Vision-level Goal", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Measurable Objective", client_name, brand_name, brand_url))
-        elif sec_id == "audience_archetypes":
-            blocks.extend(subagents.generate_table_block(sec_title, "Audience Archetypes", client_name, brand_name, brand_url, ["Name/Title", "Mission", "Voice", "Values", "Emotional Promise", "Icon", "Voice in Action"]))
-        elif sec_id == "key_messaging":
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Key Messaging Overview", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_table_block(sec_title, "Key Messaging Table", client_name, brand_name, brand_url, ["Channel", "Voice in Action"]))
-        elif sec_id == "product_service_overview":
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Product/Service Overview", client_name, brand_name, brand_url))
-        elif sec_id == "feature_benefit_table":
-            blocks.extend(subagents.generate_table_block(sec_title, "Feature/Benefit Table", client_name, brand_name, brand_url, ["Feature", "Benefit"]))
-        elif sec_id == "competitive_differentiation":
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Competitive Differentiation", client_name, brand_name, brand_url))
-        elif sec_id == "go_to_market_checklist":
-            blocks.extend(subagents.generate_checklist_block(sec_title, "Go-to-Market Checklist", client_name, brand_name, brand_url))
-        elif sec_id == "sample_campaign_concepts":
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Sample Campaign Concepts", client_name, brand_name, brand_url))
-        elif sec_id == "website_content_audit_summary":
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Website/Content Audit Summary", client_name, brand_name, brand_url))
-        elif sec_id == "attachments_references":
-            blocks.extend(subagents.generate_list_block(sec_title, "Attachments/References", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Source Quality/Recency Check", client_name, brand_name, brand_url))
-        elif sec_id == "key_findings":
-            blocks.extend(subagents.generate_list_block(sec_title, "Key Findings / Opportunities & Challenges", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_table_block(sec_title, "Opportunities Table", client_name, brand_name, brand_url, ["Icon", "Opportunity Area", "Description"]))
-        elif sec_id == "market_landscape":
-            blocks.extend(subagents.generate_list_block(sec_title, "Market Landscape Bullets", client_name, brand_name, brand_url))
-            # Image block could be added here if needed
-        elif sec_id == "channel_opportunities":
-            blocks.extend(subagents.generate_table_block(sec_title, "Channel Opportunities", client_name, brand_name, brand_url, ["Channel", "Opportunity Insight", "Recommendation", "Rationale for Deprioritizing"]))
-        elif sec_id == "audience_personas":
-            blocks.extend(subagents.generate_table_block(sec_title, "Audience & User Personas", client_name, brand_name, brand_url, ["Name/Title", "Motivation", "Needs", "Messaging", "Demographic", "Psychographic", "Buying Behavior"]))
-        elif sec_id == "b2b_industry_targets":
-            blocks.extend(subagents.generate_table_block(sec_title, "B2B Industry Targets", client_name, brand_name, brand_url, ["Category", "Subtype", "Rationale"]))
-        elif sec_id == "industry_codes_data_broker_research":
-            blocks.extend(subagents.generate_table_block(sec_title, "Industry Codes Table", client_name, brand_name, brand_url, ["Industry", "NAICS Code", "Description"]))
-            blocks.extend(subagents.generate_table_block(sec_title, "Data Broker Table", client_name, brand_name, brand_url, ["Data Broker", "Global Companies", "USA Companies", "Description"]))
-            blocks.extend(subagents.generate_subhead_block(sec_title, "White Space Summary", client_name, brand_name, brand_url))
-        elif sec_id == "brand_archetypes":
-            blocks.extend(subagents.generate_table_block(sec_title, "Brand Archetypes", client_name, brand_name, brand_url, ["Name/Title", "Mission", "Voice", "Values", "Emotional Promise", "Icon", "Voice in Action"]))
-        elif sec_id == "brand_voice":
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Brand Voice Overview", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_table_block(sec_title, "Brand Voice Table", client_name, brand_name, brand_url, ["Channel", "Voice in Action"]))
-            blocks.extend(subagents.generate_table_block(sec_title, "Factual Foundation Table", client_name, brand_name, brand_url, ["Factual Foundation", "Example"]))
-            blocks.extend(subagents.generate_table_block(sec_title, "Tagline Table", client_name, brand_name, brand_url, ["Tagline", "Status", "Rationale"]))
-        elif sec_id == "client_dos_donts":
-            blocks.extend(subagents.generate_table_block(sec_title, "Do Table", client_name, brand_name, brand_url, ["Do", "Example"]))
-            blocks.extend(subagents.generate_table_block(sec_title, "Don't Table", client_name, brand_name, brand_url, ["Don't", "Example"]))
-            blocks.extend(subagents.generate_list_block(sec_title, "Most Common Pitfalls", client_name, brand_name, brand_url))
-        elif sec_id == "content_keyword_strategy":
-            blocks.extend(subagents.generate_table_block(sec_title, "Content & Keyword Strategy", client_name, brand_name, brand_url, ["Category", "Keyword", "Search Volume", "Intent"]))
-            blocks.extend(subagents.generate_list_block(sec_title, "Phased Keyword Analysis", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_list_block(sec_title, "Blog Strategy", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_table_block(sec_title, "Blog Structure Table", client_name, brand_name, brand_url, ["Blog Structure"]))
-            blocks.extend(subagents.generate_subhead_block(sec_title, "Required Word Count", client_name, brand_name, brand_url))
-        elif sec_id == "social_strategy":
-            blocks.extend(subagents.generate_list_block(sec_title, "Social Strategy Framework", client_name, brand_name, brand_url))
-        elif sec_id == "social_production_checklist":
-            blocks.extend(subagents.generate_list_block(sec_title, "Social Production Checklist", client_name, brand_name, brand_url))
-        elif sec_id == "campaign_structure":
-            blocks.extend(subagents.generate_table_block(sec_title, "Campaign Structure Table", client_name, brand_name, brand_url, ["Deliverable", "Count"]))
-            blocks.extend(subagents.generate_list_block(sec_title, "Sample Campaign Timeline", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_list_block(sec_title, "Minimum Viable Campaign Checklist", client_name, brand_name, brand_url))
-        elif sec_id == "landing_page_strategy":
-            blocks.extend(subagents.generate_table_block(sec_title, "Landing Page Table", client_name, brand_name, brand_url, ["Section", "Description"]))
-            blocks.extend(subagents.generate_table_block(sec_title, "Landing Page CTA Table", client_name, brand_name, brand_url, ["Type", "CTA"]))
-            # Image block could be added here if needed
-        elif sec_id == "engagement_framework":
-            blocks.extend(subagents.generate_list_block(sec_title, "Engagement Framework Hierarchy", client_name, brand_name, brand_url))
-            blocks.extend(subagents.generate_table_block(sec_title, "Engagement Framework Table", client_name, brand_name, brand_url, ["Initiative", "Alignment Points", "Target Audiences"]))
-            blocks.extend(subagents.generate_list_block(sec_title, "RACI Matrix", client_name, brand_name, brand_url))
-        else:
-            # Fallback: add a placeholder paragraph
-            blocks.append({
-                "type": "Paragraph",
-                "text": f"[REVIEW] Placeholder for {sec_title} section. Website: {website}"
-            })
+        gold_blocks = gold_sections.get(sec_id, {}).get('blocks', [])
+        for gold_block in gold_blocks:
+            btype = gold_block.get('type')
+            # Use OpenAI to generate dynamic content for each block type
+            if btype in ['Paragraph', 'Subhead', 'Bullets', 'Checklist', 'ListOfSections', 'Table']:
+                ai_content = generate_dynamic_copy(sec_title, gold_block, data)
+                if btype == 'Paragraph':
+                    blocks.append({"type": "Paragraph", "text": ai_content})
+                elif btype == 'Subhead':
+                    blocks.append({"type": "Subhead", "text": ai_content})
+                elif btype == 'Bullets':
+                    # Split lines for bullets
+                    items = [line.strip('-• ').strip() for line in ai_content.split('\n') if line.strip()]
+                    blocks.append({"type": "Bullets", "items": items})
+                elif btype == 'Checklist':
+                    items = [line.strip('-• ').strip() for line in ai_content.split('\n') if line.strip()]
+                    blocks.append({"type": "Checklist", "title": sec_title, "items": items})
+                elif btype == 'ListOfSections':
+                    items = [line.strip('-• ').strip() for line in ai_content.split('\n') if line.strip()]
+                    blocks.append({"type": "ListOfSections", "section_titles": items})
+                elif btype == 'Table':
+                    # For simplicity, treat AI output as markdown table or CSV
+                    import csv
+                    import io
+                    rows = []
+                    columns = []
+                    if '|' in ai_content:
+                        # Markdown table
+                        lines = [l for l in ai_content.split('\n') if l.strip() and '---' not in l]
+                        if lines:
+                            columns = [c.strip() for c in lines[0].split('|') if c.strip()]
+                            for row_line in lines[1:]:
+                                row = [c.strip() for c in row_line.split('|') if c.strip()]
+                                if row:
+                                    rows.append(row)
+                    else:
+                        # CSV fallback
+                        reader = csv.reader(io.StringIO(ai_content))
+                        for i, row in enumerate(reader):
+                            if i == 0:
+                                columns = row
+                            else:
+                                rows.append(row)
+                    blocks.append({"type": "Table", "columns": columns, "rows": rows})
+            elif btype == 'Image':
+                blocks.append({
+                    "type": "Image",
+                    "src": gold_block.get('src', ''),
+                    "alt": replace_placeholders(gold_block.get('alt', ''))
+                })
+            elif btype == 'Archetype':
+                # For archetype, fallback to static structure for now
+                if sec_id in ("audience_archetypes", "brand_archetypes"):
+                    columns = [replace_placeholders(col) for col in gold_block.get('columns', [
+                        "Name/Title", "Mission", "Voice", "Values", "Emotional Promise", "Icon", "Voice in Action"
+                    ])]
+                    rows = [
+                        [replace_placeholders(cell) for cell in row]
+                        for row in gold_block.get('rows', [])
+                    ]
+                    blocks.append({
+                        "type": "Table",
+                        "columns": columns,
+                        "rows": rows
+                    })
+                else:
+                    blocks.append({
+                        "type": "Archetype",
+                        "title": replace_placeholders(gold_block.get('title', '')),
+                        "description": replace_placeholders(gold_block.get('description', '')),
+                        "attributes": {k: replace_placeholders(v) for k, v in gold_block.get('attributes', {}).items()},
+                    })
+            else:
+                blocks.append({
+                    "type": "Paragraph",
+                    "text": f"[REVIEW] Placeholder for {sec_title} block type {btype}. Website: {website}"
+                })
         section = {
             "id": sec_id,
             "title": sec_title,
@@ -136,15 +175,42 @@ def build_marketing_kit(data):
 @app.route("/agent/marketing-kit", methods=["POST"])
 def marketing_kit_endpoint():
     try:
+        import json
+        print("[DEBUG] Received request for /agent/marketing-kit")
         data = request.get_json(force=True)
-        # Check for required fields (example: brand_name, brand_url)
-        required_fields = ["brand_url"]
-        missing = [field for field in required_fields if field not in data or not data[field]]
+        print(f"[DEBUG] Payload: {data}")
+        # Check for required fields matching the frontend form
+        required_fields = [
+            "client_name",
+            "website",
+            "offering",
+            "target_markets",
+            "competitors",
+            "additional_details",
+            "files"
+        ]
+        missing = []
+        # Fields that can be empty strings
+        allow_empty = {"offering", "target_markets", "competitors", "additional_details"}
+        for field in required_fields:
+            if field not in data:
+                missing.append(field)
+            elif field == "files" and not isinstance(data[field], list):
+                missing.append(field)
+            elif field != "files":
+                if not data[field] and field not in allow_empty:
+                    missing.append(field)
         if missing:
-                return jsonify({"missing_fields": missing}), 400
+            print(f"[DEBUG] Missing fields: {missing}")
+            return jsonify({"missing_fields": missing}), 400
         kit = build_marketing_kit(data)
+        # Save kit as JSON for DOCX conversion
+        with open('y:/Code/agentspace/tests/kit_output.json', 'w', encoding='utf-8') as f:
+            json.dump(kit, f, ensure_ascii=False, indent=2)
+        print("[DEBUG] Kit generated successfully")
         return jsonify(kit)
     except Exception as e:
+        print(f"[ERROR] Exception in /agent/marketing-kit: {e}")
         return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":

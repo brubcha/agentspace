@@ -8,7 +8,7 @@ import tempfile
 
 def test_concurrent_requests():
     url = 'http://localhost:7000/agent/marketing-kit'
-    payload = {'brand_name': 'Test', 'brand_url': 'https://test.com'}
+    payload = {'brand_name': 'Test', 'website': 'https://test.com'}
     results = []
     def worker():
         r = requests.post(url, json=payload)
@@ -23,7 +23,7 @@ def test_stateful_sequence():
     # Example: submit, then update, then delete (if supported)
     # Here, just call twice and check statelessness
     url = 'http://localhost:7000/agent/marketing-kit'
-    payload = {'brand_name': 'Test', 'brand_url': 'https://test.com'}
+    payload = {'brand_name': 'Test', 'website': 'https://test.com'}
     r1 = requests.post(url, json=payload)
     r2 = requests.post(url, json=payload)
     assert r1.status_code in (200, 400)
@@ -31,7 +31,7 @@ def test_stateful_sequence():
 
 def test_internationalization():
     url = 'http://localhost:7000/agent/marketing-kit'
-    payload = {'brand_name': 'Тест', 'brand_url': 'https://пример.рф', 'offering': '测试', 'target_markets': 'العالم', 'competitors': 'コンペ'}
+    payload = {'brand_name': 'Тест', 'website': 'https://пример.рф', 'offering': '测试', 'target_markets': 'العالم', 'competitors': 'コンペ'}
     r = requests.post(url, json=payload)
     assert r.status_code in (200, 400)
 
@@ -44,7 +44,7 @@ def test_data_privacy():
     # Ensure sensitive data is not leaked in logs
     secret = 'SECRET1234'
     url = 'http://localhost:7000/agent/marketing-kit'
-    payload = {'brand_name': secret, 'brand_url': 'https://test.com'}
+    payload = {'brand_name': secret, 'website': 'https://test.com'}
     r = requests.post(url, json=payload)
     log_path = 'agent_services/agent_trace.log'
     # Post-process the log file to redact the secret

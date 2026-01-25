@@ -112,6 +112,15 @@ def generate_checklist_block(section_title, checklist_title, client_name, brand_
     """
     Generates a checklist block for a given section using a focused prompt.
     """
+    import json as _json
+    logger.info(_json.dumps({
+        "event": "enter_generate_checklist_block",
+        "section_title": section_title,
+        "checklist_title": checklist_title,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
     rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
 Generate a checklist titled '{checklist_title}' for the '{section_title}' section of a marketing kit.
@@ -126,22 +135,40 @@ Rubric Criteria: {rubric_criteria}
         "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
         "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
         "Cite real details from the context. Make the checklist actionable and specific to the client. "
+        "All items must be rubric-compliant and match the gold standard in structure, order, and formatting. "
         "Return a JSON block: {\"type\": \"Checklist\", \"title\": \"...\", \"items\": [ ... ]} only."
     )
     try:
+        logger.info(f'{"event": "call_openai_subagent", "function": "generate_checklist_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
-        if isinstance(block, list):
-            return block
-        else:
-            return [block]
+        if not isinstance(block, list):
+            block = [block]
+        # Post-generation QA validation
+        validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(f'{"event": "exit_generate_checklist_block", "result_count": {len(validated)}}')
+        return validated
     except Exception as e:
+        import json as _json
+        logger.error(_json.dumps({
+            "event": "error_generate_checklist_block",
+            "error": str(e)
+        }))
         return [
             {"type": "Checklist", "title": checklist_title, "items": [], "error": f"[AI generation failed: {e}]"}
         ]
 # Opportunity Card Generator Subagent
 def generate_opportunity_card_block(section_title, card_title, client_name, brand_name, brand_url, context=None):
+    import json as _json
+    logger.info(_json.dumps({
+        "event": "enter_generate_opportunity_card_block",
+        "section_title": section_title,
+        "card_title": card_title,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
     """
     Generates an opportunity card block for a given section using a focused prompt.
     """
@@ -162,25 +189,42 @@ Rubric Criteria: {rubric_criteria}
         "Return a JSON block: {\"type\": \"OpportunityCard\", \"title\": \"...\", \"description\": \"...\", \"actions\": [ ... ]} only."
     )
     try:
+        logger.info(f'{"event": "call_openai_subagent", "function": "generate_opportunity_card_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
         if isinstance(block, list):
+            logger.info(f'{"event": "exit_generate_opportunity_card_block", "result_count": {len(block)}}')
             return block
         else:
+            logger.info(f'{"event": "exit_generate_opportunity_card_block", "result_count": 1}')
             return [block]
     except Exception as e:
+        import json as _json
+        logger.error(_json.dumps({
+            "event": "error_generate_opportunity_card_block",
+            "error": str(e)
+        }))
         return [
             {"type": "OpportunityCard", "title": card_title, "description": "", "actions": [], "error": f"[AI generation failed: {e}]"}
         ]
 # Archetype Generator Subagent
 def generate_archetype_block(section_title, archetype_title, client_name, brand_name, brand_url, context=None):
+    import json as _json
+    logger.info(_json.dumps({
+        "event": "enter_generate_archetype_block",
+        "section_title": section_title,
+        "archetype_title": archetype_title,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
     """
     Generates a brand archetype block for a given section using a focused prompt.
     """
     rubric_criteria = load_rubric_criteria(section_title)
     prompt = f"""
-Generate a brand archetype card titled '{archetype_title}' for the '{section_title}' section of a marketing kit.
+You are a world-class brand strategist. Generate a list of 2-4 vivid, actionable, and client-specific audience archetypes for the '{section_title}' section of a marketing kit.
 Client Name: {client_name}
 Brand: {brand_name}
 Website: {brand_url}
@@ -190,24 +234,59 @@ Rubric Criteria: {rubric_criteria}
         prompt += f"Context: {context}\n"
     prompt += (
         "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
-        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
-        "Cite real details from the context. Make the archetype vivid, actionable, and specific to the client. "
-        "Return a JSON block: {\"type\": \"Archetype\", \"title\": \"...\", \"description\": \"...\", \"attributes\": { ... }} only."
+        "Each archetype must be unique, relevant to the brand, and reference real details from the client/context. "
+        "For each, include: title, description, mission, voice, values, emotional promise, icon, and a sample 'voice in action' phrase. "
+        "Output a JSON array of objects, each with: type='Archetype', title, description, attributes (with keys: mission, voice, values, emotional_promise, icon, voice_in_action). "
+        "Example: [{\"type\": \"Archetype\", \"title\": \"The Guide\", \"description\": \"Empowers through knowledge...\", \"attributes\": {\"mission\": \"...\", ...}}] "
+        "Return ONLY valid JSON."
     )
     try:
-        import json as _json
+        logger.info('{"event": "call_openai_subagent", "function": "generate_archetype_block"}')
         ai_response = call_openai_subagent(prompt)
+        logger.info(_json.dumps({"event": "archetype_llm_raw_response", "response": ai_response}))
         block = _json.loads(ai_response)
+        result = []
+        def coerce_archetype(b):
+            # If it looks like an archetype, set type
+            if b.get('type') == 'Archetype':
+                return b
+            # Heuristic: has title, description, attributes with mission, etc.
+            attrs = b.get('attributes', {})
+            if (
+                isinstance(attrs, dict)
+                and 'mission' in attrs and 'voice' in attrs and 'values' in attrs
+                and 'emotional_promise' in attrs and 'icon' in attrs and 'voice_in_action' in attrs
+            ):
+                b['type'] = 'Archetype'
+            return b
         if isinstance(block, list):
-            return block
+            for b in block:
+                result.append(coerce_archetype(b))
+            logger.info('{{"event": "exit_generate_archetype_block", "result_count": {}}}'.format(len(result)))
+            return result
         else:
-            return [block]
+            result_block = coerce_archetype(block)
+            logger.info('{"event": "exit_generate_archetype_block", "result_count": 1}')
+            return [result_block]
     except Exception as e:
+        logger.error(_json.dumps({
+            "event": "error_generate_archetype_block",
+            "error": str(e)
+        }))
         return [
             {"type": "Archetype", "title": archetype_title, "description": "", "attributes": {}, "error": f"[AI generation failed: {e}]"}
         ]
 # Persona Generator Subagent
 def generate_persona_block(section_title, persona_title, client_name, brand_name, brand_url, context=None):
+    import json as _json
+    logger.info(_json.dumps({
+        "event": "enter_generate_persona_block",
+        "section_title": section_title,
+        "persona_title": persona_title,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
     """
     Generates a persona block for a given section using a focused prompt.
     """
@@ -228,19 +307,36 @@ Rubric Criteria: {rubric_criteria}
         "Return a JSON block: {\"type\": \"Persona\", \"title\": \"...\", \"description\": \"...\", \"attributes\": { ... }} only."
     )
     try:
+        logger.info(f'{"event": "call_openai_subagent", "function": "generate_persona_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
         if isinstance(block, list):
+            logger.info(f'{"event": "exit_generate_persona_block", "result_count": {len(block)}}')
             return block
         else:
+            logger.info(f'{"event": "exit_generate_persona_block", "result_count": 1}')
             return [block]
     except Exception as e:
+        import json as _json
+        logger.error(_json.dumps({
+            "event": "error_generate_persona_block",
+            "error": str(e)
+        }))
         return [
             {"type": "Persona", "title": persona_title, "description": "", "attributes": {}, "error": f"[AI generation failed: {e}]"}
         ]
 # List Generator Subagent
 def generate_list_block(section_title, list_title, client_name, brand_name, brand_url, context=None):
+    import json as _json
+    logger.info(_json.dumps({
+        "event": "enter_generate_list_block",
+        "section_title": section_title,
+        "list_title": list_title,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
     """
     Generates a list block for a given section using a focused prompt.
     """
@@ -261,19 +357,37 @@ Rubric Criteria: {rubric_criteria}
         "Return a JSON block: {\"type\": \"Bullets\", \"title\": \"...\", \"items\": [ ... ]} only."
     )
     try:
+        logger.info(f'{"event": "call_openai_subagent", "function": "generate_list_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
         if isinstance(block, list):
+            logger.info(f'{"event": "exit_generate_list_block", "result_count": {len(block)}}')
             return block
         else:
+            logger.info(f'{"event": "exit_generate_list_block", "result_count": 1}')
             return [block]
     except Exception as e:
+        import json as _json
+        logger.error(_json.dumps({
+            "event": "error_generate_list_block",
+            "error": str(e)
+        }))
         return [
             {"type": "Bullets", "title": list_title, "items": [], "error": f"[AI generation failed: {e}]"}
         ]
 # Table Generator Subagent
 def generate_table_block(section_title, table_title, client_name, brand_name, brand_url, columns, context=None):
+    import json as _json
+    logger.info(_json.dumps({
+        "event": "enter_generate_table_block",
+        "section_title": section_title,
+        "table_title": table_title,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url,
+        "columns": columns
+    }))
     """
     Generates a table block for a given section using a focused prompt.
     """
@@ -292,17 +406,26 @@ Rubric Criteria: {rubric_criteria}
         "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
         "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
         "Cite real details from the context. Make the table actionable and specific to the client. "
+        "All columns and rows must be rubric-compliant and match the gold standard in structure, order, and formatting. "
         "Return a JSON block: {\"type\": \"Table\", \"title\": \"...\", \"columns\": [...], \"rows\": [[...], ...]} only."
     )
     try:
+        logger.info(f'{"event": "call_openai_subagent", "function": "generate_table_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
-        if isinstance(block, list):
-            return block
-        else:
-            return [block]
+        if not isinstance(block, list):
+            block = [block]
+        # Post-generation QA validation
+        validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(f'{"event": "exit_generate_table_block", "result_count": {len(validated)}}')
+        return validated
     except Exception as e:
+        import json as _json
+        logger.error(_json.dumps({
+            "event": "error_generate_table_block",
+            "error": str(e)
+        }))
         return [
             {"type": "Table", "title": table_title, "columns": columns, "rows": [], "error": f"[AI generation failed: {e}]"}
         ]
@@ -325,6 +448,15 @@ def call_openai_subagent(prompt, max_tokens=512, temperature=0.7, model="gpt-3.5
     return response.choices[0].message.content.strip()
 
 def generate_subhead_block(section_title, subhead, client_name, brand_name, brand_url, context=None):
+    import json as _json
+    logger.info(_json.dumps({
+        "event": "enter_generate_subhead_block",
+        "section_title": section_title,
+        "subhead": subhead,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
     """
     Generates a narrative block for a given subhead using a focused prompt.
     """
@@ -343,6 +475,7 @@ Website: {brand_url}
         "Return a JSON block: {\"type\": \"Subhead\", \"text\": \"...\"} followed by a {\"type\": \"Paragraph\", \"text\": \"...\"}."
     )
     try:
+        logger.info('{"event": "call_openai_subagent", "function": "generate_subhead_block"}')
         import json as _json
         import re
         ai_response = call_openai_subagent(prompt)
@@ -360,10 +493,13 @@ Website: {brand_url}
             except Exception:
                 continue
         if json_blocks:
+            logger.info('{{"event": "exit_generate_subhead_block", "result_count": {}}}'.format(len(json_blocks)))
             return json_blocks
         # Fallback: try to parse the whole response as a list
         try:
-            return _json.loads(ai_response)
+            result = _json.loads(ai_response)
+            logger.info('{{"event": "exit_generate_subhead_block", "result_count": {}}}'.format(len(result) if isinstance(result, list) else 1))
+            return result
         except Exception:
             pass
         # Fallback: try to parse as two JSON objects
@@ -376,9 +512,20 @@ Website: {brand_url}
                 except Exception:
                     continue
         if blocks:
+            logger.info('{{"event": "exit_generate_subhead_block", "result_count": {}}}'.format(len(blocks)))
             return blocks
+        import json as _json
+        logger.error(_json.dumps({
+            "event": "error_generate_subhead_block",
+            "error": "No valid JSON block found in AI response"
+        }))
         raise ValueError("No valid JSON block found in AI response")
     except Exception as e:
+        import json as _json
+        logger.error(_json.dumps({
+            "event": "error_generate_subhead_block",
+            "error": str(e)
+        }))
         return [
             {"type": "Subhead", "text": subhead},
             {"type": "Paragraph", "text": f"[AI generation failed for '{subhead}': {e}]"}

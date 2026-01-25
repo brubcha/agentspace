@@ -18,8 +18,27 @@ app.get("/api/health", (req, res) => {
 // Connect to Python agent microservice
 const axios = require("axios");
 const AGENT_SERVICE_URL =
-  process.env.AGENT_SERVICE_URL || "http://localhost:7000";
+  process.env.AGENT_SERVICE_URL || "http://127.0.0.1:5000";
 
+// Proxy route for test compatibility
+app.post("/agent/marketing-kit", async (req, res) => {
+  try {
+    const agentRes = await axios.post(
+      `${AGENT_SERVICE_URL}/agent/marketing-kit`,
+      req.body
+    );
+    res.status(agentRes.status).json(agentRes.data);
+  } catch (err) {
+    if (err.response) {
+      res.status(err.response.status).json(err.response.data);
+    } else {
+      res.status(500).json({
+        message: "Error connecting to agent microservice",
+        error: err.message,
+      });
+    }
+  }
+});
 app.post("/api/agent", upload.array("files"), async (req, res) => {
   try {
     let data = req.body;
@@ -46,7 +65,7 @@ app.post("/api/agent", upload.array("files"), async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
 });

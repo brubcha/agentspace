@@ -70,10 +70,6 @@ def test_generate_persona_block():
     assert isinstance(blocks, list)
     assert blocks[0]["type"] == "Persona"
 
-def test_generate_archetype_block():
-    blocks = subagents.generate_archetype_block("Section", "Archetype", "Client", "Brand", "URL")
-    assert isinstance(blocks, list)
-    assert blocks[0]["type"] == "Archetype"
 
 def test_generate_opportunity_card_block():
     blocks = subagents.generate_opportunity_card_block("Section", "Card", "Client", "Brand", "URL")

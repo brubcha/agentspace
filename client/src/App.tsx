@@ -80,7 +80,7 @@ function App() {
     try {
       let res, result;
       // Always send as JSON (files as array of { filename, content })
-      res = await fetch("/api/agent", {
+      res = await fetch("http://localhost:7000/agent/marketing-kit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

@@ -10,8 +10,8 @@ def client():
 def test_marketing_kit_missing_fields(client):
     # Missing required fields
     response = client.post('/agent/marketing-kit', json={})
-    assert response.status_code == 500 or response.status_code == 400
-    assert b'error' in response.data
+    assert response.status_code == 400
+    assert b'missing_fields' in response.data
 
 def test_marketing_kit_invalid_files(client):
     # Invalid files field (string instead of list)
