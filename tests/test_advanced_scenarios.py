@@ -80,16 +80,26 @@ def test_performance_timeout(monkeypatch):
     assert elapsed < 5
 
 def test_security_path_traversal():
+
     url = 'http://localhost:7000/agent/marketing-kit'
     files = {'files': ('../evil.txt', b'evil')}
     data = {'brand_name': 'Test', 'website': 'https://test.com'}
     r = requests.post(url, data=data, files=files)
     assert r.status_code in (200, 400)
 
+# The following test is commented out to allow real OpenAI API calls in tests.
+# def test_mocked_llm(monkeypatch):
+#     from agent_services import subagents
+#     def fake_llm(prompt, *a, **k):
+#         return '[{"type": "Subhead", "text": "Mocked"}]'
+#     monkeypatch.setattr(subagents, "call_openai_subagent", fake_llm)
+#     blocks = subagents.generate_subhead_block("Overview", "How to Use It", "TestClient", "TestBrand", "https://test.com")
+#     assert any(b.get("text") == "Mocked" for b in blocks)
+
 def test_mocked_llm(monkeypatch):
     from agent_services import subagents
     def fake_llm(prompt, *a, **k):
-        return '[{"type": "Paragraph", "text": "Mocked"}]'
+        return '[{"type": "Subhead", "text": "Mocked"}]'
     monkeypatch.setattr(subagents, "call_openai_subagent", fake_llm)
     blocks = subagents.generate_subhead_block("Overview", "How to Use It", "TestClient", "TestBrand", "https://test.com")
     assert any(b.get("text") == "Mocked" for b in blocks)

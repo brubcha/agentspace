@@ -1,14 +1,308 @@
+# DEBUG: Print import context to confirm which subagents.py is loaded and which Python is running
+import sys
+print(f"[DEBUG] Loaded subagents.py from {__file__} using Python {sys.executable}")
+def generate_list_of_sections_block(section_title, section_titles, client_name, brand_name, brand_url, context=None):
+    """
+    Generates a ListOfSections block for a given section using a focused prompt.
+    """
+    import json as _json
+    import re
+    logger.info(_json.dumps({
+        "event": "enter_generate_list_of_sections_block",
+        "section_title": section_title,
+        "section_titles": section_titles,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
+    rubric_criteria = load_rubric_criteria(section_title)
+    prompt = f"""
+Generate a block listing the included sections for the '{section_title}' section of a marketing kit.
+Client Name: {client_name}
+Brand: {brand_name}
+Website: {brand_url}
+Rubric Criteria: {rubric_criteria}
+Section Titles: {section_titles}
+"""
+    if context:
+        prompt += f"Context: {context}\n"
+    prompt += (
+        "IMPORTANT: Use ONLY the provided section_titles, client, website, and file context. Do NOT use generic, template, or example content. "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
+        "Return a JSON block: {\"type\": \"ListOfSections\", \"section_titles\": [...] } only."
+    )
+    try:
+        logger.info('{"event": "call_openai_subagent", "function": "generate_list_of_sections_block"}')
+        ai_response = call_openai_subagent(prompt)
+        logger.info(_json.dumps({"event": "listofsections_llm_raw_response", "response": ai_response}))
+        # Robust JSON extraction
+        match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+        if match:
+            block = _json.loads(match.group(0))
+        else:
+            block = _json.loads(ai_response)
+        if not isinstance(block, list):
+            block = [block]
+        # Post-generation QA validation
+        validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "listofsections_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+            if match:
+                block = _json.loads(match.group(0))
+            else:
+                block = _json.loads(ai_response)
+            if not isinstance(block, list):
+                block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(_json.dumps({
+            "event": "exit_generate_list_of_sections_block",
+            "result_count": len(validated)
+        }))
+        return validated
+    except Exception as e:
+        logger.error(_json.dumps({
+            "event": "error_generate_list_of_sections_block",
+            "error": str(e),
+            "raw_response": locals().get('ai_response', None)
+        }))
+        return [
+            {"type": "ListOfSections", "section_titles": section_titles, "error": f"[AI generation failed: {e}]"}
+        ]
+def generate_paragraph_block(section_title, paragraph_text, client_name, brand_name, brand_url, context=None):
+    """
+    Generates a paragraph block for a given section using a focused prompt.
+    """
+    import json as _json
+    import re
+    logger.info(_json.dumps({
+        "event": "enter_generate_paragraph_block",
+        "section_title": section_title,
+        "paragraph_text": paragraph_text,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
+    rubric_criteria = load_rubric_criteria(section_title)
+    prompt = f"""
+Generate a rich, client-specific paragraph for the '{section_title}' section of a marketing kit.
+Client Name: {client_name}
+Brand: {brand_name}
+Website: {brand_url}
+Rubric Criteria: {rubric_criteria}
+"""
+    if context:
+        prompt += f"Context: {context}\n"
+    prompt += (
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Make the paragraph vivid, actionable, and specific to the client. "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
+        "Return a JSON block: {\"type\": \"Paragraph\", \"text\": \"...\"} only."
+    )
+    try:
+        logger.info('{"event": "call_openai_subagent", "function": "generate_paragraph_block"}')
+        ai_response = call_openai_subagent(prompt)
+        logger.info(_json.dumps({"event": "paragraph_llm_raw_response", "response": ai_response}))
+        # Robust JSON extraction
+        match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+        if match:
+            block = _json.loads(match.group(0))
+        else:
+            block = _json.loads(ai_response)
+        if not isinstance(block, list):
+            block = [block]
+        # Post-generation QA validation
+        validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "paragraph_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+            if match:
+                block = _json.loads(match.group(0))
+            else:
+                block = _json.loads(ai_response)
+            if not isinstance(block, list):
+                block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(_json.dumps({
+            "event": "exit_generate_paragraph_block",
+            "result_count": len(validated)
+        }))
+        return validated
+    except Exception as e:
+        logger.error(_json.dumps({
+            "event": "error_generate_paragraph_block",
+            "error": str(e),
+            "raw_response": locals().get('ai_response', None)
+        }))
+        return [
+            {"type": "Paragraph", "text": paragraph_text, "error": f"[AI generation failed: {e}]"}
+        ]
+def call_openai_subagent(prompt, max_tokens=512, temperature=0.7, model="gpt-3.5-turbo"):
+    """
+    Calls the OpenAI API to get a completion for the given prompt.
+    """
+    import os
+    import openai
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        logger.error("[call_openai_subagent] OPENAI_API_KEY environment variable not set.")
+        raise RuntimeError("OPENAI_API_KEY environment variable not set.")
+    else:
+        logger.info("[call_openai_subagent] OPENAI_API_KEY is loaded (length: %d)", len(api_key))
+    logger.info("[call_openai_subagent] Prompt: %s", prompt)
+    try:
+        client = openai.OpenAI(api_key=api_key)
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+        result = response.choices[0].message.content
+        logger.info("[call_openai_subagent] Response: %s", result)
+        return result
+    except Exception as e:
+        logger.error("[call_openai_subagent] OpenAI API call failed: %s", str(e))
+        raise
+
+def validate_section_blocks(section_title, blocks, client_name, brand_name, brand_url, rubric_criteria=None, general_criteria=None):
+    """
+    Validates section blocks for richness, specificity, and rubric compliance using a focused prompt.
+    """
+    import json as _json
+    if rubric_criteria is None:
+        rubric_criteria = load_rubric_criteria(section_title)
+    prompt = f"""
+You are a marketing kit QA validator. Review the following section blocks for the '{section_title}' section.
+Client Name: {client_name}
+Brand: {brand_name}
+Website: {brand_url}
+Blocks: {_json.dumps(blocks)}
+Rubric Criteria: {rubric_criteria}
+"""
+    if general_criteria:
+        prompt += f"General Richness Criteria: {general_criteria}\n"
+    prompt += (
+        "IMPORTANT: For each block, check and flag the following:\n"
+        "- Is the content generic, repetitive, or missing actionable advice?\n"
+        "- Does it reference the client and include specific, relevant data, statistics, or proof points where required?\n"
+        "- Are all required recommendations, evidence, and unique insights present?\n"
+        "- Is there any redundancy or missing content compared to the rubric?\n"
+        "If any issue is found, add a field 'review' with a clear reason (e.g., 'missing data', 'redundant', 'not actionable', 'no proof', 'does not match rubric'). Return the validated blocks as a JSON array."
+    )
+    try:
+        ai_response = call_openai_subagent(prompt, max_tokens=1024)
+        validated_blocks = _json.loads(ai_response)
+        logger.info(_json.dumps({
+            "event": "validate_section",
+            "section": section_title,
+            "result": "success"
+        }))
+        return validated_blocks
+    except Exception as e:
+        for block in blocks:
+            block['review'] = f"[QA validation failed: {e}]"
+        logger.error(_json.dumps({
+            "event": "validate_section",
+            "section": section_title,
+            "result": "fail",
+            "error": str(e)
+        }))
+        return blocks
+from typing import Callable, Any, List, Dict
+import logging
+logger = logging.getLogger("subagents")
+
+def generate_subhead_block(section_title, subhead_text, client_name, brand_name, brand_url, context=None):
+    """
+    Generates a subhead (paragraph/heading) block for a given section using a focused prompt.
+    """
+    import json as _json
+    import re
+    logger.info(_json.dumps({
+        "event": "enter_generate_subhead_block",
+        "section_title": section_title,
+        "subhead_text": subhead_text,
+        "client_name": client_name,
+        "brand_name": brand_name,
+        "brand_url": brand_url
+    }))
+    rubric_criteria = load_rubric_criteria(section_title)
+    prompt = f"""
+Generate a subhead (short paragraph or heading) for the '{section_title}' section of a marketing kit.
+Client Name: {client_name}
+Brand: {brand_name}
+Website: {brand_url}
+Rubric Criteria: {rubric_criteria}
+"""
+    if context:
+        prompt += f"Context: {context}\n"
+    prompt += (
+        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
+        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
+        "Cite real details from the context. Make the subhead vivid, actionable, and specific to the client. "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
+        "Return a JSON block: {\"type\": \"Subhead\", \"text\": \"...\"} only."
+    )
+    try:
+        logger.info('{"event": "call_openai_subagent", "function": "generate_subhead_block"}')
+        ai_response = call_openai_subagent(prompt)
+        logger.info(_json.dumps({"event": "subhead_llm_raw_response", "response": ai_response}))
+        # Robust JSON extraction
+        match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+        if match:
+            block = _json.loads(match.group(0))
+        else:
+            block = _json.loads(ai_response)
+        if not isinstance(block, list):
+            block = [block]
+        # Post-generation QA validation
+        validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "subhead_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+            if match:
+                block = _json.loads(match.group(0))
+            else:
+                block = _json.loads(ai_response)
+            if not isinstance(block, list):
+                block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(_json.dumps({
+            "event": "exit_generate_subhead_block",
+            "result_count": len(validated)
+        }))
+        return validated
+    except Exception as e:
+        logger.error(_json.dumps({
+            "event": "error_generate_subhead_block",
+            "error": str(e),
+            "raw_response": locals().get('ai_response', None)
+        }))
+        return [
+            {"type": "Subhead", "text": subhead_text, "error": f"[AI generation failed: {e}]"}
+        ]
 
 import os
 import re
 import logging
-from logging.handlers import RotatingFileHandler
+from concurrent_log_handler import ConcurrentRotatingFileHandler
 
 # --- Structured Logging Setup ---
 LOG_PATH = os.path.join(os.path.dirname(__file__), 'subagent_trace.log')
 logger = logging.getLogger("subagents")
 logger.setLevel(logging.INFO)
-handler = RotatingFileHandler(LOG_PATH, maxBytes=2*1024*1024, backupCount=3)
+handler = ConcurrentRotatingFileHandler(LOG_PATH, maxBytes=2*1024*1024, backupCount=3)
 formatter = logging.Formatter('%(message)s')
 handler.setFormatter(formatter)
 if not logger.hasHandlers():
@@ -42,17 +336,35 @@ def website_scraper_subagent(brand_url: str, max_length: int = 2000) -> str:
     import requests
     from bs4 import BeautifulSoup
     try:
-        resp = requests.get(brand_url, timeout=10)
+        headers = {'User-Agent': 'Mozilla/5.0 (compatible; agentspace-bot/1.0)'}
+        resp = requests.get(brand_url, headers=headers, timeout=10)
+        logger.info('{"event": "website_scrape_attempt", "url": "%s", "status_code": "%s", "final_url": "%s"}' % (brand_url, getattr(resp, 'status_code', 'N/A'), getattr(resp, 'url', 'N/A')))
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'html.parser')
         texts = soup.stripped_strings
         content = ' '.join(texts)
         summary = content[:max_length]
-        logger.info('{"event": "website_scrape", "url": "%s", "status": "success"}' % brand_url)
+        logger.info('{"event": "website_scrape", "url": "%s", "status": "success", "length": %d}' % (brand_url, len(summary)))
         return summary
+    except requests.exceptions.SSLError as ssl_err:
+        logger.error('{"event": "website_scrape", "url": "%s", "status": "ssl_error", "error": "%s"}' % (brand_url, str(ssl_err).replace('"', "'")))
+        return f"[Website scrape failed: SSL error. The server may not support modern SSL/TLS or your environment is missing root certificates. Details: {ssl_err}]"
+    except requests.exceptions.ConnectionError as conn_err:
+        # Distinguish DNS errors
+        if 'NameResolutionError' in str(conn_err) or 'getaddrinfo failed' in str(conn_err):
+            logger.error('{"event": "website_scrape", "url": "%s", "status": "dns_error", "error": "%s"}' % (brand_url, str(conn_err).replace('"', "'")))
+            return f"[Website scrape failed: DNS resolution error. The domain name could not be resolved. Details: {conn_err}]"
+        logger.error('{"event": "website_scrape", "url": "%s", "status": "connection_error", "error": "%s"}' % (brand_url, str(conn_err).replace('"', "'")))
+        return f"[Website scrape failed: Connection error. The server may be down or unreachable. Details: {conn_err}]"
+    except requests.exceptions.Timeout as timeout_err:
+        logger.error('{"event": "website_scrape", "url": "%s", "status": "timeout", "error": "%s"}' % (brand_url, str(timeout_err).replace('"', "'")))
+        return f"[Website scrape failed: Timeout. The server took too long to respond. Details: {timeout_err}]"
+    except requests.exceptions.RequestException as req_err:
+        logger.error('{"event": "website_scrape", "url": "%s", "status": "request_exception", "error": "%s"}' % (brand_url, str(req_err).replace('"', "'")))
+        return f"[Website scrape failed: Request error. Details: {req_err}]"
     except Exception as e:
         logger.error('{"event": "website_scrape", "url": "%s", "status": "fail", "error": "%s"}' % (brand_url, str(e).replace('"', "'")))
-        return f"[Website scrape failed: {e}]"
+        return f"[Website scrape failed: Unexpected error. Details: {e}]"
 # Fallback/Retry Subagent
 from typing import Callable, Any, List, Dict
 def fallback_retry_block(generator_func: Callable, *args, max_retries: int = 2, **kwargs) -> List[Dict[str, Any]]:
@@ -136,10 +448,11 @@ Rubric Criteria: {rubric_criteria}
         "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
         "Cite real details from the context. Make the checklist actionable and specific to the client. "
         "All items must be rubric-compliant and match the gold standard in structure, order, and formatting. "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
         "Return a JSON block: {\"type\": \"Checklist\", \"title\": \"...\", \"items\": [ ... ]} only."
     )
     try:
-        logger.info(f'{"event": "call_openai_subagent", "function": "generate_checklist_block"}')
+        logger.info('{"event": "call_openai_subagent", "function": "generate_checklist_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
@@ -147,7 +460,19 @@ Rubric Criteria: {rubric_criteria}
             block = [block]
         # Post-generation QA validation
         validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
-        logger.info(f'{"event": "exit_generate_checklist_block", "result_count": {len(validated)}}')
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "checklist_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            block = _json.loads(ai_response)
+            if not isinstance(block, list):
+                block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(_json.dumps({
+            "event": "exit_generate_checklist_block",
+            "result_count": len(validated)
+        }))
         return validated
     except Exception as e:
         import json as _json
@@ -186,19 +511,31 @@ Rubric Criteria: {rubric_criteria}
         "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
         "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
         "Cite real details from the context. Make the opportunity card vivid, actionable, and specific to the client. "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
         "Return a JSON block: {\"type\": \"OpportunityCard\", \"title\": \"...\", \"description\": \"...\", \"actions\": [ ... ]} only."
     )
     try:
-        logger.info(f'{"event": "call_openai_subagent", "function": "generate_opportunity_card_block"}')
+        logger.info('{"event": "call_openai_subagent", "function": "generate_opportunity_card_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
-        if isinstance(block, list):
-            logger.info(f'{"event": "exit_generate_opportunity_card_block", "result_count": {len(block)}}')
-            return block
-        else:
-            logger.info(f'{"event": "exit_generate_opportunity_card_block", "result_count": 1}')
-            return [block]
+        if not isinstance(block, list):
+            block = [block]
+        validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "opportunity_card_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            block = _json.loads(ai_response)
+            if not isinstance(block, list):
+                block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(_json.dumps({
+            "event": "exit_generate_opportunity_card_block",
+            "result_count": len(validated)
+        }))
+        return validated
     except Exception as e:
         import json as _json
         logger.error(_json.dumps({
@@ -238,6 +575,7 @@ Rubric Criteria: {rubric_criteria}
         "For each, include: title, description, mission, voice, values, emotional promise, icon, and a sample 'voice in action' phrase. "
         "Output a JSON array of objects, each with: type='Archetype', title, description, attributes (with keys: mission, voice, values, emotional_promise, icon, voice_in_action). "
         "Example: [{\"type\": \"Archetype\", \"title\": \"The Guide\", \"description\": \"Empowers through knowledge...\", \"attributes\": {\"mission\": \"...\", ...}}] "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
         "Return ONLY valid JSON."
     )
     try:
@@ -262,12 +600,27 @@ Rubric Criteria: {rubric_criteria}
         if isinstance(block, list):
             for b in block:
                 result.append(coerce_archetype(b))
-            logger.info('{{"event": "exit_generate_archetype_block", "result_count": {}}}'.format(len(result)))
-            return result
         else:
-            result_block = coerce_archetype(block)
-            logger.info('{"event": "exit_generate_archetype_block", "result_count": 1}')
-            return [result_block]
+            result.append(coerce_archetype(block))
+        validated = validate_section_blocks(section_title, result, client_name, brand_name, brand_url, rubric_criteria)
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "archetype_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            block = _json.loads(ai_response)
+            result = []
+            if isinstance(block, list):
+                for b in block:
+                    result.append(coerce_archetype(b))
+            else:
+                result.append(coerce_archetype(block))
+            validated = validate_section_blocks(section_title, result, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(_json.dumps({
+            "event": "exit_generate_archetype_block",
+            "result_count": len(validated)
+        }))
+        return validated
     except Exception as e:
         logger.error(_json.dumps({
             "event": "error_generate_archetype_block",
@@ -304,19 +657,28 @@ Rubric Criteria: {rubric_criteria}
         "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
         "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
         "Cite real details from the context. Make the persona vivid, actionable, and specific to the client. "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
         "Return a JSON block: {\"type\": \"Persona\", \"title\": \"...\", \"description\": \"...\", \"attributes\": { ... }} only."
     )
     try:
-        logger.info(f'{"event": "call_openai_subagent", "function": "generate_persona_block"}')
+        logger.info('{"event": "call_openai_subagent", "function": "generate_persona_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
-        if isinstance(block, list):
-            logger.info(f'{"event": "exit_generate_persona_block", "result_count": {len(block)}}')
-            return block
-        else:
-            logger.info(f'{"event": "exit_generate_persona_block", "result_count": 1}')
-            return [block]
+        if not isinstance(block, list):
+            block = [block]
+        validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "persona_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            block = _json.loads(ai_response)
+            if not isinstance(block, list):
+                block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(f'{{"event": "exit_generate_persona_block", "result_count": {len(validated)}}}')
+        return validated
     except Exception as e:
         import json as _json
         logger.error(_json.dumps({
@@ -354,19 +716,37 @@ Rubric Criteria: {rubric_criteria}
         "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
         "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
         "Cite real details from the context. Make the list actionable and specific to the client. "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
         "Return a JSON block: {\"type\": \"Bullets\", \"title\": \"...\", \"items\": [ ... ]} only."
     )
     try:
-        logger.info(f'{"event": "call_openai_subagent", "function": "generate_list_block"}')
+        logger.info('{"event": "call_openai_subagent", "function": "generate_list_block"}')
         import json as _json
         ai_response = call_openai_subagent(prompt)
         block = _json.loads(ai_response)
         if isinstance(block, list):
-            logger.info(f'{"event": "exit_generate_list_block", "result_count": {len(block)}}')
-            return block
+            logger.info(_json.dumps({
+                "event": "exit_generate_list_block",
+                "result_count": len(block)
+            }))
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
         else:
-            logger.info(f'{"event": "exit_generate_list_block", "result_count": 1}')
-            return [block]
+            logger.info(_json.dumps({
+                "event": "exit_generate_list_block",
+                "result_count": 1
+            }))
+            block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "list_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            block = _json.loads(ai_response)
+            if not isinstance(block, list):
+                block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        return validated
     except Exception as e:
         import json as _json
         logger.error(_json.dumps({
@@ -407,127 +787,59 @@ Rubric Criteria: {rubric_criteria}
         "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
         "Cite real details from the context. Make the table actionable and specific to the client. "
         "All columns and rows must be rubric-compliant and match the gold standard in structure, order, and formatting. "
-        "Return a JSON block: {\"type\": \"Table\", \"title\": \"...\", \"columns\": [...], \"rows\": [[...], ...]} only."
+        "Generate at least 3 fully filled rows. Each cell must be rich, specific, and client-relevant. "
+        "After generating, review your output: Does it meet ALL rubric criteria? Is it as rich and specific as the gold standard? If not, revise and improve before returning. "
+        "Return ONLY valid JSON: {\"type\": \"Table\", \"title\": \"...\", \"columns\": [...], \"rows\": [[...], ...]}"
     )
+
+    # Defensive: ensure rows is always a list of lists, even if missing or malformed
+    # This logic is now handled after AI response parsing, not before
     try:
-        logger.info(f'{"event": "call_openai_subagent", "function": "generate_table_block"}')
+        logger.info('{"event": "call_openai_subagent", "function": "generate_table_block"}')
         import json as _json
+        import re
         ai_response = call_openai_subagent(prompt)
-        block = _json.loads(ai_response)
+        logger.info(_json.dumps({"event": "table_llm_raw_response", "response": ai_response}))
+        # Robust JSON extraction
+        match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+        if match:
+            block = _json.loads(match.group(0))
+        else:
+            block = _json.loads(ai_response)
         if not isinstance(block, list):
             block = [block]
-        # Post-generation QA validation
         validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
-        logger.info(f'{"event": "exit_generate_table_block", "result_count": {len(validated)}}')
+        # If validation fails, retry once with a revise-and-improve instruction
+        if any('review' in b and b['review'] for b in validated):
+            logger.info('{"event": "table_block_retry", "reason": "validation failed, retrying with revise instruction"}')
+            retry_prompt = prompt + "\nIf your previous output was flagged as generic or not rubric-compliant, revise and improve it now."
+            ai_response = call_openai_subagent(retry_prompt)
+            match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+            if match:
+                block = _json.loads(match.group(0))
+            else:
+                block = _json.loads(ai_response)
+            if not isinstance(block, list):
+                block = [block]
+            validated = validate_section_blocks(section_title, block, client_name, brand_name, brand_url, rubric_criteria)
+        logger.info(_json.dumps({
+            "event": "exit_generate_table_block",
+            "result_count": len(validated)
+        }))
         return validated
     except Exception as e:
         import json as _json
         logger.error(_json.dumps({
             "event": "error_generate_table_block",
-            "error": str(e)
+            "error": str(e),
+            "raw_response": locals().get('ai_response', None)
         }))
         return [
             {"type": "Table", "title": table_title, "columns": columns, "rows": [], "error": f"[AI generation failed: {e}]"}
         ]
+
+# Ensure .env variables are loaded at import time
 import os
 from dotenv import load_dotenv
-import openai
-
-def call_openai_subagent(prompt, max_tokens=512, temperature=0.7, model="gpt-3.5-turbo"):
-    load_dotenv()
-    api_key = os.getenv("OPENAI_API_KEY") or os.getenv("open_api_key")
-    if not api_key:
-        raise RuntimeError("OpenAI API key not found in environment variables.")
-    client = openai.OpenAI(api_key=api_key)
-    response = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=max_tokens,
-        temperature=temperature,
-    )
-    return response.choices[0].message.content.strip()
-
-def generate_subhead_block(section_title, subhead, client_name, brand_name, brand_url, context=None):
-    import json as _json
-    logger.info(_json.dumps({
-        "event": "enter_generate_subhead_block",
-        "section_title": section_title,
-        "subhead": subhead,
-        "client_name": client_name,
-        "brand_name": brand_name,
-        "brand_url": brand_url
-    }))
-    """
-    Generates a narrative block for a given subhead using a focused prompt.
-    """
-    prompt = f"""
-Generate the '{subhead}' subsection for the '{section_title}' section of a marketing kit.
-Client Name: {client_name}
-Brand: {brand_name}
-Website: {brand_url}
-"""
-    if context:
-        prompt += f"Context: {context}\n"
-    prompt += (
-        "IMPORTANT: Use ONLY the provided client, website, and file context. Do NOT use generic, template, or example content. "
-        "Match the richness, structure, and actionable detail of the gold standard sample in 'tests/UCARI_MarketingKit_GoldStandardSample.md'. "
-        "Cite real details from the context. Be vivid, actionable, and specific to the client. "
-        "Return a JSON block: {\"type\": \"Subhead\", \"text\": \"...\"} followed by a {\"type\": \"Paragraph\", \"text\": \"...\"}."
-    )
-    try:
-        logger.info('{"event": "call_openai_subagent", "function": "generate_subhead_block"}')
-        import json as _json
-        import re
-        ai_response = call_openai_subagent(prompt)
-        # Try to extract all JSON objects/arrays from the response robustly
-        json_blocks = []
-        # Find all JSON objects or arrays in the response
-        matches = re.findall(r'(\{[^\{\}]*\}|\[[^\[\]]*\])', ai_response, re.DOTALL)
-        for match in matches:
-            try:
-                parsed = _json.loads(match)
-                if isinstance(parsed, list):
-                    json_blocks.extend(parsed)
-                else:
-                    json_blocks.append(parsed)
-            except Exception:
-                continue
-        if json_blocks:
-            logger.info('{{"event": "exit_generate_subhead_block", "result_count": {}}}'.format(len(json_blocks)))
-            return json_blocks
-        # Fallback: try to parse the whole response as a list
-        try:
-            result = _json.loads(ai_response)
-            logger.info('{{"event": "exit_generate_subhead_block", "result_count": {}}}'.format(len(result) if isinstance(result, list) else 1))
-            return result
-        except Exception:
-            pass
-        # Fallback: try to parse as two JSON objects
-        parts = ai_response.split('}')
-        blocks = []
-        for part in parts:
-            if '{' in part:
-                try:
-                    blocks.append(_json.loads(part + '}'))
-                except Exception:
-                    continue
-        if blocks:
-            logger.info('{{"event": "exit_generate_subhead_block", "result_count": {}}}'.format(len(blocks)))
-            return blocks
-        import json as _json
-        logger.error(_json.dumps({
-            "event": "error_generate_subhead_block",
-            "error": "No valid JSON block found in AI response"
-        }))
-        raise ValueError("No valid JSON block found in AI response")
-    except Exception as e:
-        import json as _json
-        logger.error(_json.dumps({
-            "event": "error_generate_subhead_block",
-            "error": str(e)
-        }))
-        return [
-            {"type": "Subhead", "text": subhead},
-            {"type": "Paragraph", "text": f"[AI generation failed for '{subhead}': {e}]"}
-        ]
+load_dotenv()
 

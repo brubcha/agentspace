@@ -1,17 +1,12 @@
 {
   "request_type": "marketing_kit",
-  "client_name": "UCARI",
-  "brand_name": "UCARI",
-  "brand_url": "https://www.ucari.com/",
-  "website": "https://www.ucari.com/",
-  "offering": "UCARI offers at-home intolerance testing kits for people and pets, empowering individuals to proactively manage their health by identifying food, environmental, and chemical intolerances.",
-  "target_markets": "Health-conscious individuals, pet owners, fitness enthusiasts, holistic health practitioners, nutritionists, and retailers in the wellness and pet care industries.",
-  "competitors": "5Strands, Everlywell, Check My Body Health, Modern Allergy Management",
-  "additional_details": "UCARI's mission is to help people and pets live healthier lives by providing actionable insights through affordable, accessible testing. UCARI emphasizes education, empowerment, and ongoing wellness.",
-  "files": [
-    {
-      "filename": "UCARI Brand Story.pdf",
-      "content": "[PDF content or extracted text here, or leave as placeholder if not available]"
-    }
-  ]
+  "client_name": "Swift Innovation",
+  "brand_name": "Swift Innovation",
+  "brand_url": "https://swiftinnovation.io/",
+  "website": "https://swiftinnovation.io/",
+  "offering": "Swift Innovation offers AI-powered business automation solutions, specializing in custom AI workflow automation, integration with legacy systems, and rapid digital transformation for businesses across industries.",
+  "target_markets": "SMBs, Enterprises, Startups, and organizations seeking digital transformation and automation.",
+  "competitors": "Zapier, UiPath, Automation Anywhere",
+  "additional_details": "Swift Innovation's mission is to accelerate business growth and efficiency through advanced AI automation, seamless integration, and tailored digital solutions.",
+  "files": []
 }

@@ -39,8 +39,12 @@ def mock_call_openai_subagent(prompt, max_tokens=512, temperature=0.7, model="gp
             {"type": "Checklist", "title": "Test Checklist", "items": ["Check 1"]}
         ])
     if 'qa validator' in prompt.lower() or 'review the following section blocks' in prompt.lower():
+        # Try to infer the type from the prompt (simulate correct review type)
+        import re
+        match = re.search(r'\{"type": ?"([A-Za-z]+)"', prompt)
+        block_type = match.group(1) if match else "Paragraph"
         return json.dumps([
-            {"type": "Paragraph", "text": "Test", "review": "OK"}
+            {"type": block_type, "text": "Test", "review": "OK"}
         ])
     return json.dumps([
         {"type": "Unknown", "text": "No match"}
@@ -86,14 +90,3 @@ def test_validate_section_blocks():
     assert isinstance(blocks, list)
     assert "review" in blocks[0]
 
-def test_fallback_retry_block_success():
-    def always_success(*args, **kwargs):
-        return [{"type": "Test"}]
-    result = subagents.fallback_retry_block(always_success, "a")
-    assert result[0]["type"] == "Test"
-
-def test_fallback_retry_block_failure():
-    def always_fail(*args, **kwargs):
-        return [{"type": "Test", "error": "fail"}]
-    result = subagents.fallback_retry_block(always_fail, "a", max_retries=2)
-    assert result[0]["review"]

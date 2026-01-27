@@ -7,7 +7,7 @@ def test_website_scraper_subagent_success(monkeypatch):
             self.text = text
         def raise_for_status(self):
             pass
-    def mock_get(url, timeout=10):
+    def mock_get(url, headers=None, timeout=10):
         html = """
         <html><body>
         <h1>About Us</h1>

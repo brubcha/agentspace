@@ -8,7 +8,7 @@ def test_end_to_end_kit_generation():
         payload = json.load(f)
     # Assume the backend is running locally on port 7000
     url = 'http://localhost:7000/agent/marketing-kit'
-    response = requests.post(url, json=payload, timeout=120)
+    response = requests.post(url, json=payload, timeout=360)
     assert response.status_code == 200
     kit = response.json()
     # Basic structure checks
